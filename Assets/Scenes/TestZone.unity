@@ -3173,7 +3173,6 @@ Transform:
   - {fileID: 1930217997}
   - {fileID: 582467978}
   - {fileID: 1457095850}
-  - {fileID: 1151244497}
   - {fileID: 484376093}
   - {fileID: 906373308}
   - {fileID: 1956789824}
@@ -6887,6 +6886,7 @@ GameObject:
   - component: {fileID: 1151244497}
   - component: {fileID: 1151244499}
   - component: {fileID: 1151244498}
+  - component: {fileID: 1151244500}
   m_Layer: 3
   m_Name: WallNextRoom
   m_TagString: Ground
@@ -6902,12 +6902,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1151244496}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23.43, y: -2.59, z: -0.052131016}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 20.04142, y: -1.9365861, z: 0}
   m_LocalScale: {x: 1.0829856, y: 6.2227154, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 530916000}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1151244498
 BoxCollider2D:
@@ -6918,7 +6918,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1151244496}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: e49aa9255158b4546b6cf033e945bd98, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -7006,6 +7006,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1151244500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151244496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a4923255ea46d24d907290bd93da927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destinationDoor: {fileID: 289948577}
+  zoneToActivate: {fileID: 909134503}
+  zoneToDeactivate: {fileID: 530915999}
+  fadePanel: {fileID: 885540606}
+  fadeInTime: 0.45
+  blackScreenDuration: 1.1
+  fadeOutTime: 0.45
+  walkSpeedAfterTransition: 5
+  exitDirection: {x: 10, y: 1}
+  walkDuration: 1
 --- !u!1 &1173949670 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5521566355243332115, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
@@ -8065,7 +8087,7 @@ Transform:
   m_GameObject: {fileID: 1245045250}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.17, y: -1.85, z: 0}
+  m_LocalPosition: {x: 16.17, y: 2.2, z: 0}
   m_LocalScale: {x: 9.65973, y: 9.65973, z: 9.65973}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12832,6 +12854,7 @@ SceneRoots:
   - {fileID: 2115985878}
   - {fileID: 1197844569}
   - {fileID: 1549176963}
+  - {fileID: 1151244497}
   - {fileID: 957161491}
   - {fileID: 802295998}
   - {fileID: 835760182}
