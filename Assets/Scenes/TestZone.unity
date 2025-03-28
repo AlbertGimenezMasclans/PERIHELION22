@@ -799,7 +799,7 @@ GameObject:
   - component: {fileID: 155960543}
   - component: {fileID: 155960545}
   - component: {fileID: 155960544}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Floor (1)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -2571,7 +2571,7 @@ GameObject:
   - component: {fileID: 427602696}
   - component: {fileID: 427602698}
   - component: {fileID: 427602697}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: WallEnd (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3301,7 +3301,7 @@ GameObject:
   - component: {fileID: 565388832}
   - component: {fileID: 565388834}
   - component: {fileID: 565388833}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Roof (1)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -3431,7 +3431,7 @@ GameObject:
   - component: {fileID: 566749951}
   - component: {fileID: 566749953}
   - component: {fileID: 566749952}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: WallEnd (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
