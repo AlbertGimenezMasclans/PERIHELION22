@@ -7076,7 +7076,7 @@ MonoBehaviour:
   rb: {fileID: 1176550080}
   boxCollider: {fileID: 1176550085}
   isGrounded: 0
-  isGravityNormal: 0
+  isGravityNormal: 1
   isSelectingMode: 0
   jumpSound: {fileID: 8300000, guid: cff8eac4fb5a08f42aab14c8b5e65fa3, type: 3}
   canChangeGravity: 0
