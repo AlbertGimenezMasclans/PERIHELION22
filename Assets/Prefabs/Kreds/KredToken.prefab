@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4029732594852108919}
   - component: {fileID: 8446897167996510197}
   - component: {fileID: 8486796126827068154}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: KredToken
   m_TagString: KredToken
   m_Icon: {fileID: 0}
@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce57e1871095ac44a2bf97cc54fdaff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tokenValue: 1000
   collectionEffectPrefab: {fileID: 8895929468222777100, guid: 112e226f55e5e70408c82c563c23c158, type: 3}
 --- !u!61 &6147744311076807988
 BoxCollider2D:
