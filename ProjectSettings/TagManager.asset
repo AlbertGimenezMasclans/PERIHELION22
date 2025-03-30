@@ -11,6 +11,7 @@ TagManager:
   - Ground
   - DeathZone
   - Enemy
+  - PlayerHead
   layers:
   - Default
   - TransparentFX

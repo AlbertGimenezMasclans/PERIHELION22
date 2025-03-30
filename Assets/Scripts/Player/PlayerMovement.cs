@@ -334,7 +334,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isGrounded || !canDismember) return;
 
-        headObject.tag = "Player";
         if (headObject != null && bodyObject != null)
         {
             isDismembered = true;

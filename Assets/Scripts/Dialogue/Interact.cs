@@ -7,60 +7,49 @@ using UnityEngine.UI;
 public class Interact : MonoBehaviour
 {
     [Header("UI Elements")]
-    [Tooltip("Icon shown when player is in dialogue range")]
     [SerializeField] private GameObject dialogueMark;
-    [Tooltip("Main dialogue text box container")]
     [SerializeField] private GameObject textBox;
-    [Tooltip("Primary text field for dialogue (preferred if both are set)")]
     [SerializeField] private TMP_Text textField1;
-    [Tooltip("Secondary text field for dialogue")]
     [SerializeField] private TMP_Text textField2;
-    [Tooltip("Input indicator image")]
     [SerializeField] private Image Input_TB;
 
     [Header("Dialogue Content")]
-    [Tooltip("Lines of dialogue for normal state")]
     [SerializeField, TextArea(1, 4)] private string[] dialogueLines;
-    [Tooltip("Lines of dialogue when player is dismembered")]
     [SerializeField, TextArea(1, 4)] private string[] headlessDialogueLines;
 
     [Header("Position Settings")]
-    [Tooltip("Use an alternative position for the text box?")]
     [SerializeField] private bool useAlternativePosition = false;
-    [Tooltip("Custom position for text box when using alternative position")]
     [SerializeField] private Vector2 alternativeTextBoxPosition = new Vector2(100, 100);
 
     [Header("Audio Settings")]
-    [Tooltip("Sound played during text typing")]
-    [SerializeField] private AudioClip typingSound;
+    [SerializeField] private AudioClip typingSound; // Sonido al escribir el texto
+    [SerializeField] private AudioClip dialogueAdvanceSound; // Sonido al avanzar al siguiente mensaje
+    [SerializeField] private AudioClip dialogueEndSound; // Sonido al finalizar el diálogo
 
     private float typingTime = 0.05f;
-    private float commaPauseTime = 0.25f;
-    private float periodPauseTime = 0.48f;
+    private float commaPauseTime = 0.25f; // Pausa después de una coma
+    private float periodPauseTime = 0.48f; // Pausa después de un punto o signo de puntuación
     private bool isPlayerRange;
     private bool didDialogueStart;
     private int lineIndex;
     private Vector2 originalTextBoxPosition;
     private AudioSource audioSource;
-    private AudioClip dialogueAdvanceSound;
-    private AudioClip dialogueEndSound;
-    private List<Animator> sceneAnimators;
-    private List<AnimatorUpdateMode> originalUpdateModes;
     private string[] activeDialogueLines;
     private TMP_Text dialogueText;
 
-    public bool IsDialogueActive => didDialogueStart;
     private PlayerMovement playerMovement;
     private GameObject playerObject;
     private CoinControllerUI coinControllerUI;
+    private GameObject playerHead;
+    private Rigidbody2D headRigidbody;
 
     void Start()
     {
-        audioSource = gameObject.GetComponent<AudioSource>();
-        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
 
-        dialogueAdvanceSound = Resources.Load<AudioClip>("SFX/DialogueNEXT");
-        dialogueEndSound = Resources.Load<AudioClip>("SFX/DialogueEND");
+        // Cargar los clips de audio desde Resources si no están asignados
+        if (dialogueAdvanceSound == null) dialogueAdvanceSound = Resources.Load<AudioClip>("SFX/DialogueNEXT");
+        if (dialogueEndSound == null) dialogueEndSound = Resources.Load<AudioClip>("SFX/DialogueEND");
 
         coinControllerUI = FindObjectOfType<CoinControllerUI>();
         if (coinControllerUI == null) Debug.LogError("CoinControllerUI not found in the scene.");
@@ -71,19 +60,15 @@ public class Interact : MonoBehaviour
 
         dialogueText = textField1 != null ? textField1 : textField2;
         if (textField2 != null && dialogueText == textField1) textField2.gameObject.SetActive(false);
-        if (dialogueText != null && !didDialogueStart) dialogueText.gameObject.SetActive(false);
+        if (dialogueText != null) dialogueText.gameObject.SetActive(false);
 
         if (Input_TB != null) Input_TB.gameObject.SetActive(false);
-
-        sceneAnimators = new List<Animator>();
-        originalUpdateModes = new List<AnimatorUpdateMode>();
     }
 
     void Update()
     {
         if (isPlayerRange && Input.GetKeyDown(KeyCode.C))
         {
-            Debug.Log("C pressed, starting or advancing dialogue");
             if (!didDialogueStart)
             {
                 StartDialogue();
@@ -103,35 +88,39 @@ public class Interact : MonoBehaviour
 
     private void StartDialogue()
     {
-        if (textBox == null || dialogueText == null || dialogueLines == null || dialogueLines.Length == 0) return;
+        if (textBox == null || dialogueText == null || dialogueLines.Length == 0) return;
 
         didDialogueStart = true;
         textBox.SetActive(true);
         if (dialogueMark != null) dialogueMark.SetActive(false);
         dialogueText.gameObject.SetActive(true);
         lineIndex = 0;
-        // Time.timeScale = 0f; // Descomenta esta línea si quieres pausar el juego
-
-        ConfigureAnimatorsForDialogue(true);
+        Time.timeScale = 0f; // Pausa el juego
 
         bool isDismembered = false;
         if (playerMovement != null)
         {
             isDismembered = playerMovement.isDismembered;
-        }
-        else if (playerObject != null && playerObject.GetComponent<Dismember>() != null)
-        {
-            isDismembered = true;
+            playerMovement.enabled = false; // Desactiva movimiento del cuerpo
         }
 
-        if (isDismembered && headlessDialogueLines != null && headlessDialogueLines.Length > 0)
+        if (playerObject.CompareTag("PlayerHead"))
         {
-            activeDialogueLines = headlessDialogueLines;
+            // Aquí confirmamos si realmente estamos manejando la cabeza del jugador
+            if (headlessDialogueLines.Length > 0)
+            {
+                activeDialogueLines = headlessDialogueLines;
+            }
+            else
+            {
+                activeDialogueLines = dialogueLines; // fallback a los diálogos normales
+            }
         }
         else
         {
             activeDialogueLines = dialogueLines;
         }
+
 
         RectTransform textBoxRect = textBox.GetComponent<RectTransform>();
         if (textBoxRect != null)
@@ -154,23 +143,30 @@ public class Interact : MonoBehaviour
         lineIndex++;
         if (lineIndex < activeDialogueLines.Length)
         {
-            PlayDialogueSound(dialogueAdvanceSound);
+            PlayDialogueSound(dialogueAdvanceSound); // Reproducir sonido al avanzar
             if (Input_TB != null) Input_TB.gameObject.SetActive(false);
             StartCoroutine(ShowLine());
         }
         else
         {
-            PlayDialogueSound(dialogueEndSound);
+            PlayDialogueSound(dialogueEndSound); // Reproducir sonido al finalizar
             didDialogueStart = false;
             textBox.SetActive(false);
             if (dialogueMark != null) dialogueMark.SetActive(true);
             dialogueText.gameObject.SetActive(false);
-            // Time.timeScale = 1f; // Descomenta esta línea si usaste la pausa en StartDialogue
-
-            ConfigureAnimatorsForDialogue(false);
+            Time.timeScale = 1f; // Reanuda el juego
 
             if (playerMovement != null)
+            {
                 playerMovement.SetDialogueActive(null);
+                playerMovement.enabled = true; // Reactiva el movimiento del jugador
+            }
+
+            // Reactivar la cabeza si fue bloqueada
+            if (playerHead != null && headRigidbody != null)
+            {
+                headRigidbody.constraints = RigidbodyConstraints2D.None; // Permite movimiento nuevamente
+            }
 
             if (coinControllerUI != null)
                 coinControllerUI.gameObject.SetActive(true);
@@ -192,7 +188,7 @@ public class Interact : MonoBehaviour
         int totalVisibleChars = GetVisibleCharacterCount(activeDialogueLines[lineIndex]);
         int visibleCount = 0;
         string currentLine = activeDialogueLines[lineIndex];
-        int nonSpaceCharCount = 0;
+        int nonSpaceCharCount = 0; // Contador para reproducir el sonido cada cierto número de caracteres
 
         while (visibleCount < totalVisibleChars)
         {
@@ -201,6 +197,7 @@ public class Interact : MonoBehaviour
 
             char currentChar = GetCharAtVisibleIndex(currentLine, visibleCount - 1);
 
+            // Reproducir el sonido de escritura cada 2 caracteres no espaciados
             if (currentChar != ' ')
             {
                 nonSpaceCharCount++;
@@ -208,6 +205,7 @@ public class Interact : MonoBehaviour
                     PlayDialogueSound(typingSound);
             }
 
+            // Añadir pausas en comas y signos de puntuación
             if (currentChar == ',')
                 yield return new WaitForSecondsRealtime(commaPauseTime);
             else if (currentChar == '.' || currentChar == '?' || currentChar == '!')
@@ -242,7 +240,6 @@ public class Interact : MonoBehaviour
     {
         int count = 0;
         bool inTag = false;
-
         foreach (char c in line)
         {
             if (c == '<') inTag = true;
@@ -258,33 +255,9 @@ public class Interact : MonoBehaviour
             audioSource.PlayOneShot(clip);
     }
 
-    private void ConfigureAnimatorsForDialogue(bool isStarting)
-    {
-        if (isStarting)
-        {
-            sceneAnimators.Clear();
-            originalUpdateModes.Clear();
-            Animator[] animators = FindObjectsOfType<Animator>();
-            foreach (Animator animator in animators)
-            {
-                sceneAnimators.Add(animator);
-                originalUpdateModes.Add(animator.updateMode);
-                animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < sceneAnimators.Count; i++)
-            {
-                if (sceneAnimators[i] != null)
-                    sceneAnimators[i].updateMode = originalUpdateModes[i];
-            }
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("PlayerHead"))
         {
             isPlayerRange = true;
             if (dialogueMark != null) dialogueMark.SetActive(true);
@@ -295,7 +268,7 @@ public class Interact : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("PlayerHead"))
         {
             isPlayerRange = false;
             if (dialogueMark != null) dialogueMark.SetActive(false);
