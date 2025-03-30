@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform target;
-    public Transform headTarget;
+    public Transform target; // El cuerpo del jugador
+    public Transform headTarget; // La cabeza del jugador (opcional, pero no se usa como target principal)
     public Transform habSelector;
 
     [SerializeField] private Vector3 offset;
@@ -49,7 +49,7 @@ public class CameraController : MonoBehaviour
     {
         if (target == null || (playerDeath != null && playerDeath.IsDead())) return;
 
-        // Buscar la zona actual del jugador
+        // Buscar la zona actual basada en el target (cuerpo)
         Vector2 targetPosition = target.position;
         Zone newZone = FindZoneAtPosition(targetPosition);
 
@@ -73,12 +73,8 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        // Determinar qué seguir: jugador o cabeza
+        // Siempre seguimos al target (cuerpo), incluso si está desmembrado
         Transform currentTarget = target;
-        if (playerMovement != null && playerMovement.isDismembered && headTarget != null)
-        {
-            currentTarget = headTarget;
-        }
 
         // Calcular el desplazamiento dinámico (look-ahead) basado en la dirección del movimiento
         float targetVelocityX = currentTarget.GetComponent<Rigidbody2D>()?.velocity.x ?? 0f;

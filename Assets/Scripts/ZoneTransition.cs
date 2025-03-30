@@ -71,43 +71,59 @@ public class ZoneTransition : MonoBehaviour
         yield return StartCoroutine(FadeScreen(0f, 1f, fadeTime));
         yield return new WaitForSeconds(blackScreenDuration);
 
-        // Revisamos si la gravedad está invertida o no y asignamos la posición adecuada
-        Vector3 targetPosition = playerMovement.IsGravityNormal() ? 
-            (normalGravityDestination != null ? normalGravityDestination.transform.position : transform.position) :
-            (invertedGravityDestination != null ? invertedGravityDestination.transform.position : transform.position);
+        // Posición objetivo base para el cuerpo (normalGravityDestination)
+        Vector3 bodyTargetPosition = normalGravityDestination != null ?
+            normalGravityDestination.transform.position : transform.position;
 
-        // Aplicamos el cambio de gravedad si corresponde
-        ApplyGravityChange();
+        // Ajustar la posición del cuerpo 0.30 más alto en Y
+        bodyTargetPosition += new Vector3(0f, 0.30f, 0f);
 
+        // Calcular la posición de la cabeza con el offset en X
+        float offsetDirection = headOffsetDirection == MoveDirection.Right ? 1f : -1f;
+        Vector3 headTargetPosition = bodyTargetPosition + new Vector3(offsetDirection * headOffsetDistance, 0f, 0f);
+
+        // Encontrar el PlayerMovement del jugador completo
         PlayerMovement fullPlayerMovement = FindFullPlayer();
         if (fullPlayerMovement != null)
         {
             playerMovement = fullPlayerMovement;
             GameObject bodyObject = playerMovement.bodyObject;
+
+            // Teletransportar el cuerpo
             if (bodyObject != null)
             {
-                bodyObject.transform.position = targetPosition;
+                bodyObject.transform.position = bodyTargetPosition;
             }
             else
             {
                 Debug.LogError("bodyObject no está asignado en PlayerMovement.");
             }
 
-            // Aquí gestionamos la dirección de la cabeza, según la gravedad y la dirección del movimiento
-            float offsetDirection = headOffsetDirection == MoveDirection.Right ? 1f : -1f;
-            Vector3 headPosition = targetPosition + new Vector3(offsetDirection * headOffsetDistance, 0f, 0f);
-            player.transform.position = headPosition;
+            // Teletransportar la cabeza
+            player.transform.position = headTargetPosition;
+
+            // Aplicar el cambio de gravedad si corresponde
+            ApplyGravityChange();
         }
         else
         {
             Debug.LogError("No se encontró el PlayerMovement del jugador completo.");
         }
 
+        // Actualizar la cámara para que siga al cuerpo
         if (cameraController != null && playerMovement != null && playerMovement.bodyObject != null)
         {
-            cameraController.TeleportCamera(targetPosition);
+            // Asignar el cuerpo como target principal
+            cameraController.target = playerMovement.bodyObject.transform;
+            // Forzar la actualización de la zona y teletransportar la cámara
+            cameraController.TeleportCamera(bodyTargetPosition);
+        }
+        else
+        {
+            Debug.LogWarning("CameraController o bodyObject no están asignados correctamente.");
         }
 
+        // Activar/desactivar zonas
         if (zoneToDeactivate != null) zoneToDeactivate.SetActive(false);
         if (zoneToActivate != null) zoneToActivate.SetActive(true);
 

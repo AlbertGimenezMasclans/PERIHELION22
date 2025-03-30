@@ -11055,7 +11055,7 @@ MonoBehaviour:
   fadePanel: {fileID: 885540606}
   fadeTime: 0.45
   blackScreenDuration: 0.5
-  headOffsetDirection: 1
+  headOffsetDirection: 0
   headOffsetDistance: 0.25
   gravityAfterTeleport: 0
 --- !u!1 &1906634740
