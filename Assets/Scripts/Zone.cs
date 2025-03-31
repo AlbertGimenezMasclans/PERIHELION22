@@ -7,6 +7,10 @@ public class Zone : MonoBehaviour
     public float minXLimit = -10f;
     [Tooltip("Maximum X limit for the camera in this zone")]
     public float maxXLimit = 10f;
+    [Tooltip("Minimum Y limit for the camera in this zone")]
+    public float minYLimit = -10f; // Nuevo límite mínimo en Y
+    [Tooltip("Maximum Y limit for the camera in this zone")]
+    public float maxYLimit = 10f;  // Nuevo límite máximo en Y
 
     private BoxCollider2D zoneCollider;
 
@@ -31,11 +35,13 @@ public class Zone : MonoBehaviour
         return false;
     }
 
-    // Método para obtener los límites de la cámara
-    public void GetCameraLimits(out float minX, out float maxX)
+    // Método actualizado para obtener los límites de la cámara en X e Y
+    public void GetCameraLimits(out float minX, out float maxX, out float minY, out float maxY)
     {
         minX = minXLimit;
         maxX = maxXLimit;
-        Debug.Log($"Zone ({gameObject.name}): Estableciendo límites de cámara: minX = {minX}, maxX = {maxX}");
+        minY = minYLimit;
+        maxY = maxYLimit;
+        Debug.Log($"Zone ({gameObject.name}): Estableciendo límites de cámara: minX = {minX}, maxX = {maxX}, minY = {minY}, maxY = {maxY}");
     }
 }

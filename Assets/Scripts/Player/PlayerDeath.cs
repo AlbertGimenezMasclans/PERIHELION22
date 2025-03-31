@@ -412,10 +412,10 @@ public class PlayerDeath : MonoBehaviour
             Zone currentZone = FindZoneAtPosition(respawnPosition);
             if (currentZone != null)
             {
-                float newMinX, newMaxX;
-                currentZone.GetCameraLimits(out newMinX, out newMaxX);
-                cameraController.UpdateCameraLimits(newMinX, newMaxX);
-                Debug.Log($"Límites de la cámara actualizados al reaparecer según la zona ({currentZone.gameObject.name}): minX = {newMinX}, maxX = {newMaxX}");
+                float newMinX, newMaxX, newMinY, newMaxY;
+                currentZone.GetCameraLimits(out newMinX, out newMaxX, out newMinY, out newMaxY);
+                cameraController.UpdateCameraLimits(newMinX, newMaxX, newMinY, newMaxY);
+                Debug.Log($"Límites de la cámara actualizados al reaparecer según la zona ({currentZone.gameObject.name}): minX = {newMinX}, maxX = {newMaxX}, minY = {newMinY}, maxY = {newMaxY}");
             }
             else
             {
