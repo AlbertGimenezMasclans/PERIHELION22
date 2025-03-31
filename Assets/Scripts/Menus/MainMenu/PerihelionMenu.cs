@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class PerihelionMenu : MonoBehaviour
 {
@@ -22,37 +23,58 @@ public class PerihelionMenu : MonoBehaviour
     }
 
     private MenuOption currentOption = MenuOption.StartGame;
-    private SubMenuOption currentSubOption = SubMenuOption.Music;
+    private SubMenuOption currentSubOption = SubMenuOption.Exit;
 
+    [Header("Main Menu Indicators")]
     [SerializeField] private GameObject[] startGameIndicators;
     [SerializeField] private GameObject[] loadGameIndicators;
     [SerializeField] private GameObject[] optionsIndicators;
     [SerializeField] private GameObject[] exitIndicators;
+    [SerializeField] private TMP_Text loadGameText; // Referencia al texto de Load Game
 
+    [Header("Sub Menu Indicators")]
     [SerializeField] private GameObject[] musicIndicators;
     [SerializeField] private GameObject[] soundEffectsIndicators;
     [SerializeField] private GameObject[] autoSaveIndicators;
     [SerializeField] private GameObject[] subExitIndicators;
 
+    [Header("Audio Settings")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip selectionSound;
     [SerializeField] private AudioClip noActionSound;
 
+    [Header("UI Elements")]
     [SerializeField] private GameObject optionsPanel;
     [SerializeField] private GameObject fadePanel;
-
-    [SerializeField] private Slider musicSlider; // Slider para Music
-    [SerializeField] private Slider sfxSlider;   // Slider para Sound Effects
-    [SerializeField] private Toggle autoSaveToggle; // Checkbox para AutoSave
+    [Space]
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private TMP_Text musicVolumeText;
+    [SerializeField] private Slider sfxSlider;
+    [SerializeField] private TMP_Text sfxVolumeText;
+    [SerializeField] private Toggle autoSaveToggle;
+    [SerializeField] private bool gameLoaded = false;
 
     private bool isProcessing = false;
     private bool inSubMenu = false;
-    private bool controllingSlider = false; // Controla si estás ajustando un slider
-    private Slider activeSlider = null;     // Slider actualmente controlado
+    private float sliderAdjustSpeed = 0.5f;
 
     void Start()
     {
+        if (musicSlider != null)
+        {
+            musicSlider.value = 1f;
+            UpdateVolumeText(musicSlider, musicVolumeText);
+            musicSlider.onValueChanged.AddListener((value) => UpdateVolumeText(musicSlider, musicVolumeText));
+        }
+        if (sfxSlider != null)
+        {
+            sfxSlider.value = 1f;
+            UpdateVolumeText(sfxSlider, sfxVolumeText);
+            sfxSlider.onValueChanged.AddListener((value) => UpdateVolumeText(sfxSlider, sfxVolumeText));
+        }
+
         UpdateMenuVisuals();
+        UpdateLoadGameTextColor(); // Actualizar color al iniciar
         if (fadePanel != null)
         {
             fadePanel.GetComponent<Image>().color = new Color(0, 0, 0, 0);
@@ -63,36 +85,19 @@ public class PerihelionMenu : MonoBehaviour
     {
         if (isProcessing) return;
 
-        if (controllingSlider)
+        if (inSubMenu)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (currentSubOption == SubMenuOption.Music && musicSlider != null)
             {
-                AdjustSlider(-0.1f);
+                AdjustSlider(musicSlider);
             }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (currentSubOption == SubMenuOption.SoundEffects && sfxSlider != null)
             {
-                AdjustSlider(0.1f);
+                AdjustSlider(sfxSlider);
             }
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C))
             {
-                controllingSlider = false;
-                activeSlider = null;
-                UpdateSubMenuVisuals();
-            }
-        }
-        else if (inSubMenu)
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                MoveSubMenuUp();
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                MoveSubMenuDown();
-            }
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                ProcessSubMenuSelection();
+                CloseOptionsMenu();
             }
         }
         else
@@ -107,14 +112,7 @@ public class PerihelionMenu : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.C))
             {
-                if (currentOption == MenuOption.Options)
-                {
-                    EnterOptionsMenu();
-                }
-                else
-                {
-                    StartCoroutine(ProcessSelection());
-                }
+                ProcessMainMenuSelection();
             }
         }
     }
@@ -159,46 +157,6 @@ public class PerihelionMenu : MonoBehaviour
         UpdateMenuVisuals();
     }
 
-    private void MoveSubMenuUp()
-    {
-        switch (currentSubOption)
-        {
-            case SubMenuOption.Music:
-                break;
-            case SubMenuOption.SoundEffects:
-                currentSubOption = SubMenuOption.Music;
-                break;
-            case SubMenuOption.AutoSave:
-                currentSubOption = SubMenuOption.SoundEffects;
-                break;
-            case SubMenuOption.Exit:
-                currentSubOption = SubMenuOption.AutoSave;
-                break;
-        }
-        PlaySelectionSound();
-        UpdateSubMenuVisuals();
-    }
-
-    private void MoveSubMenuDown()
-    {
-        switch (currentSubOption)
-        {
-            case SubMenuOption.Music:
-                currentSubOption = SubMenuOption.SoundEffects;
-                break;
-            case SubMenuOption.SoundEffects:
-                currentSubOption = SubMenuOption.AutoSave;
-                break;
-            case SubMenuOption.AutoSave:
-                currentSubOption = SubMenuOption.Exit;
-                break;
-            case SubMenuOption.Exit:
-                break;
-        }
-        PlaySelectionSound();
-        UpdateSubMenuVisuals();
-    }
-
     private void UpdateMenuVisuals()
     {
         SetIndicatorsActive(startGameIndicators, false);
@@ -221,6 +179,7 @@ public class PerihelionMenu : MonoBehaviour
                 SetIndicatorsActive(exitIndicators, true);
                 break;
         }
+        UpdateLoadGameTextColor(); // Actualizar color al mover entre opciones
     }
 
     private void UpdateSubMenuVisuals()
@@ -266,28 +225,45 @@ public class PerihelionMenu : MonoBehaviour
         }
     }
 
+    private void PlayNoActionSound()
+    {
+        if (audioSource != null && noActionSound != null)
+        {
+            audioSource.PlayOneShot(noActionSound);
+        }
+    }
+
     private IEnumerator ProcessSelection()
     {
         isProcessing = true;
-        yield return StartCoroutine(FadeIn(0.80f));
 
-        switch (currentOption)
+        if (currentOption == MenuOption.StartGame)
         {
-            case MenuOption.StartGame:
+            PlaySelectionSound();
+            yield return StartCoroutine(FadeIn(0.80f));
+            SceneManager.LoadScene("TestZone");
+        }
+        else if (currentOption == MenuOption.LoadGame)
+        {
+            if (gameLoaded)
+            {
+                PlaySelectionSound();
+                yield return StartCoroutine(FadeIn(0.80f));
                 SceneManager.LoadScene("TestZone");
-                break;
-            case MenuOption.LoadGame:
-                if (audioSource != null && noActionSound != null)
-                {
-                    audioSource.PlayOneShot(noActionSound);
-                }
-                break;
-            case MenuOption.Exit:
-                Application.Quit();
+            }
+            else
+            {
+                PlayNoActionSound();
+            }
+        }
+        else if (currentOption == MenuOption.Exit)
+        {
+            PlaySelectionSound();
+            yield return StartCoroutine(FadeIn(0.80f));
+            Application.Quit();
 #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #endif
-                break;
         }
 
         isProcessing = false;
@@ -314,6 +290,7 @@ public class PerihelionMenu : MonoBehaviour
                 fadeImage.color = endColor;
             }
         }
+        yield return null;
     }
 
     private void EnterOptionsMenu()
@@ -322,54 +299,69 @@ public class PerihelionMenu : MonoBehaviour
         {
             optionsPanel.SetActive(true);
             inSubMenu = true;
-            currentSubOption = SubMenuOption.Music;
+            currentSubOption = SubMenuOption.Exit;
             UpdateSubMenuVisuals();
         }
     }
 
-    private void ProcessSubMenuSelection()
+    private void CloseOptionsMenu()
     {
-        switch (currentSubOption)
+        if (optionsPanel != null)
         {
-            case SubMenuOption.Music:
-                if (musicSlider != null)
-                {
-                    controllingSlider = true;
-                    activeSlider = musicSlider;
-                }
-                break;
-            case SubMenuOption.SoundEffects:
-                if (sfxSlider != null)
-                {
-                    controllingSlider = true;
-                    activeSlider = sfxSlider;
-                }
-                break;
-            case SubMenuOption.AutoSave:
-                if (autoSaveToggle != null)
-                {
-                    autoSaveToggle.isOn = !autoSaveToggle.isOn;
-                }
-                break;
-            case SubMenuOption.Exit:
-                if (optionsPanel != null)
-                {
-                    optionsPanel.SetActive(false);
-                    inSubMenu = false;
-                    controllingSlider = false;
-                    activeSlider = null;
-                    UpdateMenuVisuals();
-                }
-                break;
+            optionsPanel.SetActive(false);
+            inSubMenu = false;
+            UpdateMenuVisuals();
         }
     }
 
-    private void AdjustSlider(float change)
+    private void ProcessMainMenuSelection()
     {
-        if (activeSlider != null)
+        if (currentOption == MenuOption.Options)
         {
-            activeSlider.value = Mathf.Clamp01(activeSlider.value + change);
-            PlaySelectionSound();
+            EnterOptionsMenu();
+        }
+        else
+        {
+            StartCoroutine(ProcessSelection());
+        }
+    }
+
+    private void AdjustSlider(Slider slider)
+    {
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            slider.value = Mathf.Clamp01(slider.value - sliderAdjustSpeed * Time.deltaTime);
+            UpdateVolumeText(slider, slider == musicSlider ? musicVolumeText : sfxVolumeText);
+            if (Mathf.Abs(sliderAdjustSpeed * Time.deltaTime) > 0.01f)
+            {
+                PlaySelectionSound();
+            }
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            slider.value = Mathf.Clamp01(slider.value + sliderAdjustSpeed * Time.deltaTime);
+            UpdateVolumeText(slider, slider == musicSlider ? musicVolumeText : sfxVolumeText);
+            if (Mathf.Abs(sliderAdjustSpeed * Time.deltaTime) > 0.01f)
+            {
+                PlaySelectionSound();
+            }
+        }
+    }
+
+    private void UpdateVolumeText(Slider slider, TMP_Text volumeText)
+    {
+        if (slider != null && volumeText != null)
+        {
+            int percentage = Mathf.RoundToInt(slider.value * 100);
+            volumeText.text = $"{percentage}%";
+        }
+    }
+
+    private void UpdateLoadGameTextColor()
+    {
+        if (loadGameText != null)
+        {
+            loadGameText.color = gameLoaded ? Color.white : Color.gray; // Blanco si gameLoaded, gris si no
         }
     }
 }
