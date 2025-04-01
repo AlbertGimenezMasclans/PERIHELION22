@@ -1326,8 +1326,8 @@ MonoBehaviour:
   dismemberSprite: {fileID: 118669590, guid: 31197fa307d2b824f9aab50299ea2489, type: 3}
   shootingSprite: {fileID: -486776795, guid: 9dc23554ef58ad74d85dc13147e752cb, type: 3}
   gravityName: Zer0 Bootz
-  shootingName: Gun
-  dismemberName: Head Space
+  shootingName: Shooting Krystal
+  dismemberName: Modular Chip
   abilityNameText: {fileID: 1458414947}
   InputText: {fileID: 292342975}
   playerMovement: {fileID: 92710909}
@@ -14359,7 +14359,6 @@ MonoBehaviour:
   maxY: 0
   lookAheadFactor: 0.025
   lookAheadSpeed: 0.08
-  headOffsetY: 1
 --- !u!114 &1991811868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14372,7 +14371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a160d838ff8b4b4693ac20007e008c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AssetsPPU: 16
+  m_AssetsPPU: 18
   m_RefResolutionX: 320
   m_RefResolutionY: 180
   m_UpscaleRT: 0
