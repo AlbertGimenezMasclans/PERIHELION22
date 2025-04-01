@@ -143,7 +143,6 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(0f, rb.velocity.y);
             animator.SetBool("MoveRight", false);
             animator.SetBool("MoveLeft", false);
-            Debug.Log($"MoveRight: {animator.GetBool("MoveRight")}, MoveLeft: {animator.GetBool("MoveLeft")}");
             if (isDismembered && Input.GetKeyDown(KeyCode.Z))
             {
                 isRecomposing = true;

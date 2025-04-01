@@ -1,15 +1,16 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class KredsManager : MonoBehaviour
 {
-    public static KredsManager Instance { get; private set; } // Singleton
+    public static KredsManager Instance { get; private set; }
     [SerializeField] public TMP_Text coinCountText;         // Referencia al texto del HUD
     [SerializeField] public RectTransform coinIcon;         // Referencia al ícono en la UI
     [SerializeField] public RectTransform uiContainer;      // Contenedor de la UI (texto + ícono)
     public int totalTokens = 0;                             // Valor inicial (0)
-    public int displayedTokens = 000000000;                 // Valor mostrado en pantalla
+    public int displayedTokens = 0;                        // Valor mostrado en pantalla (corregido de 000000000)
     public Vector2 originalUIPosition;                      // Posición inicial visible de la UI
     public Vector2 hiddenUIPosition;                        // Posición fuera de la cámara
     private Vector2 originalIconPosition;                   // Posición original del ícono relativa al contenedor
@@ -40,43 +41,91 @@ public class KredsManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
+
+        // Suscribirse al evento de cambio de escena
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        // Desuscribirse al destruir el objeto
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     void Start()
     {
+        InitializeUIReferences();
+        UpdateHUD();
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Re-inicializar referencias al cambiar de escena
+        if (scene.name != "GameOver") // Solo buscar referencias en escenas que no sean GameOver
+        {
+            InitializeUIReferences();
+        }
+        else
+        {
+            // En GameOver, deshabilitar temporalmente el Update
+            enabled = false;
+        }
+    }
+
+    void InitializeUIReferences()
+    {
+        // Buscar referencias si no están asignadas
+        if (uiContainer == null)
+        {
+            uiContainer = GameObject.Find("UIContainer")?.GetComponent<RectTransform>();
+        }
         if (coinCountText == null)
         {
-            Debug.LogError("CoinCountText no está asignado en el Inspector del KredsManager.");
+            coinCountText = GameObject.Find("CoinCountText")?.GetComponent<TMP_Text>();
         }
         if (coinIcon == null)
         {
-            Debug.LogError("CoinIcon no está asignado en el Inspector del KredsManager.");
+            coinIcon = GameObject.Find("CoinIcon")?.GetComponent<RectTransform>();
         }
-        if (uiContainer == null)
-        {
-            Debug.LogError("UIContainer no está asignado en el Inspector del KredsManager.");
-        }
-        else
+
+        // Configurar posiciones si uiContainer existe
+        if (uiContainer != null)
         {
             originalUIPosition = uiContainer.anchoredPosition;
             hiddenUIPosition = originalUIPosition + Vector2.up * 240f;
             uiContainer.anchoredPosition = hiddenUIPosition;
-            originalIconPosition = coinIcon.anchoredPosition;
+            if (coinIcon != null)
+            {
+                originalIconPosition = coinIcon.anchoredPosition;
+            }
         }
 
-        // Obtener referencia a PlayerDeath
-        playerDeath = FindObjectOfType<PlayerDeath>();
+        // Buscar PlayerDeath
         if (playerDeath == null)
         {
-            Debug.LogError("PlayerDeath no encontrado en la escena.");
+            playerDeath = FindObjectOfType<PlayerDeath>();
+            if (playerDeath == null)
+            {
+                Debug.LogWarning("PlayerDeath no encontrado en la escena: " + SceneManager.GetActiveScene().name);
+            }
         }
 
-        UpdateHUD();
+        // Mostrar advertencias si falta algo
+        if (coinCountText == null) Debug.LogWarning("CoinCountText no encontrado o no asignado.");
+        if (coinIcon == null) Debug.LogWarning("CoinIcon no encontrado o no asignado.");
+        if (uiContainer == null) Debug.LogWarning("UIContainer no encontrado o no asignado.");
     }
 
     void Update()
     {
+        // Verificar que las referencias existan antes de continuar
+        if (uiContainer == null || coinCountText == null || coinIcon == null)
+        {
+            return; // Salir si falta alguna referencia esencial
+        }
+
         // Controlar la UI con la tecla X (sin animación)
         if (Input.GetKey(KeyCode.X))
         {
@@ -98,20 +147,17 @@ public class KredsManager : MonoBehaviour
         }
     }
 
-    // Método original para KredTokens normales
     public void AddTokens(int amount)
     {
-        AddTokens(amount, -1f); // -1f indica usar la duración por defecto basada en consecutiveCoins
+        AddTokens(amount, -1f);
     }
 
-    // Método sobrecargado para permitir duración personalizada
     public void AddTokens(int amount, float duration = -1f)
     {
-        totalTokens += amount; // Sumar el valor exacto recibido
-        consecutiveCoins++;    // Incrementar por cada item recogido
+        totalTokens += amount;
+        consecutiveCoins++;
         timeSinceLastCoin = 0f;
 
-        // Notificar a PlayerDeath que se ha recolectado una moneda
         if (playerDeath != null)
         {
             playerDeath.OnCoinCollected();
@@ -124,22 +170,18 @@ public class KredsManager : MonoBehaviour
         currentAnimation = StartCoroutine(AnimateUIAndTokens(amount, duration));
     }
 
-    // Nuevo método para restar monedas con rebote vertical
     public IEnumerator AnimateLoss(int amountLost)
     {
         if (coinCountText == null || uiContainer == null) yield break;
 
         isAnimating = true;
 
-        // Mostrar la UI en la posición original
         uiContainer.anchoredPosition = originalUIPosition;
 
-        // Actualizar el texto inmediatamente con el valor perdido
         totalTokens = Mathf.Max(0, totalTokens - amountLost);
         displayedTokens = totalTokens;
         UpdateHUD();
 
-        // Rebote vertical sin fluidez
         RectTransform textTransform = coinCountText.GetComponent<RectTransform>();
         Vector2 originalPosition = textTransform.anchoredPosition;
 
@@ -156,7 +198,6 @@ public class KredsManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.8f);
 
-        // Ocultar la UI si no se está pulsando X
         if (!Input.GetKey(KeyCode.X))
         {
             float moveUpDuration = 0.2f;
@@ -185,12 +226,13 @@ public class KredsManager : MonoBehaviour
 
     private IEnumerator AnimateUIAndTokens(int amount, float customDuration)
     {
+        if (uiContainer == null || coinCountText == null || coinIcon == null) yield break;
+
         isAnimating = true;
 
         float elapsedTime;
         Vector2 startPosition;
 
-        // Animación de entrada normal (solo si no está pulsando X)
         if (uiContainer.anchoredPosition != originalUIPosition && !Input.GetKey(KeyCode.X))
         {
             if (uiContainer.anchoredPosition.y > originalUIPosition.y)
@@ -224,7 +266,6 @@ public class KredsManager : MonoBehaviour
             }
         }
 
-        // Conteo de monedas
         int startValue = displayedTokens;
         int targetValue = totalTokens;
         float baseDurationPerCoin = 0.25f;
@@ -274,7 +315,6 @@ public class KredsManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.6f);
 
-        // Animación de salida normal (solo si no está pulsando X)
         if (!Input.GetKey(KeyCode.X))
         {
             float moveUpDuration = 0.2f;

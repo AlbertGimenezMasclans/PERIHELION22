@@ -13,8 +13,7 @@ public class CameraController : MonoBehaviour
     public float maxY = float.MaxValue;
     public float lookAheadFactor = 2f;
     public float lookAheadSpeed = 0.1f;
-    // Eliminamos headOffsetY porque ya no se usa
-    // public float headOffsetY = 1f; 
+    public float headOffsetY = 1f; // Distancia adicional por encima de la cabeza cuando está invertido
 
     private float initialMinX;
     private float initialMaxX;
@@ -95,12 +94,27 @@ public class CameraController : MonoBehaviour
         float targetLookAhead = Mathf.Lerp(lookAheadOffset, targetVelocityX * lookAheadFactor, lookAheadSpeed);
         lookAheadOffset = targetLookAhead;
 
-        // Posición deseada de la cámara: siempre sigue al objetivo actual con el offset
-        Vector3 desiredPosition = new Vector3(
-            currentTarget.position.x + offset.x + lookAheadOffset,
-            currentTarget.position.y + offset.y,
-            transform.position.z
-        );
+        Vector3 desiredPosition;
+
+        // Ajustar la posición de la cámara según el estado del jugador
+        if (playerMovement != null && !playerMovement.isGravityNormal && playerMovement.IsGrounded() && headTarget != null && !playerMovement.isDismembered)
+        {
+            // Caso especial: Gravedad invertida, pero no desmembrado
+            desiredPosition = new Vector3(
+                currentTarget.position.x + offset.x + lookAheadOffset,
+                headTarget.position.y - headOffsetY,
+                transform.position.z
+            );
+        }
+        else
+        {
+            // Caso por defecto: Seguir al objetivo actual (cuerpo o cabeza)
+            desiredPosition = new Vector3(
+                currentTarget.position.x + offset.x + lookAheadOffset,
+                currentTarget.position.y + offset.y,
+                transform.position.z
+            );
+        }
 
         // Aplicar los límites de la cámara
         desiredPosition.x = Mathf.Clamp(desiredPosition.x, minX, maxX);
