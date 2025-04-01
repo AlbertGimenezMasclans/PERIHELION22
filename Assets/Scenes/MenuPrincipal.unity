@@ -4251,7 +4251,7 @@ MonoBehaviour:
   - {fileID: 0}
   subExitIndicators:
   - {fileID: 747973750}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 2064945587}
   selectionSound: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
   noActionSound: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
   optionsPanel: {fileID: 1353337932}
@@ -4274,7 +4274,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0

@@ -82,16 +82,24 @@ public class CameraController : MonoBehaviour
             }
         }
 
+        // Determinar el objetivo actual (cuerpo o cabeza)
         Transform currentTarget = target;
+        if (playerMovement != null && playerMovement.isDismembered && headTarget != null)
+        {
+            currentTarget = headTarget; // Seguir a la cabeza si el jugador está desmembrado
+        }
 
+        // Calcular el look-ahead basado en la velocidad del objetivo actual
         float targetVelocityX = currentTarget.GetComponent<Rigidbody2D>()?.velocity.x ?? 0f;
         float targetLookAhead = Mathf.Lerp(lookAheadOffset, targetVelocityX * lookAheadFactor, lookAheadSpeed);
         lookAheadOffset = targetLookAhead;
 
         Vector3 desiredPosition;
 
-        if (playerMovement != null && !playerMovement.isGravityNormal && playerMovement.IsGrounded() && headTarget != null)
+        // Ajustar la posición de la cámara según el estado del jugador
+        if (playerMovement != null && !playerMovement.isGravityNormal && playerMovement.IsGrounded() && headTarget != null && !playerMovement.isDismembered)
         {
+            // Caso especial: Gravedad invertida, pero no desmembrado
             desiredPosition = new Vector3(
                 currentTarget.position.x + offset.x + lookAheadOffset,
                 headTarget.position.y - headOffsetY,
@@ -100,6 +108,7 @@ public class CameraController : MonoBehaviour
         }
         else
         {
+            // Caso por defecto: Seguir al objetivo actual (cuerpo o cabeza)
             desiredPosition = new Vector3(
                 currentTarget.position.x + offset.x + lookAheadOffset,
                 currentTarget.position.y + offset.y,
@@ -107,11 +116,13 @@ public class CameraController : MonoBehaviour
             );
         }
 
+        // Aplicar los límites de la cámara
         desiredPosition.x = Mathf.Clamp(desiredPosition.x, minX, maxX);
         desiredPosition.y = Mathf.Clamp(desiredPosition.y, minY, maxY);
 
         transform.position = desiredPosition;
 
+        // Actualizar la posición del habSelector si existe
         if (habSelector != null)
         {
             habSelector.position = new Vector3(

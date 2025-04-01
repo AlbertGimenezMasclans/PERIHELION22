@@ -141,7 +141,9 @@ public class PlayerMovement : MonoBehaviour
         if (isMovementLocked || isDismembered)
         {
             rb.velocity = new Vector2(0f, rb.velocity.y);
-            animator.SetFloat("Speed", 0f);
+            animator.SetBool("MoveRight", false);
+            animator.SetBool("MoveLeft", false);
+            Debug.Log($"MoveRight: {animator.GetBool("MoveRight")}, MoveLeft: {animator.GetBool("MoveLeft")}");
             if (isDismembered && Input.GetKeyDown(KeyCode.Z))
             {
                 isRecomposing = true;
@@ -150,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        // Actualizar parámetros del Animator (excepto Speed, que ya no usamos para caminar)
         animator.SetBool("IsGrounded", isGrounded);
         float adjustedVerticalSpeed = isGravityNormal ? rb.velocity.y : -rb.velocity.y;
         animator.SetFloat("VerticalSpeed", adjustedVerticalSpeed);
@@ -179,6 +181,10 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.RightArrow)) moveInput = 1f;
             else if (Input.GetKey(KeyCode.LeftArrow)) moveInput = -1f;
             rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+            // Establecer los parámetros MoveRight y MoveLeft según la dirección del movimiento
+            animator.SetBool("MoveRight", moveInput > 0);
+            animator.SetBool("MoveLeft", moveInput < 0);
 
             if (moveInput != 0)
             {
@@ -396,7 +402,6 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetBool("IsGrounded", isGrounded);
             animator.SetFloat("VerticalSpeed", 0f);
-            animator.SetFloat("Speed", 0f);
             Debug.Log("Dialogue Ended: Forcing Animator to Idle state");
         }
     }

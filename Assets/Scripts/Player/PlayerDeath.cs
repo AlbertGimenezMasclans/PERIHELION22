@@ -220,7 +220,6 @@ public class PlayerDeath : MonoBehaviour
         {
             animator.SetBool("IsGrounded", playerMovement.IsGrounded());
             float horizontalSpeed = Mathf.Abs(rb.velocity.x);
-            animator.SetFloat("Speed", horizontalSpeed);
             float adjustedVerticalSpeed = playerMovement.IsGravityNormal() ? rb.velocity.y : -rb.velocity.y;
             animator.SetFloat("VerticalSpeed", adjustedVerticalSpeed);
         }
@@ -462,7 +461,6 @@ public class PlayerDeath : MonoBehaviour
             yield return new WaitForSeconds(animationLength);
             rb.simulated = true;
             animator.SetBool("IsGrounded", playerMovement.IsGrounded());
-            animator.SetFloat("Speed", 0f);
             animator.SetFloat("VerticalSpeed", rb.velocity.y);
         }
 
