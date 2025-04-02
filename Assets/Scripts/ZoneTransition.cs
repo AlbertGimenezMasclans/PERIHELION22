@@ -39,28 +39,62 @@ public class ZoneTransition : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
+{
+    if (!isTransitioning)
     {
-        if (!isTransitioning)
+        if (collision.CompareTag("PlayerHead"))
         {
-            if (collision.CompareTag("PlayerHead"))
+            player = collision.gameObject;
+            // Encontrar el PlayerMovement del jugador completo
+            PlayerMovement fullPlayerMovement = FindFullPlayer();
+            if (fullPlayerMovement != null)
             {
-                player = collision.gameObject;
-                StartCoroutine(TransitionHeadAndBody());
-                return;
-            }
-
-            if (collision.CompareTag("Player") && collision.gameObject.GetComponent<Dismember>() == null)
-            {
-                player = collision.gameObject;
-                playerMovement = player.GetComponent<PlayerMovement>();
-
-                if (playerMovement != null && !player.GetComponent<PlayerDeath>().IsDead())
+                playerMovement = fullPlayerMovement;
+                // Forzar la animación Idle al tocar el trigger
+                Animator playerAnimator = playerMovement.GetComponent<Animator>();
+                if (playerAnimator != null)
                 {
-                    StartCoroutine(TransitionToNewZone());
+                    playerAnimator.SetBool("IsGrounded", true);
+                    playerAnimator.SetBool("MoveRight", false);
+                    playerAnimator.SetBool("MoveLeft", false);
+                    playerAnimator.SetFloat("VerticalSpeed", 0f);
+                    Debug.Log("Animación Idle forzada al tocar el trigger (PlayerHead).");
                 }
+                else
+                {
+                    Debug.LogWarning("No se encontró el Animator en el jugador (PlayerHead).");
+                }
+            }
+            StartCoroutine(TransitionHeadAndBody());
+            return;
+        }
+
+        if (collision.CompareTag("Player") && collision.gameObject.GetComponent<Dismember>() == null)
+        {
+            player = collision.gameObject;
+            playerMovement = player.GetComponent<PlayerMovement>();
+
+            if (playerMovement != null && !player.GetComponent<PlayerDeath>().IsDead())
+            {
+                // Forzar la animación Idle al tocar el trigger
+                Animator playerAnimator = playerMovement.GetComponent<Animator>();
+                if (playerAnimator != null)
+                {
+                    playerAnimator.SetBool("IsGrounded", true);
+                    playerAnimator.SetBool("MoveRight", false);
+                    playerAnimator.SetBool("MoveLeft", false);
+                    playerAnimator.SetFloat("VerticalSpeed", 0f);
+                    Debug.Log("Animación Idle forzada al tocar el trigger (Player).");
+                }
+                else
+                {
+                    Debug.LogWarning("No se encontró el Animator en el jugador (Player).");
+                }
+                StartCoroutine(TransitionToNewZone());
             }
         }
     }
+}
 
     private IEnumerator TransitionHeadAndBody()
     {
@@ -133,33 +167,48 @@ public class ZoneTransition : MonoBehaviour
     }
 
     private IEnumerator TransitionToNewZone()
+{
+    isTransitioning = true;
+    playerMovement.SetMovementLocked(true);
+    player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+
+    yield return StartCoroutine(FadeScreen(0f, 1f, fadeTime));
+    yield return new WaitForSeconds(blackScreenDuration);
+
+    // Comprobamos si la gravedad está normal o invertida y asignamos la posición adecuada
+    Vector3 targetPosition = playerMovement.IsGravityNormal() ?
+        (normalGravityDestination != null ? normalGravityDestination.transform.position : transform.position) :
+        (invertedGravityDestination != null ? invertedGravityDestination.transform.position : transform.position);
+
+    player.transform.position = targetPosition;
+    ApplyGravityChange();
+
+    if (cameraController != null)
+        cameraController.TeleportCamera(targetPosition);
+
+    if (zoneToDeactivate != null) zoneToDeactivate.SetActive(false);
+    if (zoneToActivate != null) zoneToActivate.SetActive(true);
+
+    yield return StartCoroutine(FadeScreen(1f, 0f, fadeTime));
+
+    // Desbloquear movimiento y forzar la animación Idle
+    playerMovement.SetMovementLocked(false);
+    Animator playerAnimator = playerMovement.GetComponent<Animator>();
+    if (playerAnimator != null)
     {
-        isTransitioning = true;
-        playerMovement.SetMovementLocked(true);
-        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-
-        yield return StartCoroutine(FadeScreen(0f, 1f, fadeTime));
-        yield return new WaitForSeconds(blackScreenDuration);
-
-        // Comprobamos si la gravedad está normal o invertida y asignamos la posición adecuada
-        Vector3 targetPosition = playerMovement.IsGravityNormal() ?
-            (normalGravityDestination != null ? normalGravityDestination.transform.position : transform.position) :
-            (invertedGravityDestination != null ? invertedGravityDestination.transform.position : transform.position);
-
-        player.transform.position = targetPosition;
-        ApplyGravityChange();
-
-        if (cameraController != null)
-            cameraController.TeleportCamera(targetPosition);
-
-        if (zoneToDeactivate != null) zoneToDeactivate.SetActive(false);
-        if (zoneToActivate != null) zoneToActivate.SetActive(true);
-
-        yield return StartCoroutine(FadeScreen(1f, 0f, fadeTime));
-
-        playerMovement.SetMovementLocked(false);
-        isTransitioning = false;
+        playerAnimator.SetBool("IsGrounded", true);
+        playerAnimator.SetBool("MoveRight", false);
+        playerAnimator.SetBool("MoveLeft", false);
+        playerAnimator.SetFloat("VerticalSpeed", 0f);
+        Debug.Log("Animación Idle forzada después de la transición (TransitionToNewZone).");
     }
+    else
+    {
+        Debug.LogWarning("No se encontró el Animator en el jugador (TransitionToNewZone).");
+    }
+
+    isTransitioning = false;
+}
 
     private void ApplyGravityChange()
     {

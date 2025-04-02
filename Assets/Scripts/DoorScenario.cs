@@ -79,32 +79,46 @@ public class DoorScenario : MonoBehaviour
     }
 
     void Update()
+{
+    if (isPlayerOnDoor && Input.GetKeyDown(KeyCode.C) && !isTeleporting)
     {
-        if (isPlayerOnDoor && Input.GetKeyDown(KeyCode.C) && !isTeleporting)
+        // Obtener el Rigidbody2D del jugador para verificar su velocidad
+        Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+        if (playerRb != null && Mathf.Abs(playerRb.velocity.x) < 0.01f) // Tolerancia pequeña para evitar problemas de precisión
         {
             StartCoroutine(TeleportWithFade());
         }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
+        else
         {
-            isPlayerOnDoor = true;
-            player = collision.gameObject;
-            playerDeath = player.GetComponent<PlayerDeath>();
-            if (playerDeath == null)
-            {
-                Debug.LogError("PlayerDeath no encontrado en el jugador.");
-            }
-            Debug.Log("Jugador encima de la puerta. Presiona 'C' para teletransportarte.");
-
-            if (indicatorObject != null)
-            {
-                indicatorObject.SetActive(true);
-            }
+            Debug.Log("El jugador debe estar quieto (sin moverse horizontalmente) para entrar en la puerta.");
         }
     }
+}
+
+    private void OnTriggerEnter2D(Collider2D collision)
+{
+    if (collision.CompareTag("Player"))
+    {
+        isPlayerOnDoor = true;
+        player = collision.gameObject;
+        playerDeath = player.GetComponent<PlayerDeath>();
+        if (playerDeath == null)
+        {
+            Debug.LogError("PlayerDeath no encontrado en el jugador.");
+        }
+        // Verificar que el Rigidbody2D esté presente
+        if (player.GetComponent<Rigidbody2D>() == null)
+        {
+            Debug.LogError("Rigidbody2D no encontrado en el jugador.");
+        }
+        Debug.Log("Jugador encima de la puerta. Debe estar quieto y presionar 'C' para teletransportarse.");
+
+        if (indicatorObject != null)
+        {
+            indicatorObject.SetActive(true);
+        }
+    }
+}
 
     private void OnTriggerExit2D(Collider2D collision)
     {

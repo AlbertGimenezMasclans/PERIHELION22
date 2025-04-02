@@ -69,32 +69,47 @@ public class ChapterTitle : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other)
+{
+    if ((other.CompareTag("Player") || other.CompareTag("PlayerHead")) && !isTriggered)
     {
-        if ((other.CompareTag("Player") || other.CompareTag("PlayerHead")) && !isTriggered)
+        Debug.Log("Trigger activado por: " + other.gameObject.name); // Depuración
+        isTriggered = true;
+
+        // Obtener referencia al PlayerMovement
+        playerMovement = other.GetComponent<PlayerMovement>();
+        if (playerMovement == null && other.CompareTag("PlayerHead"))
         {
-            Debug.Log("Trigger activado por: " + other.gameObject.name); // Depuración
-            isTriggered = true;
+            playerMovement = FindPlayerMovementForHead(other.gameObject);
+        }
 
-            // Obtener referencia al PlayerMovement
-            playerMovement = other.GetComponent<PlayerMovement>();
-            if (playerMovement == null && other.CompareTag("PlayerHead"))
-            {
-                playerMovement = FindPlayerMovementForHead(other.gameObject);
-            }
+        if (playerMovement != null)
+        {
+            Debug.Log("PlayerMovement encontrado: " + playerMovement.gameObject.name); // Depuración
 
-            if (playerMovement != null)
+            // Forzar la animación Idle al tocar el trigger
+            Animator playerAnimator = playerMovement.GetComponent<Animator>();
+            if (playerAnimator != null)
             {
-                Debug.Log("PlayerMovement encontrado: " + playerMovement.gameObject.name); // Depuración
+                playerAnimator.SetBool("IsGrounded", true);
+                playerAnimator.SetBool("MoveRight", false);
+                playerAnimator.SetBool("MoveLeft", false);
+                playerAnimator.SetFloat("VerticalSpeed", 0f);
+                Debug.Log("Animación Idle forzada al tocar el trigger (ChapterTitle).");
             }
             else
             {
-                Debug.LogError("No se encontró PlayerMovement en el objeto que activó el trigger.");
+                Debug.LogWarning("No se encontró el Animator en el jugador (ChapterTitle).");
             }
-
-            // Iniciar la secuencia
-            StartCoroutine(ShowSequence());
         }
+        else
+        {
+            Debug.LogError("No se encontró PlayerMovement en el objeto que activó el trigger.");
+        }
+
+        // Iniciar la secuencia
+        StartCoroutine(ShowSequence());
     }
+}
 
     IEnumerator ShowSequence()
     {
@@ -151,11 +166,27 @@ public class ChapterTitle : MonoBehaviour
         // 7. Fade-Out de las imágenes
         yield return StartCoroutine(FadeImages(1f, 0f, fadeOutDuration));
 
-        // 8. Desbloquear movimiento del jugador
+        // 8. Desbloquear movimiento del jugador y forzar animación Idle
         if (playerMovement != null)
         {
             playerMovement.SetDialogueActive(null); // Liberar el bloqueo
             playerMovement.SetMovementLocked(false); // Liberar bloqueo adicional
+
+            // Forzar la animación Idle
+            Animator playerAnimator = playerMovement.GetComponent<Animator>();
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetBool("IsGrounded", true);
+                playerAnimator.SetBool("MoveRight", false);
+                playerAnimator.SetBool("MoveLeft", false);
+                playerAnimator.SetFloat("VerticalSpeed", 0f);
+                Debug.Log("Animación Idle forzada al desbloquear movimiento.");
+            }
+            else
+            {
+                Debug.LogWarning("No se encontró el Animator en el jugador.");
+            }
+
             Debug.Log("Movimiento desbloqueado: activeDialogueSystem = " + (playerMovement.activeDialogueSystem != null) + ", Time.timeScale = " + Time.timeScale);
         }
 
@@ -165,7 +196,6 @@ public class ChapterTitle : MonoBehaviour
         // 9. Destruir el GameObject (ChapterTrigger)
         Destroy(gameObject); // Destruir este GameObject
     }
-
 
     // Corrutina para fade de ambas imágenes
     private IEnumerator FadeImages(float startAlpha, float endAlpha, float duration)
