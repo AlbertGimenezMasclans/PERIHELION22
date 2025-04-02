@@ -129,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         PlayerDeath deathScript = GetComponent<PlayerDeath>();
-        if (deathScript != null && deathScript.IsDead()) return; // Salir si está muerto
+        if (deathScript != null && deathScript.IsDead()) return;
 
         if (activeDialogueSystem != null)
         {
@@ -141,8 +141,6 @@ public class PlayerMovement : MonoBehaviour
         if (isMovementLocked || isDismembered)
         {
             rb.velocity = new Vector2(0f, rb.velocity.y);
-            animator.SetBool("MoveRight", false);
-            animator.SetBool("MoveLeft", false);
             if (isDismembered && Input.GetKeyDown(KeyCode.Z))
             {
                 isRecomposing = true;
@@ -150,11 +148,6 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-
-        // Actualizar parámetros del Animator (excepto Speed, que ya no usamos para caminar)
-        animator.SetBool("IsGrounded", isGrounded);
-        float adjustedVerticalSpeed = isGravityNormal ? rb.velocity.y : -rb.velocity.y;
-        animator.SetFloat("VerticalSpeed", adjustedVerticalSpeed);
 
         bool hasAnyAbility = canChangeGravity || canShoot || canDismember;
         if (Input.GetKey(KeyCode.X) && hasAnyAbility && !justExitedSelection)
@@ -181,9 +174,14 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetKey(KeyCode.LeftArrow)) moveInput = -1f;
             rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
-            // Establecer los parámetros MoveRight y MoveLeft según la dirección del movimiento
+            // Calcular la velocidad vertical ajustada según la gravedad
+            float adjustedVerticalSpeed = isGravityNormal ? rb.velocity.y : -rb.velocity.y;
+
+            // Actualizar parámetros del Animator
+            animator.SetBool("IsGrounded", isGrounded);
             animator.SetBool("MoveRight", moveInput > 0);
             animator.SetBool("MoveLeft", moveInput < 0);
+            animator.SetFloat("VerticalSpeed", adjustedVerticalSpeed);
 
             if (moveInput != 0)
             {
@@ -200,22 +198,18 @@ public class PlayerMovement : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Z) && !isSelectingMode)
             {
-                // Prioridad 1: Desmembrar si se acaba de recomponer
                 if (isRecomposing && canDismember && isGrounded)
                 {
                     DismemberHead();
                 }
-                // Prioridad 2: Desmembrar si está en modo Desmembramiento
                 else if (isDismemberMode && canDismember && isGrounded)
                 {
                     DismemberHead();
                 }
-                // Prioridad 3: Disparar si está en modo disparo
                 else if (isShooting && canShoot)
                 {
                     FireProjectile();
                 }
-                // Prioridad 4: Cambiar gravedad si no está en modo Desmembramiento ni disparo
                 else if (canChangeGravity && Time.time >= lastGravityChange + gravityChangeDelay && (isGrounded || canChangeGravityInAir))
                 {
                     ChangeGravity();
