@@ -4905,7 +4905,7 @@ MonoBehaviour:
   imageToFade2: {fileID: 1819748671}
   chapterText: {fileID: 1551813643}
   titleText: {fileID: 1034081004}
-  typingSound: {fileID: 0}
+  typingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
   fadeInDuration: 0.5
   fadeOutDuration: 0.5
   chapterTypingSpeed: 0.21
@@ -6079,7 +6079,7 @@ GameObject:
   - component: {fileID: 1801069488}
   m_Layer: 3
   m_Name: Suelo
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14694,7 +14694,6 @@ MonoBehaviour:
   maxY: 0
   lookAheadFactor: 0.025
   lookAheadSpeed: 0.08
-  headOffsetY: 1
 --- !u!114 &1991811868
 MonoBehaviour:
   m_ObjectHideFlags: 0
