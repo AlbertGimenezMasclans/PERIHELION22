@@ -141,12 +141,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 665039334601274984}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dd97474cef14d64e899167c6fb73d73, type: 3}
+  m_Script: {fileID: 11500000, guid: bf46ea8890cfe6045b954039eb76accf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   destinationDoor: {fileID: 0}
-  originDoor: {fileID: 665039334601274984}
-  indicatorObject: {fileID: 9158017291248606725}
+  originDoor: {fileID: 0}
+  zoneToActivate: {fileID: 0}
+  zoneToDeactivate: {fileID: 0}
+  indicatorObject: {fileID: 0}
   fadePanel: {fileID: 0}
   fadeInTime: 0.45
   blackScreenDuration: 1.1
