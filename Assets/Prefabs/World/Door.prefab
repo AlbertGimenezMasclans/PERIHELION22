@@ -151,7 +151,7 @@ MonoBehaviour:
   indicatorObject: {fileID: 0}
   fadePanel: {fileID: 0}
   fadeInTime: 0.45
-  blackScreenDuration: 1.1
+  blackScreenDuration: 0.5
   fadeOutTime: 0.45
 --- !u!1 &9158017291248606725
 GameObject:
