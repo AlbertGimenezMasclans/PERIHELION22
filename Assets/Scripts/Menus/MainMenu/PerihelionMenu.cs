@@ -241,7 +241,7 @@ public class PerihelionMenu : MonoBehaviour
         {
             PlaySelectionSound();
             yield return StartCoroutine(FadeIn(0.80f));
-            SceneManager.LoadScene("TestZone");
+            SceneManager.LoadScene("Perihelion");
         }
         else if (currentOption == MenuOption.LoadGame)
         {
@@ -249,7 +249,7 @@ public class PerihelionMenu : MonoBehaviour
             {
                 PlaySelectionSound();
                 yield return StartCoroutine(FadeIn(0.80f));
-                SceneManager.LoadScene("TestZone");
+                SceneManager.LoadScene("Perihelion");
             }
             else
             {
