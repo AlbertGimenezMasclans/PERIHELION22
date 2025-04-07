@@ -107,6 +107,8 @@ MonoBehaviour:
   useAlternativePosition: 0
   alternativeTextBoxPosition: {x: 100, y: 100}
   typingSound: {fileID: 0}
+  dialogueAdvanceSound: {fileID: 0}
+  dialogueEndSound: {fileID: 0}
 --- !u!1 &1505469433875407440
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,6 +120,7 @@ GameObject:
   - component: {fileID: 1409899540844455419}
   - component: {fileID: 2725408306586805794}
   - component: {fileID: 2878531670300412903}
+  - component: {fileID: 6355561363364135979}
   - component: {fileID: 2071311245930753218}
   m_Layer: 0
   m_Name: Interact-Item
@@ -219,6 +222,53 @@ MonoBehaviour:
   useAlternativePosition: 0
   alternativeTextBoxPosition: {x: 100, y: 100}
   typingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
+  dialogueAdvanceSound: {fileID: 0}
+  dialogueEndSound: {fileID: 0}
+--- !u!61 &6355561363364135979
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505469433875407440}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.00000047683716, y: 0.1681001}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.3023543, y: 1.3361998}
+  m_EdgeRadius: 0
 --- !u!82 &2071311245930753218
 AudioSource:
   m_ObjectHideFlags: 0
