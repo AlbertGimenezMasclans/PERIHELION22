@@ -42,6 +42,7 @@ public class Interact : MonoBehaviour
     private CoinControllerUI coinControllerUI;
     private GameObject playerHead;
     private Rigidbody2D headRigidbody;
+    private Rigidbody2D playerRigidbody; // Referencia al Rigidbody2D del jugador
 
     void Start()
     {
@@ -71,7 +72,12 @@ public class Interact : MonoBehaviour
         {
             if (!didDialogueStart)
             {
-                StartDialogue();
+                // Verificar si el jugador está quieto antes de permitir la interacción
+                if (playerRigidbody != null && playerRigidbody.velocity.magnitude <= 0.01f) // Tolerancia pequeña para flotantes
+                {
+                    StartDialogue();
+                }
+                // Si el jugador está en movimiento, no hace nada
             }
             else if (dialogueText != null && dialogueText.maxVisibleCharacters >= GetVisibleCharacterCount(activeDialogueLines[lineIndex]))
             {
@@ -106,21 +112,19 @@ public class Interact : MonoBehaviour
 
         if (playerObject.CompareTag("PlayerHead"))
         {
-            // Aquí confirmamos si realmente estamos manejando la cabeza del jugador
             if (headlessDialogueLines.Length > 0)
             {
                 activeDialogueLines = headlessDialogueLines;
             }
             else
             {
-                activeDialogueLines = dialogueLines; // fallback a los diálogos normales
+                activeDialogueLines = dialogueLines; // Fallback a los diálogos normales
             }
         }
         else
         {
             activeDialogueLines = dialogueLines;
         }
-
 
         RectTransform textBoxRect = textBox.GetComponent<RectTransform>();
         if (textBoxRect != null)
@@ -162,7 +166,6 @@ public class Interact : MonoBehaviour
                 playerMovement.enabled = true; // Reactiva el movimiento del jugador
             }
 
-            // Reactivar la cabeza si fue bloqueada
             if (playerHead != null && headRigidbody != null)
             {
                 headRigidbody.constraints = RigidbodyConstraints2D.None; // Permite movimiento nuevamente
@@ -188,7 +191,7 @@ public class Interact : MonoBehaviour
         int totalVisibleChars = GetVisibleCharacterCount(activeDialogueLines[lineIndex]);
         int visibleCount = 0;
         string currentLine = activeDialogueLines[lineIndex];
-        int nonSpaceCharCount = 0; // Contador para reproducir el sonido cada cierto número de caracteres
+        int nonSpaceCharCount = 0;
 
         while (visibleCount < totalVisibleChars)
         {
@@ -197,7 +200,6 @@ public class Interact : MonoBehaviour
 
             char currentChar = GetCharAtVisibleIndex(currentLine, visibleCount - 1);
 
-            // Reproducir el sonido de escritura cada 2 caracteres no espaciados
             if (currentChar != ' ')
             {
                 nonSpaceCharCount++;
@@ -205,7 +207,6 @@ public class Interact : MonoBehaviour
                     PlayDialogueSound(typingSound);
             }
 
-            // Añadir pausas en comas y signos de puntuación
             if (currentChar == ',')
                 yield return new WaitForSecondsRealtime(commaPauseTime);
             else if (currentChar == '.' || currentChar == '?' || currentChar == '!')
@@ -263,6 +264,7 @@ public class Interact : MonoBehaviour
             if (dialogueMark != null) dialogueMark.SetActive(true);
             playerObject = collision.gameObject;
             playerMovement = collision.gameObject.GetComponent<PlayerMovement>();
+            playerRigidbody = collision.gameObject.GetComponent<Rigidbody2D>(); // Asignar el Rigidbody2D al entrar
         }
     }
 
@@ -274,6 +276,7 @@ public class Interact : MonoBehaviour
             if (dialogueMark != null) dialogueMark.SetActive(false);
             playerMovement = null;
             playerObject = null;
+            playerRigidbody = null; // Limpiar la referencia al salir
         }
     }
 }

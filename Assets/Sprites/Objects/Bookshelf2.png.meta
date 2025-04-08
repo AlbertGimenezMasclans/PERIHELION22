@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0698e62620cdd0f43a04b997c650eb5c
+guid: 53a5af23a75847b46986ac72e64dc0c4
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,55 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Buttons_0
+      name: Bookshelf2_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 16
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 026e69ed9b820c04bb44362ce909be5b
-      internalID: 1933812984
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Buttons_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 16
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aad3782d28656364984113565a0462bf
-      internalID: -661881296
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Buttons_2
-      rect:
-        serializedVersion: 2
-        x: 0
+        x: 3
         y: 0
-        width: 16
-        height: 16
+        width: 27
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,29 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f8e74a676c3bacb4ba695c1dde3fd9f8
-      internalID: 386179727
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Buttons_3
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0649c0cd750d880448e25b2d614b9c9f
-      internalID: -913557611
+      spriteID: 0482e0cb630f0f34a814239c33bdd11f
+      internalID: 1026567383
       vertices: []
       indices: 
       edges: []
@@ -191,10 +128,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Buttons_0: 1933812984
-      Buttons_1: -661881296
-      Buttons_2: 386179727
-      Buttons_3: -913557611
+      Bookshelf2_0: 1026567383
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
