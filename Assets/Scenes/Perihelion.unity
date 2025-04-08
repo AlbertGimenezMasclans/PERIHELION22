@@ -17537,7 +17537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[6]
-      value: 'Jheremy esta al borde del colapso, Michael y yo intentamos calmarlo
+      value: 'Marcos esta al borde del colapso, Michael y yo intentamos calmarlo
         para que entienda porque lo fabricamos.
 
         Pero no hay manera.'
