@@ -17537,12 +17537,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[6]
-      value: Nathan esta al borde del colapso, Michael y yo intentamos calmarlo para
-        que entienda porque lo fabricamos.
+      value: 'Jheremy esta al borde del colapso, Michael y yo intentamos calmarlo
+        para que entienda porque lo fabricamos.
+
+        Pero no hay manera.'
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[7]
-      value: Pero a quien quiero mentir, yo estoy mas nervioso que nadie.
+      value: Pero para que mentir, yo estoy mas nervioso que nadie.
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[8]
@@ -17610,7 +17612,7 @@ PrefabInstance:
       value: 'Tambien, sus capacidades sensoriales funcionan como deben.
 
         En
-        cambio, los objetos clave no'
+        cambio, los objetos clave no.'
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[21]
