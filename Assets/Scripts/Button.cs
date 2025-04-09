@@ -5,9 +5,11 @@ public class PressButton : MonoBehaviour
     [SerializeField] private Sprite unpressedSprite; // Sprite cuando no está presionado
     [SerializeField] private Sprite pressedSprite; // Sprite cuando está presionado
     [SerializeField] private GameObject[] switchObjects; // Objetos a desactivar
-    
+    [SerializeField] private bool requiresBoxWeight = false; // Checkbox para requerir caja
+
     private SpriteRenderer buttonSprite; // Referencia al SpriteRenderer del botón
     private bool isPlayerOnButton; // Verifica si el jugador está encima
+    private bool isBoxOnButton; // Verifica si una caja está encima
     private bool isPressed; // Estado del botón
 
     private void Start()
@@ -22,6 +24,8 @@ public class PressButton : MonoBehaviour
         }
         
         isPressed = false;
+        isPlayerOnButton = false;
+        isBoxOnButton = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -30,9 +34,20 @@ public class PressButton : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerOnButton = true;
-            
-            // Presionar el botón automáticamente al entrar
-            if (!isPressed)
+
+            // Si no requiere caja, presionar con el jugador
+            if (!requiresBoxWeight && !isPressed)
+            {
+                PressButtonAction();
+            }
+        }
+        // Verificar si es una caja
+        else if (other.CompareTag("Box"))
+        {
+            isBoxOnButton = true;
+
+            // Si requiere caja y no hay jugador, presionar con la caja
+            if (requiresBoxWeight && !isPlayerOnButton && !isPressed)
             {
                 PressButtonAction();
             }
@@ -45,6 +60,17 @@ public class PressButton : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerOnButton = false;
+
+            // Si requiere caja y hay una caja encima, presionar
+            if (requiresBoxWeight && isBoxOnButton && !isPressed)
+            {
+                PressButtonAction();
+            }
+        }
+        // Verificar si es una caja
+        else if (other.CompareTag("Box"))
+        {
+            isBoxOnButton = false;
         }
     }
 
