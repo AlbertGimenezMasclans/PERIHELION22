@@ -7,6 +7,7 @@ public class Platform : MonoBehaviour
     [SerializeField] private float speed = 2f;        // Velocidad base de movimiento
     [SerializeField] private float pauseTime = 1.10f; // Tiempo de pausa en segundos
     [SerializeField] private bool startAtPointA = true; // ¿Comienza en punto A?
+    [SerializeField] private bool waitForPlayer = false; // Checkbox para esperar al jugador
 
     private Vector2 startPosition;                   // Posición de inicio del movimiento actual
     private Vector2 targetPosition;                  // Posición objetivo actual
@@ -17,6 +18,9 @@ public class Platform : MonoBehaviour
     private float journeyTime;                       // Tiempo estimado del trayecto
     private float elapsedTime;                       // Tiempo transcurrido en el movimiento
     private Transform playerTransform;               // Referencia al jugador cuando está encima
+    private bool hasStartedMoving;                   // Indica si la plataforma ya comenzó a moverse
+    private float startDelayTimer;                   // Temporizador para el retraso inicial
+    private bool waitingToStart;                     // Indica si está en el retraso inicial
 
     public bool IsMoving => !isPaused;              // Propiedad pública para saber si se está moviendo
 
@@ -31,11 +35,37 @@ public class Platform : MonoBehaviour
         journeyTime = journeyLength / speed;
         elapsedTime = 0f;
         pauseTimer = 0f;
-        isPaused = false;
+
+        // Si waitForPlayer está activado, pausar hasta que el jugador toque la plataforma
+        isPaused = waitForPlayer ? true : false;
+        hasStartedMoving = !waitForPlayer; // Si no espera al jugador, comienza moviéndose
+        startDelayTimer = 0f;
+        waitingToStart = false;
     }
 
     void Update()
     {
+        // Si está esperando al jugador y aún no ha comenzado a moverse
+        if (waitForPlayer && !hasStartedMoving)
+        {
+            if (waitingToStart)
+            {
+                startDelayTimer -= Time.deltaTime;
+                if (startDelayTimer <= 0)
+                {
+                    waitingToStart = false;
+                    hasStartedMoving = true;
+                    isPaused = false;
+                    startPosition = transform.position; // Punto A inicialmente
+                    targetPosition = movingToB ? pointB : pointA;
+                    journeyLength = Vector2.Distance(startPosition, targetPosition);
+                    journeyTime = journeyLength / speed;
+                    elapsedTime = 0f;
+                }
+            }
+            return;
+        }
+
         if (isPaused)
         {
             pauseTimer -= Time.deltaTime;
@@ -92,6 +122,13 @@ public class Platform : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             playerTransform = collision.transform;
+
+            // Si está esperando al jugador, iniciar el retraso antes de moverse
+            if (waitForPlayer && !hasStartedMoving && !waitingToStart)
+            {
+                waitingToStart = true;
+                startDelayTimer = 0.50f; // Retraso de 0.75 segundos
+            }
         }
     }
 
