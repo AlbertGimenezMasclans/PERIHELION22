@@ -13,6 +13,12 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Distancia del Raycast para detectar el suelo")]
     public float groundCheckDistance = 0.6f;
 
+    [Header("Box Pushing")]
+    [Tooltip("Speed reduction when pushing a box")]
+    public float pushSpeed = 3f; // Velocidad al empujar (puede ser menor que moveSpeed)
+    private BoxPushable currentBox; // Referencia a la caja que se está empujando
+    private bool isPushing = false;
+
     [Header("Ability Selection")]
     [Tooltip("UI object for ability selection")]
     public GameObject habSelector;
@@ -172,7 +178,10 @@ public class PlayerMovement : MonoBehaviour
             float moveInput = 0f;
             if (Input.GetKey(KeyCode.RightArrow)) moveInput = 1f;
             else if (Input.GetKey(KeyCode.LeftArrow)) moveInput = -1f;
-            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+            // Usar pushSpeed si está empujando, de lo contrario moveSpeed
+            float currentSpeed = isPushing ? pushSpeed : moveSpeed;
+            rb.velocity = new Vector2(moveInput * currentSpeed, rb.velocity.y);
 
             // Calcular la velocidad vertical ajustada según la gravedad
             float adjustedVerticalSpeed = isGravityNormal ? rb.velocity.y : -rb.velocity.y;
@@ -256,6 +265,31 @@ public class PlayerMovement : MonoBehaviour
 
         // Dibujar el Raycast para depuración
         Debug.DrawRay(rayOrigin, rayDirection * groundCheckDistance, isGrounded ? Color.green : Color.red);
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("BoxDetector"))
+        {
+            BoxPushable box = collision.transform.parent.GetComponent<BoxPushable>();
+            if (box != null && box.IsGravityNormal() == isGravityNormal) // Solo empujar si la gravedad coincide
+            {
+                currentBox = box;
+                float direction = collision.gameObject.name == "LeftDetector" ? 1f : -1f; // Dirección según el lado
+                currentBox.StartPushing(pushSpeed, direction);
+                isPushing = true;
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("BoxDetector") && currentBox != null)
+        {
+            currentBox.StopPushing();
+            currentBox = null;
+            isPushing = false;
+        }
     }
 
     private void PlayJumpSound()

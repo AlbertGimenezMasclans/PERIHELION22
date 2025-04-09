@@ -12,6 +12,7 @@ TagManager:
   - DeathZone
   - Enemy
   - PlayerHead
+  - BoxDetector
   layers:
   - Default
   - TransparentFX
