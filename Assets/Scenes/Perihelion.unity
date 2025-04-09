@@ -11090,6 +11090,293 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 665039334601274984, guid: a4631375ba1f6294cadfe04a90d30dc6, type: 3}
   m_PrefabInstance: {fileID: 295384253}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &297615018
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 846145714}
+    m_Modifications:
+    - target: {fileID: 1504044926643777578, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Name
+      value: Cartel-Lab-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: textBox
+      value: 
+      objectReference: {fileID: 2002947157}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: Input_TB
+      value: 
+      objectReference: {fileID: 692248173}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: textField2
+      value: 
+      objectReference: {fileID: 1717813395}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueEndSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueAdvanceSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[0]
+      value: Esto es un [Placeholder].
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[1]
+      value: Hay una carpeta abierta con multiples videos.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[2]
+      value: Uno se reproduce automaticamente a la que miras la pantalla.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[3]
+      value: '<color=yellow>Video n2: </color>
+
+        El sujeto PH-01 a iniciado
+        su fase de "fabricacion".'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[4]
+      value: Si todo va como lo previsto, en 2 meses esta fase habra terminado y
+        podremos empezar la fase de "pruebas".
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[5]
+      value: Aun asi, algunos estamos inquietos por la situacion en la que nos encontramos.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[6]
+      value: 'Marcos esta al borde del colapso, Michael y yo intentamos calmarlo
+        para que entienda porque lo fabricamos.
+
+        Pero no hay manera.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[7]
+      value: Pero para que mentir, yo estoy mas nervioso que nadie.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[8]
+      value: '<color=yellow>Video n14: </color>
+
+        La fabricacion a terminado
+        y la fase de pruebas empezo ayer.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[9]
+      value: Nos han llegado mas ordenes de #$L@R, no es lo que esperabamos, yo al
+        menos.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[10]
+      value: Se nos echa el tiempo encima y para colmo, se han llevado a Kilian y
+        a Ethan a otra zona de investigacion.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[11]
+      value: Mis sentimientos hacia esta... <color=yellow> cosa</color> no han cambiado,
+        y no creo que lo hagan.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[12]
+      value: '<color=yellow>Video n21: </color>
+
+        Han pasado 3 semanas y hemos
+        avanzado ligeramente, pero nos hemos estancado.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[13]
+      value: Por mucho conocimiento que tengamos, NO. HAY. MANERA.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[14]
+      value: No logramos adaptar el modelo de reconocimiento facial del sujeto.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[15]
+      value: Ademas de que #$L@R no entra en razon, lo quiere ya...
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[16]
+      value: Estamos acabados.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[17]
+      value: '<color=yellow>Video n34: </color>
+
+        Hoy es el dia que #$L@R
+        vendra a ver a "PH-01".'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[18]
+      value: Mas de la mitad han abandonado, solo quedamos David, Edgar y yo, Eldrick.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[19]
+      value: Afortunadamente, hemos logrado que "PH-01" piense por si mismo, pero
+        sin salirse del protocolo.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[20]
+      value: 'Tambien, sus capacidades sensoriales funcionan como deben.
+
+        En
+        cambio, los objetos clave no.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[21]
+      value: Es como si, tratasen de evolucionar. Algunas veces se ejecutan simultaneamente,
+        otras haciendo lo contrario de lo previsto y otras...
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[22]
+      value: Espero que a #$L@R no le importe, pero seguramente vayamos a confiscarselas.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[23]
+      value: De repente, una figura misteriosa aparece detras de la persona que hablaba,
+        mirando a camara con una siniestra sonrisa.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[24]
+      value: Tras eso, disparaba a la camara y el video se cortaba. Luego, el ordenador
+        se apago.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[25]
+      value: Tratas de encenderlo pero no hay manera.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[26]
+      value: 'Esa figura con la sonrisa siniestra, se te hace familiar.
+
+        Pero
+        no logras descifrar donde la has visto.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: headlessDialogueLines.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3747194
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3747194
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.3747194
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.084
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Size.x
+      value: 0.23572981
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Size.y
+      value: 0.23031057
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.0037001371
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.03515529
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143526300212143098, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 11.360005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 11.360005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 11.360005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -23.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -23.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160251544815907430, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 72de4dbc6f6049546b2ff198151de6d5, type: 3}
+    - target: {fileID: 8160251544815907430, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+--- !u!4 &297615019 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+  m_PrefabInstance: {fileID: 297615018}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &314552463
 GameObject:
   m_ObjectHideFlags: 0
@@ -22094,6 +22381,293 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 665039334601274984, guid: a4631375ba1f6294cadfe04a90d30dc6, type: 3}
   m_PrefabInstance: {fileID: 686660478}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &689544730
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 831852962}
+    m_Modifications:
+    - target: {fileID: 1504044926643777578, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Name
+      value: Cartel-Hab-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: textBox
+      value: 
+      objectReference: {fileID: 2002947157}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: Input_TB
+      value: 
+      objectReference: {fileID: 692248173}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: textField2
+      value: 
+      objectReference: {fileID: 1717813395}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueEndSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueAdvanceSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[0]
+      value: Esto es un [Placeholder].
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[1]
+      value: Hay una carpeta abierta con multiples videos.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[2]
+      value: Uno se reproduce automaticamente a la que miras la pantalla.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[3]
+      value: '<color=yellow>Video n2: </color>
+
+        El sujeto PH-01 a iniciado
+        su fase de "fabricacion".'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[4]
+      value: Si todo va como lo previsto, en 2 meses esta fase habra terminado y
+        podremos empezar la fase de "pruebas".
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[5]
+      value: Aun asi, algunos estamos inquietos por la situacion en la que nos encontramos.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[6]
+      value: 'Marcos esta al borde del colapso, Michael y yo intentamos calmarlo
+        para que entienda porque lo fabricamos.
+
+        Pero no hay manera.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[7]
+      value: Pero para que mentir, yo estoy mas nervioso que nadie.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[8]
+      value: '<color=yellow>Video n14: </color>
+
+        La fabricacion a terminado
+        y la fase de pruebas empezo ayer.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[9]
+      value: Nos han llegado mas ordenes de #$L@R, no es lo que esperabamos, yo al
+        menos.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[10]
+      value: Se nos echa el tiempo encima y para colmo, se han llevado a Kilian y
+        a Ethan a otra zona de investigacion.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[11]
+      value: Mis sentimientos hacia esta... <color=yellow> cosa</color> no han cambiado,
+        y no creo que lo hagan.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[12]
+      value: '<color=yellow>Video n21: </color>
+
+        Han pasado 3 semanas y hemos
+        avanzado ligeramente, pero nos hemos estancado.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[13]
+      value: Por mucho conocimiento que tengamos, NO. HAY. MANERA.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[14]
+      value: No logramos adaptar el modelo de reconocimiento facial del sujeto.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[15]
+      value: Ademas de que #$L@R no entra en razon, lo quiere ya...
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[16]
+      value: Estamos acabados.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[17]
+      value: '<color=yellow>Video n34: </color>
+
+        Hoy es el dia que #$L@R
+        vendra a ver a "PH-01".'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[18]
+      value: Mas de la mitad han abandonado, solo quedamos David, Edgar y yo, Eldrick.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[19]
+      value: Afortunadamente, hemos logrado que "PH-01" piense por si mismo, pero
+        sin salirse del protocolo.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[20]
+      value: 'Tambien, sus capacidades sensoriales funcionan como deben.
+
+        En
+        cambio, los objetos clave no.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[21]
+      value: Es como si, tratasen de evolucionar. Algunas veces se ejecutan simultaneamente,
+        otras haciendo lo contrario de lo previsto y otras...
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[22]
+      value: Espero que a #$L@R no le importe, pero seguramente vayamos a confiscarselas.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[23]
+      value: De repente, una figura misteriosa aparece detras de la persona que hablaba,
+        mirando a camara con una siniestra sonrisa.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[24]
+      value: Tras eso, disparaba a la camara y el video se cortaba. Luego, el ordenador
+        se apago.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[25]
+      value: Tratas de encenderlo pero no hay manera.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: dialogueLines.Array.data[26]
+      value: 'Esa figura con la sonrisa siniestra, se te hace familiar.
+
+        Pero
+        no logras descifrar donde la has visto.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: headlessDialogueLines.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3747194
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3747194
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.3747194
+      objectReference: {fileID: 0}
+    - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.084
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Size.x
+      value: 0.23572981
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Size.y
+      value: 0.23031057
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.0037001371
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.03515529
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396134945399969908, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 7143526300212143098, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 11.360005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 11.360005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 11.360005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -67.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -23.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160251544815907430, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 72de4dbc6f6049546b2ff198151de6d5, type: 3}
+    - target: {fileID: 8160251544815907430, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+--- !u!4 &689544731 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7265463899297153790, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+  m_PrefabInstance: {fileID: 689544730}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &691143696
 GameObject:
   m_ObjectHideFlags: 0
@@ -25306,6 +25880,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 689544731}
   - {fileID: 1490146660}
   - {fileID: 804906866}
   - {fileID: 878927470}
@@ -25407,6 +25982,7 @@ Transform:
   - {fileID: 258925482}
   - {fileID: 372594763}
   - {fileID: 1536380887}
+  - {fileID: 297615019}
   - {fileID: 1685340958}
   - {fileID: 877376399}
   m_Father: {fileID: 1835409832}
@@ -25768,6 +26344,10 @@ PrefabInstance:
       objectReference: {fileID: 386179727, guid: 0698e62620cdd0f43a04b997c650eb5c, type: 3}
     - target: {fileID: 9192176729540717498, guid: b38decea6c1f5714b9be11d24b420450, type: 3}
       propertyPath: requiresBoxWeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9192176729540717498, guid: b38decea6c1f5714b9be11d24b420450, type: 3}
+      propertyPath: requiresBoxPresence
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9192176729540717498, guid: b38decea6c1f5714b9be11d24b420450, type: 3}
