@@ -29017,6 +29017,7 @@ GameObject:
   m_Component:
   - component: {fileID: 818470532}
   - component: {fileID: 818470533}
+  - component: {fileID: 818470534}
   m_Layer: 0
   m_Name: Laser
   m_TagString: Untagged
@@ -29090,6 +29091,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.33089542, y: 6.4347563}
   m_EdgeRadius: 0
+--- !u!114 &818470534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818470531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2e96c24aa05db4eb16693477021785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 1
+  teleportDistance: 0.8
+  damageCooldown: 0.75
+  movementLockDuration: 0.3
 --- !u!1 &827867722
 GameObject:
   m_ObjectHideFlags: 0
@@ -29794,6 +29811,7 @@ GameObject:
   m_Component:
   - component: {fileID: 877376399}
   - component: {fileID: 877376400}
+  - component: {fileID: 877376401}
   m_Layer: 0
   m_Name: Laser
   m_TagString: Untagged
@@ -29867,6 +29885,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.33089542, y: 6.4347563}
   m_EdgeRadius: 0
+--- !u!114 &877376401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877376398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2e96c24aa05db4eb16693477021785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 1
+  teleportDistance: 0.8
+  damageCooldown: 0.75
+  movementLockDuration: 0.3
 --- !u!1001 &878927469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36509,6 +36543,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1016711615}
   - component: {fileID: 1016711616}
+  - component: {fileID: 1016711617}
   m_Layer: 0
   m_Name: Laser
   m_TagString: Untagged
@@ -36582,6 +36617,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.33089542, y: 6.4347563}
   m_EdgeRadius: 0
+--- !u!114 &1016711617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1016711614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2e96c24aa05db4eb16693477021785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 1
+  teleportDistance: 0.8
+  damageCooldown: 0.75
+  movementLockDuration: 0.3
 --- !u!1 &1034081002
 GameObject:
   m_ObjectHideFlags: 0
@@ -38376,6 +38427,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1135233363}
   - component: {fileID: 1135233364}
+  - component: {fileID: 1135233365}
   m_Layer: 0
   m_Name: Laser 2
   m_TagString: Untagged
@@ -38449,6 +38501,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.33089542, y: 6.4347563}
   m_EdgeRadius: 0
+--- !u!114 &1135233365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135233362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2e96c24aa05db4eb16693477021785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 1
+  teleportDistance: 0.8
+  damageCooldown: 0.75
+  movementLockDuration: 0.3
 --- !u!1 &1138772575
 GameObject:
   m_ObjectHideFlags: 0
@@ -57953,6 +58021,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1685340958}
   - component: {fileID: 1685340959}
+  - component: {fileID: 1685340960}
   m_Layer: 0
   m_Name: Laser
   m_TagString: Untagged
@@ -58026,6 +58095,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.33089542, y: 6.4347563}
   m_EdgeRadius: 0
+--- !u!114 &1685340960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685340957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2e96c24aa05db4eb16693477021785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 1
+  teleportDistance: 0.8
+  damageCooldown: 0.75
+  movementLockDuration: 0.3
 --- !u!1 &1689579318
 GameObject:
   m_ObjectHideFlags: 0
@@ -78753,6 +78838,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2010044612}
   - component: {fileID: 2010044613}
+  - component: {fileID: 2010044614}
   m_Layer: 0
   m_Name: Laser 3
   m_TagString: Untagged
@@ -78826,6 +78912,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.33089542, y: 6.4347563}
   m_EdgeRadius: 0
+--- !u!114 &2010044614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2010044611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2e96c24aa05db4eb16693477021785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 1
+  teleportDistance: 0.8
+  damageCooldown: 0.75
+  movementLockDuration: 0.3
 --- !u!1 &2011634209
 GameObject:
   m_ObjectHideFlags: 0

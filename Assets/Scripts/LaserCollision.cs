@@ -4,9 +4,9 @@ using System.Collections;
 public class LaserCollision : MonoBehaviour
 {
     [SerializeField] private float damageAmount = 2f; // Cantidad de vida a quitar
-    [SerializeField] private float teleportDistance = 0.45f; // Distancia de teletransporte en X
-    [SerializeField] private float damageCooldown = 1f; // Cooldown en segundos entre daños
-    [SerializeField] private float movementLockDuration = 0.5f; // Duración en segundos del bloqueo de movimiento
+    [SerializeField] private float teleportDistance = 0.80f; // Distancia de teletransporte en X
+    [SerializeField] private float damageCooldown = 0.75f; // Cooldown en segundos entre daños
+    [SerializeField] private float movementLockDuration = 0.3f; // Duración en segundos del bloqueo de movimiento
 
     private float lastDamageTime = -1f; // Tiempo del último daño (inicializado para permitir daño inmediato)
 
