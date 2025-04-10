@@ -283,7 +283,7 @@ public class DialogueSystem : MonoBehaviour
 
             if (currentChar == ',')
                 yield return new WaitForSecondsRealtime(commaPauseTime);
-            else if (currentChar == '.' || currentChar == '?' || currentChar == '!')
+            else if (currentChar == '.' || currentChar == '?' || currentChar == '!' || currentChar == ':' || currentChar == '¿' || currentChar == '¡')
                 yield return new WaitForSecondsRealtime(periodPauseTime);
             else
                 yield return new WaitForSecondsRealtime(typingTime);
