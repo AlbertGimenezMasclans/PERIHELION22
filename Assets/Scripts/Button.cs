@@ -7,18 +7,19 @@ public class Button : MonoBehaviour
     [SerializeField] private GameObject[] switchObjects; // Objetos a desactivar
     [SerializeField] private bool requiresBoxWeight = false; // Checkbox para requerir caja
     [SerializeField] private bool requiresBoxPresence = false; // Checkbox para requerir presencia continua de la caja
+    [SerializeField] private bool activatesPlatform = false; // Checkbox para activar plataforma
+    [SerializeField] private Platform platform; // Referencia a la plataforma a activar
 
     private SpriteRenderer buttonSprite; // Referencia al SpriteRenderer del botón
     private bool isPlayerOnButton; // Verifica si el jugador está encima
     private bool isBoxOnButton; // Verifica si una caja está encima
     private bool isPressed; // Estado del botón (completamente presionado)
+    private GameObject boxOnButton; // Referencia a la caja que está encima
 
     private void Start()
     {
-        // Obtener el SpriteRenderer del botón
         buttonSprite = GetComponent<SpriteRenderer>();
         
-        // Asegurarse de que el sprite inicial sea el "sin presionar"
         if (buttonSprite != null && unpressedSprite != null)
         {
             buttonSprite.sprite = unpressedSprite;
@@ -28,7 +29,6 @@ public class Button : MonoBehaviour
         isPlayerOnButton = false;
         isBoxOnButton = false;
 
-        // Asegurarse de que los switchObjects estén activos al inicio
         foreach (GameObject obj in switchObjects)
         {
             if (obj != null)
@@ -40,33 +40,28 @@ public class Button : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Verificar si es el jugador
         if (other.CompareTag("Player"))
         {
             isPlayerOnButton = true;
 
-            // Si no requiere caja, presionar completamente con el jugador
             if (!requiresBoxWeight && !isPressed)
             {
                 PressButtonAction(true);
             }
-            // Si requiere caja, solo cambiar el sprite sin activar la acción
             else if (requiresBoxWeight && !isPressed)
             {
                 ChangeSpriteToPressed();
             }
         }
-        // Verificar si es una caja
-        else if (other.CompareTag("Box"))
+        else if (other.CompareTag("PushableBox"))
         {
             isBoxOnButton = true;
+            boxOnButton = other.gameObject;
 
-            // Si requiere caja y no hay jugador, presionar completamente
             if (requiresBoxWeight && !isPlayerOnButton && (!isPressed || requiresBoxPresence))
             {
                 PressButtonAction(true);
             }
-            // Si no requiere caja o hay jugador, solo cambiar sprite si no está presionado
             else if (!isPressed)
             {
                 ChangeSpriteToPressed();
@@ -76,33 +71,28 @@ public class Button : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        // Verificar si es el jugador
         if (other.CompareTag("Player"))
         {
             isPlayerOnButton = false;
 
-            // Si requiere caja y hay una caja encima, presionar completamente
             if (requiresBoxWeight && isBoxOnButton && (!isPressed || requiresBoxPresence))
             {
                 PressButtonAction(true);
             }
-            // Si no está presionado y no hay caja, volver al sprite sin presionar
             else if (!isPressed && !isBoxOnButton)
             {
                 ChangeSpriteToUnpressed();
             }
         }
-        // Verificar si es una caja
-        else if (other.CompareTag("Box"))
+        else if (other.CompareTag("PushableBox"))
         {
             isBoxOnButton = false;
+            boxOnButton = null;
 
-            // Si requiere presencia continua de la caja, despresionar el botón
             if (requiresBoxPresence && isPressed)
             {
                 UnpressButtonAction();
             }
-            // Si no está presionado y no hay jugador, volver al sprite sin presionar
             else if (!isPressed && !isPlayerOnButton)
             {
                 ChangeSpriteToUnpressed();
@@ -110,9 +100,31 @@ public class Button : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Si ambos checkboxes están activados y hay una caja encima
+        if (requiresBoxWeight && requiresBoxPresence && isBoxOnButton && boxOnButton != null)
+        {
+            // Verificar si la caja está cerca del centro del botón
+            Vector2 buttonCenter = (Vector2)transform.position;
+            Vector2 boxCenter = boxOnButton.transform.position;
+            float distance = Vector2.Distance(buttonCenter, boxCenter);
+
+            if (distance < 0.1f) // Umbral para considerar que está centrada
+            {
+                // Bloquear la caja
+                Rigidbody2D boxRb = boxOnButton.GetComponent<Rigidbody2D>();
+                if (boxRb != null)
+                {
+                    boxRb.bodyType = RigidbodyType2D.Static; // Hacer la caja estática
+                    boxOnButton.transform.position = buttonCenter; // Alinear exactamente al centro
+                }
+            }
+        }
+    }
+
     private void PressButtonAction(bool fullPress)
     {
-        // Cambiar al sprite de "presionado"
         if (buttonSprite != null && pressedSprite != null)
         {
             buttonSprite.sprite = pressedSprite;
@@ -120,10 +132,8 @@ public class Button : MonoBehaviour
 
         if (fullPress)
         {
-            // Marcar como presionado
             isPressed = true;
 
-            // Desactivar los objetos del switch
             foreach (GameObject obj in switchObjects)
             {
                 if (obj != null)
@@ -131,21 +141,24 @@ public class Button : MonoBehaviour
                     obj.SetActive(false);
                 }
             }
+
+            // Activar la plataforma si el checkbox está marcado
+            if (activatesPlatform && platform != null)
+            {
+                platform.ActivatePlatform();
+            }
         }
     }
 
     private void UnpressButtonAction()
     {
-        // Volver al sprite "sin presionar"
         if (buttonSprite != null && unpressedSprite != null)
         {
             buttonSprite.sprite = unpressedSprite;
         }
 
-        // Marcar como no presionado
         isPressed = false;
 
-        // Reactivar los objetos del switch
         foreach (GameObject obj in switchObjects)
         {
             if (obj != null)
@@ -153,11 +166,16 @@ public class Button : MonoBehaviour
                 obj.SetActive(true);
             }
         }
+
+        // Detener la plataforma si estaba activada
+        if (activatesPlatform && platform != null)
+        {
+            platform.DeactivatePlatform();
+        }
     }
 
     private void ChangeSpriteToPressed()
     {
-        // Solo cambiar el sprite a "presionado" sin activar la acción completa
         if (buttonSprite != null && pressedSprite != null)
         {
             buttonSprite.sprite = pressedSprite;
@@ -166,7 +184,6 @@ public class Button : MonoBehaviour
 
     private void ChangeSpriteToUnpressed()
     {
-        // Volver al sprite "sin presionar"
         if (buttonSprite != null && unpressedSprite != null)
         {
             buttonSprite.sprite = unpressedSprite;
