@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 354316536838898881}
   m_Layer: 3
   m_Name: Cube
-  m_TagString: Box
+  m_TagString: PushableBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

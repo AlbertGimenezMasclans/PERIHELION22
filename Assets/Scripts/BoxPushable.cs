@@ -10,12 +10,16 @@ public class BoxPushable : MonoBehaviour
     private Rigidbody2D rb;
     private bool isBeingPushed = false;
     private float playerPushSpeed;
+    private Vector2 initialPosition; // Posición inicial de la caja
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.mass = weight; // Asignar el peso
         rb.gravityScale = isGravityNormal ? 1f : -1f; // Configurar la gravedad inicial
+        
+        // Almacenar la posición inicial
+        initialPosition = transform.position;
     }
 
     void FixedUpdate()
@@ -42,5 +46,25 @@ public class BoxPushable : MonoBehaviour
     public bool IsGravityNormal()
     {
         return isGravityNormal;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // Verificar si la caja toca un rayo
+        if (other.CompareTag("Laser"))
+        {
+            // Volver a la posición inicial
+            transform.position = initialPosition;
+            rb.velocity = Vector2.zero; // Detener cualquier movimiento
+            rb.angularVelocity = 0f; // Detener cualquier rotación
+        }
+
+        if (other.CompareTag("Limit"))
+        {
+            // Volver a la posición inicial
+            transform.position = initialPosition;
+            rb.velocity = Vector2.zero; // Detener cualquier movimiento
+            rb.angularVelocity = 0f; // Detener cualquier rotación
+        }
     }
 }
