@@ -5,6 +5,7 @@ public class Button : MonoBehaviour
     [SerializeField] private Sprite unpressedSprite; // Sprite cuando no está presionado
     [SerializeField] private Sprite pressedSprite; // Sprite cuando está presionado
     [SerializeField] private GameObject[] switchObjects; // Objetos a desactivar
+    [SerializeField] private GameObject[] objectsToActivate; // Objetos a activar
     [SerializeField] private bool requiresBoxWeight = false; // Checkbox para requerir caja
     [SerializeField] private bool requiresBoxPresence = false; // Checkbox para requerir presencia continua de la caja
     [SerializeField] private bool activatesPlatform = false; // Checkbox para activar plataforma
@@ -29,11 +30,21 @@ public class Button : MonoBehaviour
         isPlayerOnButton = false;
         isBoxOnButton = false;
 
+        // Inicializar switchObjects (activos por defecto)
         foreach (GameObject obj in switchObjects)
         {
             if (obj != null)
             {
                 obj.SetActive(true);
+            }
+        }
+
+        // Inicializar objectsToActivate (desactivados por defecto)
+        foreach (GameObject obj in objectsToActivate)
+        {
+            if (obj != null)
+            {
+                obj.SetActive(false);
             }
         }
     }
@@ -134,11 +145,21 @@ public class Button : MonoBehaviour
         {
             isPressed = true;
 
+            // Desactivar los switchObjects
             foreach (GameObject obj in switchObjects)
             {
                 if (obj != null)
                 {
                     obj.SetActive(false);
+                }
+            }
+
+            // Activar los objectsToActivate
+            foreach (GameObject obj in objectsToActivate)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(true);
                 }
             }
 
@@ -159,11 +180,21 @@ public class Button : MonoBehaviour
 
         isPressed = false;
 
+        // Reactivar los switchObjects
         foreach (GameObject obj in switchObjects)
         {
             if (obj != null)
+                {
+                    obj.SetActive(true);
+                }
+        }
+
+        // Desactivar los objectsToActivate
+        foreach (GameObject obj in objectsToActivate)
+        {
+            if (obj != null)
             {
-                obj.SetActive(true);
+                obj.SetActive(false);
             }
         }
 
