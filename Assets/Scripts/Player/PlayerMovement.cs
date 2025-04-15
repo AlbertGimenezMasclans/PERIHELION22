@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     private bool hasSelectedWithX = false;
     private bool justExitedSelection = false;
     private bool isPushing = false;
-    private bool hasGravityAbility = false; // Rastrear si la habilidad fue desbloqueada
+    public bool hasGravityAbility = false; // Rastrear si la habilidad fue desbloqueada
 
     [Header("Dialogue System")]
     [Tooltip("Currently active dialogue system")]
@@ -80,6 +80,10 @@ public class PlayerMovement : MonoBehaviour
     public bool canShoot = false;
     [Tooltip("Can the player dismember?")]
     public bool canDismember = false;
+
+    [Header("Gravity Field State")]
+    public bool isInGravityField = false;
+
 
     [Header("UI Elements")]
     [Tooltip("Sprite shown for locked abilities")]
@@ -213,11 +217,12 @@ public class PlayerMovement : MonoBehaviour
                 {
                     FireProjectile();
                 }
-                else if (canChangeGravity && Time.time >= lastGravityChange + gravityChangeDelay && (isGrounded || canChangeGravityInAir))
+                else if (canChangeGravity && !isInGravityField && Time.time >= lastGravityChange + gravityChangeDelay && (isGrounded || canChangeGravityInAir))
                 {
                     ChangeGravity();
                     if (!isGrounded) canChangeGravityInAir = false;
                 }
+
             }
 
             if (isRecomposing && !Input.GetKey(KeyCode.Z))
