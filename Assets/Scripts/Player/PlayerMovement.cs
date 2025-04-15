@@ -6,18 +6,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Settings")]
     [Tooltip("Horizontal movement speed")]
     public float moveSpeed = 5f;
+    [Tooltip("Speed when pushing objects")]
+    public float pushSpeed = 2f;
     [Tooltip("Force applied when jumping")]
     public float jumpForce = 5f;
     [Tooltip("Layer mask for ground detection")]
     public LayerMask groundLayer;
     [Tooltip("Distancia del Raycast para detectar el suelo")]
     public float groundCheckDistance = 0.6f;
-
-    [Header("Box Pushing")]
-    [Tooltip("Speed reduction when pushing a box")]
-    public float pushSpeed = 3f; // Velocidad al empujar (puede ser menor que moveSpeed)
-    private BoxPushable currentBox; // Referencia a la caja que se está empujando
-    private bool isPushing = false;
 
     [Header("Ability Selection")]
     [Tooltip("UI object for ability selection")]
@@ -65,6 +61,8 @@ public class PlayerMovement : MonoBehaviour
     private bool isMovementLocked = false;
     private bool hasSelectedWithX = false;
     private bool justExitedSelection = false;
+    private bool isPushing = false;
+    private bool isGravityLocked = false; // Nueva bandera para bloquear cambio de gravedad
 
     [Header("Dialogue System")]
     [Tooltip("Currently active dialogue system")]
@@ -100,7 +98,6 @@ public class PlayerMovement : MonoBehaviour
         gravityScale = rb.gravityScale;
         lastGravityChange = -gravityChangeDelay;
 
-        // Obtener el BoxCollider2D de la cabeza
         if (headObject != null)
         {
             headCollider = headObject.GetComponent<BoxCollider2D>();
@@ -179,14 +176,11 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.RightArrow)) moveInput = 1f;
             else if (Input.GetKey(KeyCode.LeftArrow)) moveInput = -1f;
 
-            // Usar pushSpeed si está empujando, de lo contrario moveSpeed
             float currentSpeed = isPushing ? pushSpeed : moveSpeed;
             rb.velocity = new Vector2(moveInput * currentSpeed, rb.velocity.y);
 
-            // Calcular la velocidad vertical ajustada según la gravedad
             float adjustedVerticalSpeed = isGravityNormal ? rb.velocity.y : -rb.velocity.y;
 
-            // Actualizar parámetros del Animator
             animator.SetBool("IsGrounded", isGrounded);
             animator.SetBool("MoveRight", moveInput > 0);
             animator.SetBool("MoveLeft", moveInput < 0);
@@ -219,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     FireProjectile();
                 }
-                else if (canChangeGravity && Time.time >= lastGravityChange + gravityChangeDelay && (isGrounded || canChangeGravityInAir))
+                else if (canChangeGravity && !isGravityLocked && Time.time >= lastGravityChange + gravityChangeDelay && (isGrounded || canChangeGravityInAir))
                 {
                     ChangeGravity();
                     if (!isGrounded) canChangeGravityInAir = false;
@@ -235,7 +229,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Determinar qué objeto usar para el Raycast (jugador o cabeza)
         Transform raycastTarget = isDismembered ? headObject.transform : transform;
         BoxCollider2D targetCollider = isDismembered ? headCollider : boxCollider;
 
@@ -246,48 +239,35 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // Calcular el origen y dirección del Raycast
         Vector2 colliderSize = targetCollider.size * raycastTarget.localScale;
         float halfHeight = colliderSize.y / 2f;
         Vector2 rayOrigin = (Vector2)raycastTarget.position + (isGravityNormal ? new Vector2(0f, -halfHeight) : new Vector2(0f, halfHeight));
         Vector2 rayDirection = isGravityNormal ? Vector2.down : Vector2.up;
 
-        // Realizar el Raycast
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDirection, groundCheckDistance, groundLayer);
         isGrounded = hit.collider != null;
 
-        // Actualizar estados
         if (isGrounded)
         {
             hasTouchedGround = true;
             canChangeGravityInAir = true;
         }
 
-        // Dibujar el Raycast para depuración
         Debug.DrawRay(rayOrigin, rayDirection * groundCheckDistance, isGrounded ? Color.green : Color.red);
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.CompareTag("BoxDetector"))
+        if (collision.gameObject.CompareTag("PushableBox"))
         {
-            BoxPushable box = collision.transform.parent.GetComponent<BoxPushable>();
-            if (box != null && box.IsGravityNormal() == isGravityNormal) // Solo empujar si la gravedad coincide
-            {
-                currentBox = box;
-                float direction = collision.gameObject.name == "LeftDetector" ? 1f : -1f; // Dirección según el lado
-                currentBox.StartPushing(pushSpeed, direction);
-                isPushing = true;
-            }
+            isPushing = true;
         }
     }
 
-    void OnTriggerExit2D(Collider2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.CompareTag("BoxDetector") && currentBox != null)
+        if (collision.gameObject.CompareTag("PushableBox"))
         {
-            currentBox.StopPushing();
-            currentBox = null;
             isPushing = false;
         }
     }
@@ -455,5 +435,15 @@ public class PlayerMovement : MonoBehaviour
         isSelectingMode = false;
         hasSelectedWithX = false;
         justExitedSelection = true;
+    }
+
+    public void SetGravityLocked(bool locked)
+    {
+        isGravityLocked = locked;
+    }
+
+    public void SetPushing(bool state)
+    {
+        isPushing = state;
     }
 }
