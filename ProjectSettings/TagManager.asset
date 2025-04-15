@@ -12,12 +12,12 @@ TagManager:
   - DeathZone
   - Enemy
   - PlayerHead
-  - BoxDetector
   - Box
   - Laser
   - PushableBox
   - Limit
   - GravityField
+  - BoxSide
   layers:
   - Default
   - TransparentFX

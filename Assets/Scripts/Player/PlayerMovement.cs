@@ -32,8 +32,10 @@ public class PlayerMovement : MonoBehaviour
     public GameObject bodyObject;
     [Tooltip("Is the player currently dismembered?")]
     public bool isDismembered = false;
-    private bool isRecomposing = false;
-    private bool isDismemberMode = false;
+
+    [Header("Push Settings")] // Nuevo: Sección para configuración de empuje
+    [Tooltip("Tag for box side triggers")]
+    public string boxSideTag = "BoxSide"; // Tag para los colliders laterales
 
     [Header("Components")]
     [Tooltip("Player's Rigidbody2D component")]
@@ -41,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     [Tooltip("Player's BoxCollider2D component")]
     public BoxCollider2D boxCollider;
-    private BoxCollider2D headCollider; // Collider de la cabeza
+    private BoxCollider2D headCollider;
     private Animator animator;
 
     [Header("State Variables")]
@@ -62,7 +64,9 @@ public class PlayerMovement : MonoBehaviour
     private bool hasSelectedWithX = false;
     private bool justExitedSelection = false;
     private bool isPushing = false;
-    public bool hasGravityAbility = false; // Rastrear si la habilidad fue desbloqueada
+    public bool hasGravityAbility = false;
+    private bool isRecomposing = false;
+    private bool isDismemberMode = false;
 
     [Header("Dialogue System")]
     [Tooltip("Currently active dialogue system")]
@@ -83,7 +87,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Gravity Field State")]
     public bool isInGravityField = false;
-
 
     [Header("UI Elements")]
     [Tooltip("Sprite shown for locked abilities")]
@@ -222,7 +225,6 @@ public class PlayerMovement : MonoBehaviour
                     ChangeGravity();
                     if (!isGrounded) canChangeGravityInAir = false;
                 }
-
             }
 
             if (isRecomposing && !Input.GetKey(KeyCode.Z))
@@ -261,17 +263,26 @@ public class PlayerMovement : MonoBehaviour
         Debug.DrawRay(rayOrigin, rayDirection * groundCheckDistance, isGrounded ? Color.green : Color.red);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    // Nuevo: Detectar contacto con los colliders laterales de la caja
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("PushableBox"))
+        if (other.CompareTag(boxSideTag))
         {
             isPushing = true;
+            // Obtener el script de la caja y notificar empuje
+            BoxPush box = other.GetComponentInParent<BoxPush>();
+            if (box != null)
+            {
+                float moveInput = Input.GetKey(KeyCode.RightArrow) ? 1f : Input.GetKey(KeyCode.LeftArrow) ? -1f : 0f;
+                box.PushBox(new Vector2(moveInput, 0).normalized);
+            }
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    // Nuevo: Salir del contacto con los colliders laterales
+    private void OnTriggerExit2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("PushableBox"))
+        if (other.CompareTag(boxSideTag))
         {
             isPushing = false;
         }
