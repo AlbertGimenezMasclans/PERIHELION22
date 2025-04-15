@@ -17,6 +17,7 @@ TagManager:
   - Laser
   - PushableBox
   - Limit
+  - GravityField
   layers:
   - Default
   - TransparentFX

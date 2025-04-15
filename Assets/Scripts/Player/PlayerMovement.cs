@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     private bool hasSelectedWithX = false;
     private bool justExitedSelection = false;
     private bool isPushing = false;
-    private bool isGravityLocked = false; // Nueva bandera para bloquear cambio de gravedad
+    private bool hasGravityAbility = false; // Rastrear si la habilidad fue desbloqueada
 
     [Header("Dialogue System")]
     [Tooltip("Currently active dialogue system")]
@@ -213,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     FireProjectile();
                 }
-                else if (canChangeGravity && !isGravityLocked && Time.time >= lastGravityChange + gravityChangeDelay && (isGrounded || canChangeGravityInAir))
+                else if (canChangeGravity && Time.time >= lastGravityChange + gravityChangeDelay && (isGrounded || canChangeGravityInAir))
                 {
                     ChangeGravity();
                     if (!isGrounded) canChangeGravityInAir = false;
@@ -295,10 +295,20 @@ public class PlayerMovement : MonoBehaviour
     {
         switch (abilityName.ToLower())
         {
-            case "gravity": canChangeGravity = true; break;
-            case "shoot": canShoot = true; break;
-            case "dismember": canDismember = true; break;
-            default: Debug.LogWarning("Habilidad desconocida: " + abilityName); break;
+            case "gravity":
+                hasGravityAbility = true;
+                canChangeGravity = true;
+                Debug.Log($"Habilidad de gravedad desbloqueada, hasGravityAbility: {hasGravityAbility}, canChangeGravity: {canChangeGravity}");
+                break;
+            case "shoot":
+                canShoot = true;
+                break;
+            case "dismember":
+                canDismember = true;
+                break;
+            default:
+                Debug.LogWarning("Habilidad desconocida: " + abilityName);
+                break;
         }
         UpdateHabSelectorUI();
     }
@@ -435,11 +445,6 @@ public class PlayerMovement : MonoBehaviour
         isSelectingMode = false;
         hasSelectedWithX = false;
         justExitedSelection = true;
-    }
-
-    public void SetGravityLocked(bool locked)
-    {
-        isGravityLocked = locked;
     }
 
     public void SetPushing(bool state)

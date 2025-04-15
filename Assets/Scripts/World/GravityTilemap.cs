@@ -1,21 +1,22 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GravityTilemap : MonoBehaviour
 {
-    [Header("Gravity Settings")]
-    [Tooltip("Should the gravity be normal (down) or inverted (up)?")]
-    [SerializeField] private bool isGravityNormal = true; // Normal (true) o invertida (false)
+    [Tooltip("Is gravity normal in this field?")]
+    public bool isGravityNormal = true;
+    private Tilemap tilemap;
+    private bool isPlayerInside = false;
+    private PlayerMovement player;
 
-    private bool isPlayerInside; // Rastrear si el jugador está dentro del trigger
-    private PlayerMovement player; // Referencia al jugador para actualizaciones continuas
-
-    private void OnEnable()
+    void Start()
     {
-        // Cuando el Tilemap se activa, forzar la gravedad si el jugador ya está dentro
-        if (isPlayerInside && player != null && player.IsGravityNormal() != isGravityNormal)
+        tilemap = GetComponent<Tilemap>();
+        if (tilemap == null)
         {
-            player.ChangeGravity();
+            Debug.LogError("Tilemap component not found on " + gameObject.name);
         }
+        gameObject.tag = "GravityField";
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -26,26 +27,21 @@ public class GravityTilemap : MonoBehaviour
             player = other.GetComponent<PlayerMovement>();
             if (player != null)
             {
-                // Forzar la gravedad deseada
-                if (player.IsGravityNormal() != isGravityNormal)
-                {
-                    player.ChangeGravity();
-                }
-                // Bloquear el cambio de gravedad manual
-                player.SetGravityLocked(true);
+                ApplyGravity(player);
+                Debug.Log("Player entered GravityField: " + gameObject.name);
             }
         }
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        // Forzar la gravedad mientras el jugador está dentro
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && player == null)
         {
-            if (player != null && player.IsGravityNormal() != isGravityNormal)
-            {
-                player.ChangeGravity();
-            }
+            player = other.GetComponent<PlayerMovement>();
+        }
+        if (player != null)
+        {
+            ApplyGravity(player);
         }
     }
 
@@ -54,12 +50,24 @@ public class GravityTilemap : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInside = false;
-            if (player != null)
-            {
-                // Desbloquear el cambio de gravedad manual
-                player.SetGravityLocked(false);
-            }
-            player = null; // Limpiar la referencia
+            player = null;
+        }
+    }
+
+    private void ApplyGravity(PlayerMovement player)
+    {
+        if (player.IsGrounded() && player.IsGravityNormal() != isGravityNormal)
+        {
+            float targetGravityScale = isGravityNormal ? Mathf.Abs(player.rb.gravityScale) : -Mathf.Abs(player.rb.gravityScale);
+            player.rb.gravityScale = targetGravityScale;
+            player.isGravityNormal = isGravityNormal;
+
+            Vector3 center = player.boxCollider.bounds.center;
+            player.transform.RotateAround(center, Vector3.forward, 180f);
+            player.transform.RotateAround(center, Vector3.up, 180f);
+            player.rb.velocity = new Vector2(player.rb.velocity.x, 0f);
+
+            Debug.Log($"Gravity applied: isGravityNormal={isGravityNormal}, gravityScale={player.rb.gravityScale}");
         }
     }
 }
