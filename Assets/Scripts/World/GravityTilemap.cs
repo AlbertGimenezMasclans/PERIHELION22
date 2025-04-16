@@ -53,9 +53,10 @@ public class GravityTilemap : MonoBehaviour
             player = null;
         }
     }
+
     private void ApplyGravity(PlayerMovement player)
     {
-        if (player.IsGrounded() && player.IsGravityNormal() != isGravityNormal)
+        if (player.IsGravityNormal() != isGravityNormal)
         {
             float targetGravityScale = isGravityNormal ? Mathf.Abs(player.rb.gravityScale) : -Mathf.Abs(player.rb.gravityScale);
             player.rb.gravityScale = targetGravityScale;

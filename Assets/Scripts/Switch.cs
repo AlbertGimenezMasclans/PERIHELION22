@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LeverIndicator : MonoBehaviour
+public class Switch : MonoBehaviour
 {
     [SerializeField] private GameObject indicator; // El GameObject que actúa como indicador
     private SpriteRenderer leverSprite; // El SpriteRenderer de la palanca (este objeto)
@@ -14,6 +14,11 @@ public class LeverIndicator : MonoBehaviour
     [SerializeField] private bool flipOnXAxis = true; // Checkbox para girar en el eje X
     [SerializeField] private bool flipOnYAxis = false; // Checkbox para girar en el eje Y
 
+    [Header("Sound Settings")]
+    [SerializeField] private AudioClip activationSound; // Sonido al activar la palanca
+
+    private AudioSource audioSource; // Componente para reproducir el sonido
+
     private void Start()
     {
         // Asegurarnos de que el indicador esté desactivado al inicio
@@ -24,6 +29,14 @@ public class LeverIndicator : MonoBehaviour
         // Obtener el SpriteRenderer de este objeto (la palanca)
         leverSprite = GetComponent<SpriteRenderer>();
         isUsed = false; // Inicializamos la palanca como no usada
+
+        // Configurar el AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null && activationSound != null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
     }
 
     private void Update()
@@ -57,6 +70,11 @@ public class LeverIndicator : MonoBehaviour
                 {
                     obj.SetActive(false);
                 }
+            }
+            // Reproducir el sonido de activación
+            if (audioSource != null && activationSound != null)
+            {
+                audioSource.PlayOneShot(activationSound);
             }
         }
     }

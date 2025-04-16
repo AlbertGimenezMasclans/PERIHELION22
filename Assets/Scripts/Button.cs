@@ -10,6 +10,11 @@ public class Button : MonoBehaviour
     [SerializeField] private bool requiresBoxPresence = false; // Checkbox para requerir presencia continua de la caja
     [SerializeField] private bool activatesPlatform = false; // Checkbox para activar plataforma
     [SerializeField] private Platform platform; // Referencia a la plataforma a activar
+    [SerializeField] private bool changesPlatformPosition = false; // Checkbox para cambiar posición de la plataforma
+    [SerializeField] private bool changePointA = true; // Checkbox para elegir punto A (true) o B (false)
+    [SerializeField] private Vector2 newPosition; // Coordenadas de la nueva posición A o B
+    [SerializeField] private AudioClip pressSound; // Sonido al presionar el botón
+    private AudioSource audioSource; // Componente para reproducir el sonido
 
     private SpriteRenderer buttonSprite; // Referencia al SpriteRenderer del botón
     private bool isPlayerOnButton; // Verifica si el jugador está encima
@@ -20,7 +25,15 @@ public class Button : MonoBehaviour
     private void Start()
     {
         buttonSprite = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
         
+        // Asegurarse de que el AudioSource esté configurado
+        if (audioSource == null && pressSound != null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+
         if (buttonSprite != null && unpressedSprite != null)
         {
             buttonSprite.sprite = unpressedSprite;
@@ -145,6 +158,12 @@ public class Button : MonoBehaviour
         {
             isPressed = true;
 
+            // Reproducir sonido
+            if (audioSource != null && pressSound != null)
+            {
+                audioSource.PlayOneShot(pressSound);
+            }
+
             // Desactivar los switchObjects
             foreach (GameObject obj in switchObjects)
             {
@@ -168,6 +187,19 @@ public class Button : MonoBehaviour
             {
                 platform.ActivatePlatform();
             }
+
+            // Cambiar la posición de la plataforma si el checkbox está marcado
+            if (changesPlatformPosition && platform != null)
+            {
+                if (changePointA)
+                {
+                    platform.SetPointA(newPosition);
+                }
+                else
+                {
+                    platform.SetPointB(newPosition);
+                }
+            }
         }
     }
 
@@ -184,9 +216,9 @@ public class Button : MonoBehaviour
         foreach (GameObject obj in switchObjects)
         {
             if (obj != null)
-                {
-                    obj.SetActive(true);
-                }
+            {
+                obj.SetActive(true);
+            }
         }
 
         // Desactivar los objectsToActivate

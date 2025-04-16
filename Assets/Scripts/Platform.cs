@@ -155,4 +155,16 @@ public class Platform : MonoBehaviour
         isActivated = false;
         isPaused = true; // Pausar el movimiento
     }
+
+    public void SetPointA(Vector2 newPointA)
+    {
+        pointA = newPointA;
+        // No se modifica la trayectoria actual (targetPosition, journeyLength, etc.)
+    }
+
+    public void SetPointB(Vector2 newPointB)
+    {
+        pointB = newPointB;
+        // No se modifica la trayectoria actual (targetPosition, journeyLength, etc.)
+    }
 }
