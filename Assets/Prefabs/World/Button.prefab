@@ -100,20 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0af5c8e89c4074eaa01ad8ffc6b8ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showDialogue: 0
-  dialogueLines: []
-  textBox: {fileID: 0}
-  dialogueText: {fileID: 0}
-  inputIndicator: {fileID: 0}
-  typingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
-  dialogueAdvanceSound: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
-  dialogueEndSound: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
-  typingTime: 0.05
-  commaPauseTime: 0.25
-  periodPauseTime: 0.48
-  pressedSprite: {fileID: -661881296, guid: 0698e62620cdd0f43a04b997c650eb5c, type: 3}
   unpressedSprite: {fileID: 1933812984, guid: 0698e62620cdd0f43a04b997c650eb5c, type: 3}
-  pressSound: {fileID: 8300000, guid: 2894bef2187fdf649912f462d2d97e3e, type: 3}
+  pressedSprite: {fileID: -661881296, guid: 0698e62620cdd0f43a04b997c650eb5c, type: 3}
   switchObjects: []
   objectsToActivate: []
   requiresBoxWeight: 0
@@ -123,6 +111,7 @@ MonoBehaviour:
   changesPlatformPosition: 0
   changePointA: 0
   newPosition: {x: 0, y: 0}
+  pressSound: {fileID: 8300000, guid: 73086d836aaa7f649b35bd718c10be71, type: 3}
 --- !u!61 &1367900140212080784
 BoxCollider2D:
   m_ObjectHideFlags: 0

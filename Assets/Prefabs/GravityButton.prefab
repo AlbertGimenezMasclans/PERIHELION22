@@ -147,10 +147,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalGravityTilemap: {fileID: 0}
   invertedGravityTilemap: {fileID: 0}
+  objectsToActivate: []
+  switchObjects: []
   interactionIndicator: {fileID: 2215727583890332227}
   normalSprite: {fileID: 1986537962, guid: c0743f52f7c33154d8b03fb06594216b, type: 3}
   invertedSprite: {fileID: 908582191, guid: c0743f52f7c33154d8b03fb06594216b, type: 3}
-  activationSound: {fileID: 8300000, guid: d43d39c7770ed8d45a9249cb4dda5fce, type: 3}
+  activationSound: {fileID: 8300000, guid: 2894bef2187fdf649912f462d2d97e3e, type: 3}
 --- !u!82 &1612875402055192072
 AudioSource:
   m_ObjectHideFlags: 0

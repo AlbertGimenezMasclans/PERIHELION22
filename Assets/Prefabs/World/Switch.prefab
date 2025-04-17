@@ -104,7 +104,7 @@ MonoBehaviour:
   switchObjects: []
   flipOnXAxis: 1
   flipOnYAxis: 0
-  activationSound: {fileID: 8300000, guid: 73086d836aaa7f649b35bd718c10be71, type: 3}
+  activationSound: {fileID: 8300000, guid: 2894bef2187fdf649912f462d2d97e3e, type: 3}
 --- !u!61 &8485693342269760721
 BoxCollider2D:
   m_ObjectHideFlags: 0
