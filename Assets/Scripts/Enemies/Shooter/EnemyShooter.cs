@@ -34,22 +34,49 @@ public class EnemyShooter : MonoBehaviour
 
     [Header("Death Effect Settings")]
     [Tooltip("Prefab for the effect to play when the enemy dies")]
-    public GameObject deathEffectPrefab; // Efecto al morir
+    public GameObject deathEffectPrefab;
     [Tooltip("Duration of the death effect")]
-    public float deathEffectDuration = 2f; // Duración del efecto (como en KredToken)
+    public float deathEffectDuration = 2f;
 
-    private Transform player; // Referencia al transform del jugador
-    private SpriteRenderer spriteRenderer; // Para voltear el sprite horizontalmente
-    private float nextFireTime; // Control del tiempo para el próximo disparo
-    private float contactCooldownEnd; // Tiempo en que termina el enfriamiento por contacto
-    private bool isOnCooldown; // Indica si el enemigo está en enfriamiento
-    private float currentHealth; // Vida actual del enemigo
-    private bool facingRight; // Dirección en la que mira el sprite
-    private bool isDead; // Indica si el enemigo está muerto
+    [Header("Movement Settings")]
+    [Tooltip("Enable movement between Point A and Point B")]
+    [SerializeField] private bool enableMovement = false;
+    [Tooltip("Coordinates for Point A")]
+    [SerializeField] private Vector2 pointA;
+    [Tooltip("Coordinates for Point B")]
+    [SerializeField] private Vector2 pointB;
+    [Tooltip("Speed when moving between points A and Point B")]
+    [SerializeField] private float moveSpeed = 3f;
+    [Tooltip("Speed when chasing the player")]
+    [SerializeField] private float chaseSpeed = 4f;
+    [Tooltip("Pause duration at each point (seconds)")]
+    [SerializeField] private float pauseDuration = 1f;
+    [Tooltip("Start movement at Point A")]
+    [SerializeField] private bool startAtPointA = true;
+
+    private Transform player;
+    private SpriteRenderer spriteRenderer;
+    private float nextFireTime;
+    private float contactCooldownEnd;
+    private bool isOnCooldown;
+    private float currentHealth;
+    private bool facingRight;
+    private bool isDead;
+
+    // Variables para el movimiento
+    private Vector2 startPosition;
+    private Vector2 targetPosition;
+    private bool movingToB;
+    private float pauseTimer;
+    private bool isPaused;
+    private float journeyLength;
+    private float journeyTime;
+    private float elapsedTime;
+    private float fixedY; // Coordenada Y fija para el movimiento
 
     void Start()
     {
-        // Buscar al jugador en la escena usando el tag "Player"
+        // Inicializar referencias
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (player == null)
         {
@@ -67,10 +94,26 @@ public class EnemyShooter : MonoBehaviour
             Debug.LogError("FirePoint no está asignado en el Inspector.");
         }
 
-        nextFireTime = Time.time; // Inicializar el tiempo de disparo
-        contactCooldownEnd = Time.time; // Inicializar el enfriamiento
-        currentHealth = maxHealth; // Inicializar la vida
-        facingRight = !spriteRenderer.flipX; // Dirección inicial basada en el sprite
+        // Inicializar movimiento
+        if (enableMovement)
+        {
+            fixedY = pointA.y; // Usar la coordenada Y de pointA como fija
+            transform.position = startAtPointA ? new Vector2(pointA.x, fixedY) : new Vector2(pointB.x, fixedY);
+            startPosition = transform.position;
+            targetPosition = startAtPointA ? new Vector2(pointB.x, fixedY) : new Vector2(pointA.x, fixedY);
+            movingToB = startAtPointA;
+
+            journeyLength = Mathf.Abs(startPosition.x - targetPosition.x);
+            journeyTime = journeyLength > 0 ? journeyLength / moveSpeed : 0f; // Evitar división por cero
+            elapsedTime = 0f;
+            pauseTimer = 0f;
+            isPaused = false;
+        }
+
+        nextFireTime = Time.time;
+        contactCooldownEnd = Time.time;
+        currentHealth = maxHealth;
+        facingRight = !spriteRenderer.flipX;
         isDead = false;
     }
 
@@ -80,38 +123,103 @@ public class EnemyShooter : MonoBehaviour
 
         // Calcular la distancia al jugador
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        bool playerDetected = distanceToPlayer <= detectionRange;
 
-        // Si el jugador está dentro del rango de detección
-        if (distanceToPlayer <= detectionRange)
+        // Voltear el sprite según la dirección
+        if (spriteRenderer != null)
         {
-            // Voltear el sprite horizontalmente según la posición del jugador
-            if (spriteRenderer != null)
+            if (playerDetected)
             {
                 facingRight = player.position.x > transform.position.x;
-                spriteRenderer.flipX = !facingRight;
             }
-
-            // Ajustar la posición del firePoint según la dirección del sprite (sin rotarlo)
-            if (firePoint != null)
+            else if (enableMovement && journeyLength > 0)
             {
-                Vector3 localPos = firePoint.localPosition;
-                localPos.x = Mathf.Abs(localPos.x) * (facingRight ? 1f : -1f); // Ajustar posición en X
-                firePoint.localPosition = localPos;
+                facingRight = targetPosition.x > transform.position.x;
             }
+            spriteRenderer.flipX = !facingRight;
+        }
 
-            // Verificar si el enfriamiento por contacto ha terminado
-            if (Time.time >= contactCooldownEnd)
+        // Ajustar la posición del firePoint
+        if (firePoint != null)
+        {
+            Vector3 localPos = firePoint.localPosition;
+            localPos.x = Mathf.Abs(localPos.x) * (facingRight ? 1f : -1f);
+            firePoint.localPosition = localPos;
+        }
+
+        // Manejar disparos
+        if (Time.time >= contactCooldownEnd)
+        {
+            isOnCooldown = false;
+        }
+
+        if (playerDetected && IsPlayerInShootingCone(distanceToPlayer) && Time.time >= nextFireTime && !isOnCooldown)
+        {
+            Shoot();
+            nextFireTime = Time.time + fireRate;
+        }
+
+        // Manejar movimiento
+        if (enableMovement)
+        {
+            if (playerDetected)
             {
-                isOnCooldown = false;
+                MoveTowardsPlayer();
             }
-
-            // Verificar si el jugador está dentro del rango de disparo triangular
-            if (IsPlayerInShootingCone(distanceToPlayer) && Time.time >= nextFireTime && !isOnCooldown)
+            else
             {
-                Shoot();
-                nextFireTime = Time.time + fireRate;
+                MoveBetweenPoints();
             }
         }
+    }
+
+    void MoveBetweenPoints()
+    {
+        if (journeyLength == 0) return; // No moverse si los puntos son iguales
+
+        if (isPaused)
+        {
+            pauseTimer -= Time.deltaTime;
+            if (pauseTimer <= 0f)
+            {
+                isPaused = false;
+                startPosition = transform.position;
+                targetPosition = movingToB ? new Vector2(pointA.x, fixedY) : new Vector2(pointB.x, fixedY);
+                movingToB = !movingToB;
+                journeyLength = Mathf.Abs(startPosition.x - targetPosition.x);
+                journeyTime = journeyLength > 0 ? journeyLength / moveSpeed : 0f;
+                elapsedTime = 0f;
+            }
+            return;
+        }
+
+        elapsedTime += Time.deltaTime;
+        float fraction = Mathf.Clamp01(elapsedTime / journeyTime);
+        float smoothFraction = SmoothCurve(fraction);
+
+        float newX = Mathf.Lerp(startPosition.x, targetPosition.x, smoothFraction);
+        transform.position = new Vector2(newX, fixedY);
+
+        if (fraction >= 1f)
+        {
+            isPaused = true;
+            pauseTimer = pauseDuration;
+        }
+    }
+
+    void MoveTowardsPlayer()
+    {
+        float minX = Mathf.Min(pointA.x, pointB.x);
+        float maxX = Mathf.Max(pointA.x, pointB.x);
+
+        Vector2 targetPos = new Vector2(player.position.x, fixedY);
+        targetPos.x = Mathf.Clamp(targetPos.x, minX, maxX);
+        transform.position = Vector2.MoveTowards(transform.position, targetPos, chaseSpeed * Time.deltaTime);
+    }
+
+    private float SmoothCurve(float t)
+    {
+        return t * t * (3f - 2f * t); // SmoothStep
     }
 
     void Shoot()
@@ -122,7 +230,6 @@ public class EnemyShooter : MonoBehaviour
             return;
         }
 
-        // Crear el proyectil
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
         if (projectileRb == null)
@@ -130,16 +237,13 @@ public class EnemyShooter : MonoBehaviour
             projectileRb = projectile.AddComponent<Rigidbody2D>();
         }
 
-        // Configurar el proyectil
-        projectileRb.gravityScale = 0f; // Sin gravedad para un disparo recto
-        Vector2 direction = (player.position - firePoint.position).normalized; // Dirección directa al jugador
+        projectileRb.gravityScale = 0f;
+        Vector2 direction = (player.position - firePoint.position).normalized;
         projectileRb.velocity = direction * projectileSpeed;
 
-        // Rotar el proyectil para que apunte al jugador
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         projectile.transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
-        // Pasar el daño al proyectil
         EnemyProjectile enemyProjectile = projectile.GetComponent<EnemyProjectile>();
         if (enemyProjectile != null)
         {
@@ -151,14 +255,12 @@ public class EnemyShooter : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Infligir daño por contacto al jugador
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(contactDamage);
             }
 
-            // Activar el enfriamiento
             isOnCooldown = true;
             contactCooldownEnd = Time.time + contactCooldown;
         }
@@ -169,20 +271,27 @@ public class EnemyShooter : MonoBehaviour
         if (distance > shootingRange) return false;
 
         Vector2 directionToPlayer = (player.position - transform.position).normalized;
-        Vector2 forward = facingRight ? Vector2.right : Vector2.left; // Dirección basada en el sprite
+        Vector2 forward = facingRight ? Vector2.right : Vector2.left;
         float angleToPlayer = Vector2.Angle(forward, directionToPlayer);
 
         return angleToPlayer <= shootingAngle;
     }
 
-    // Visualizar los rangos de detección y disparo en el Editor
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(pointA, 0.1f);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(pointB, 0.1f);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(pointA, pointB);
+    }
+
     void OnDrawGizmosSelected()
     {
-        // Rango de detección (círculo rojo)
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        // Rango de disparo (cono amarillo), ajustado según la dirección del sprite
         Gizmos.color = Color.yellow;
         Vector3 forward = facingRight ? Vector3.right : Vector3.left;
         Vector3 leftEdge = Quaternion.Euler(0, 0, shootingAngle) * forward * shootingRange;
@@ -207,26 +316,23 @@ public class EnemyShooter : MonoBehaviour
     void Die()
     {
         isDead = true;
-        // Desactivar el comportamiento del enemigo
-        enabled = false; // Desactiva el Update y otras funciones del MonoBehaviour
+        enabled = false;
 
-        // Instanciar el efecto de muerte
         if (deathEffectPrefab != null)
         {
             GameObject effect = Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
             SpriteRenderer effectRenderer = effect.GetComponent<SpriteRenderer>();
             if (effectRenderer != null)
             {
-                effectRenderer.flipX = Random.value > 0.5f; // Voltear aleatoriamente como en KredToken
+                effectRenderer.flipX = Random.value > 0.5f;
             }
-            Destroy(effect, deathEffectDuration); // Destruir el efecto después de su duración
+            Destroy(effect, deathEffectDuration);
         }
         else
         {
             Debug.LogWarning("DeathEffectPrefab no está asignado en el Inspector. No se mostrará ningún efecto al morir.");
         }
 
-        // Destruir el enemigo inmediatamente, como en KredToken
         Destroy(gameObject);
     }
 }
