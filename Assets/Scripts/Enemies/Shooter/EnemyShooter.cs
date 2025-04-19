@@ -61,6 +61,7 @@ public class EnemyShooter : MonoBehaviour
     private bool isOnCooldown;
     private float currentHealth;
     private bool facingRight;
+    private bool lastFacingRight; // Orientación durante el movimiento y pausa
     private bool isDead;
 
     // Variables para el movimiento
@@ -108,12 +109,19 @@ public class EnemyShooter : MonoBehaviour
             elapsedTime = 0f;
             pauseTimer = 0f;
             isPaused = false;
+
+            // Inicializar orientación
+            facingRight = targetPosition.x > transform.position.x;
+            lastFacingRight = facingRight;
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.flipX = !facingRight;
+            }
         }
 
         nextFireTime = Time.time;
         contactCooldownEnd = Time.time;
         currentHealth = maxHealth;
-        facingRight = !spriteRenderer.flipX;
         isDead = false;
     }
 
@@ -124,20 +132,6 @@ public class EnemyShooter : MonoBehaviour
         // Calcular la distancia al jugador
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         bool playerDetected = distanceToPlayer <= detectionRange;
-
-        // Voltear el sprite según la dirección
-        if (spriteRenderer != null)
-        {
-            if (playerDetected)
-            {
-                facingRight = player.position.x > transform.position.x;
-            }
-            else if (enableMovement && journeyLength > 0)
-            {
-                facingRight = targetPosition.x > transform.position.x;
-            }
-            spriteRenderer.flipX = !facingRight;
-        }
 
         // Ajustar la posición del firePoint
         if (firePoint != null)
@@ -159,16 +153,36 @@ public class EnemyShooter : MonoBehaviour
             nextFireTime = Time.time + fireRate;
         }
 
-        // Manejar movimiento
+        // Manejar movimiento y volteo del sprite
         if (enableMovement)
         {
             if (playerDetected)
             {
+                // Perseguir al jugador y voltear según su posición
+                facingRight = player.position.x > transform.position.x;
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.flipX = !facingRight;
+                }
                 MoveTowardsPlayer();
             }
             else
             {
+                // Mantener la orientación del sprite durante la pausa
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.flipX = !lastFacingRight;
+                }
                 MoveBetweenPoints();
+            }
+        }
+        else
+        {
+            // Volteo basado en la posición del jugador si no hay movimiento
+            if (playerDetected && spriteRenderer != null)
+            {
+                facingRight = player.position.x > transform.position.x;
+                spriteRenderer.flipX = !facingRight;
             }
         }
     }
@@ -186,6 +200,9 @@ public class EnemyShooter : MonoBehaviour
                 startPosition = transform.position;
                 targetPosition = movingToB ? new Vector2(pointA.x, fixedY) : new Vector2(pointB.x, fixedY);
                 movingToB = !movingToB;
+                // Actualizar la orientación para el nuevo movimiento
+                facingRight = targetPosition.x > transform.position.x;
+                lastFacingRight = facingRight;
                 journeyLength = Mathf.Abs(startPosition.x - targetPosition.x);
                 journeyTime = journeyLength > 0 ? journeyLength / moveSpeed : 0f;
                 elapsedTime = 0f;
