@@ -12,9 +12,9 @@ public class DoorScenario : MonoBehaviour
 
     [Header("Zone Management")]
     [Tooltip("The zone (GameObject) to activate when teleporting (destination zone)")]
-    public GameObject zoneToActivate; // Zona que se activará (destino)
+    public GameObject zoneToActivate;
     [Tooltip("The zone (GameObject) to deactivate when teleporting (origin zone)")]
-    public GameObject zoneToDeactivate; // Zona que se desactivará (origen)
+    public GameObject zoneToDeactivate;
 
     [Header("Indicator Object")]
     [Tooltip("The GameObject to show while the player is on the door")]
@@ -30,18 +30,46 @@ public class DoorScenario : MonoBehaviour
     [Tooltip("Duration of the fade-out effect (in seconds)")]
     public float fadeOutTime = 0.45f;
 
+    [Header("Deactivation Settings")]
+    [Tooltip("Check to deactivate the door (disables collider and changes sprite)")]
+    public bool isDeactivated = false;
+    [Tooltip("The sprite to use when the door is deactivated")]
+    public Sprite deactivatedSprite;
+    [Tooltip("The sprite to use when the door is activated (optional, defaults to initial sprite)")]
+    public Sprite activatedSprite;
+
     private bool isPlayerOnDoor = false;
     private GameObject player;
     private CameraController cameraController;
     private PlayerDeath playerDeath;
     private bool isTeleporting = false;
+    private BoxCollider2D doorCollider;
+    private SpriteRenderer doorSpriteRenderer;
+    private Sprite originalSprite; // Para guardar el sprite original
+    private bool lastDeactivationState; // Para detectar cambios en isDeactivated
 
     void Start()
     {
+        // Obtener componentes necesarios
         cameraController = Camera.main.GetComponent<CameraController>();
+        doorCollider = GetComponent<BoxCollider2D>();
+        doorSpriteRenderer = GetComponent<SpriteRenderer>();
+
         if (cameraController == null)
         {
             Debug.LogError("No se encontró el script CameraController en la cámara principal.");
+        }
+        if (doorCollider == null)
+        {
+            Debug.LogError("No se encontró BoxCollider2D en la puerta.");
+        }
+        if (doorSpriteRenderer == null)
+        {
+            Debug.LogError("No se encontró SpriteRenderer en la puerta.");
+        }
+        else
+        {
+            originalSprite = doorSpriteRenderer.sprite; // Guardar sprite original
         }
 
         if (indicatorObject != null)
@@ -50,7 +78,7 @@ public class DoorScenario : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No se asignó un Indicator Object en el Inspector. No se mostrará ningún indicador.");
+            Debug.LogWarning("No se asignó un Indicator Object en el Inspector.");
         }
 
         if (destinationDoor == null || originDoor == null)
@@ -60,65 +88,117 @@ public class DoorScenario : MonoBehaviour
 
         if (fadePanel == null)
         {
-            Debug.LogError("Fade Panel no asignado en el Inspector. Por favor asigna un componente Image para el efecto de fade.");
+            Debug.LogError("Fade Panel no asignado en el Inspector.");
         }
         else
         {
             fadePanel.color = new Color(0, 0, 0, 0);
         }
 
-        // Verificar que las zonas estén asignadas
         if (zoneToActivate == null)
         {
-            Debug.LogWarning($"ZoneToActivate no asignado en la puerta {gameObject.name}. No se activará ninguna zona al teletransportarse.");
+            Debug.LogWarning($"ZoneToActivate no asignado en la puerta {gameObject.name}.");
         }
         if (zoneToDeactivate == null)
         {
-            Debug.LogWarning($"ZoneToDeactivate no asignado en la puerta {gameObject.name}. No se desactivará ninguna zona al teletransportarse.");
+            Debug.LogWarning($"ZoneToDeactivate no asignado en la puerta {gameObject.name}.");
         }
+
+        // Aplicar estado inicial de desactivación
+        lastDeactivationState = isDeactivated;
+        UpdateDoorState();
     }
 
     void Update()
-{
-    if (isPlayerOnDoor && Input.GetKeyDown(KeyCode.C) && !isTeleporting)
     {
-        // Obtener el Rigidbody2D del jugador para verificar su velocidad
-        Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-        if (playerRb != null && Mathf.Abs(playerRb.velocity.x) < 0.01f) // Tolerancia pequeña para evitar problemas de precisión
+        // Detectar cambios en el checkbox del Inspector (en modo Editor)
+        if (lastDeactivationState != isDeactivated)
         {
-            StartCoroutine(TeleportWithFade());
+            UpdateDoorState();
+            lastDeactivationState = isDeactivated;
         }
-        else
+
+        // Solo permitir teletransporte si la puerta está activa
+        if (!isDeactivated && isPlayerOnDoor && Input.GetKeyDown(KeyCode.C) && !isTeleporting)
         {
-            Debug.Log("El jugador debe estar quieto (sin moverse horizontalmente) para entrar en la puerta.");
+            Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+            if (playerRb != null && Mathf.Abs(playerRb.velocity.x) < 0.01f)
+            {
+                StartCoroutine(TeleportWithFade());
+            }
+            else
+            {
+                Debug.Log("El jugador debe estar quieto para entrar en la puerta.");
+            }
         }
     }
-}
+
+    private void UpdateDoorState()
+    {
+        if (doorSpriteRenderer != null)
+        {
+            if (isDeactivated)
+            {
+                if (deactivatedSprite != null)
+                {
+                    doorSpriteRenderer.sprite = deactivatedSprite;
+                }
+                else
+                {
+                    Debug.LogWarning("No se asignó un Deactivated Sprite en el Inspector.");
+                }
+            }
+            else
+            {
+                doorSpriteRenderer.sprite = activatedSprite != null ? activatedSprite : originalSprite;
+            }
+        }
+
+        if (doorCollider != null)
+        {
+            doorCollider.enabled = !isDeactivated;
+        }
+
+        // Desactivar indicador si la puerta está desactivada
+        if (isDeactivated && indicatorObject != null)
+        {
+            indicatorObject.SetActive(false);
+        }
+
+        Debug.Log($"Puerta {gameObject.name} {(isDeactivated ? "desactivada" : "activada")}.");
+    }
+
+    // Método público para activar/desactivar la puerta programáticamente
+    public void SetDoorActive(bool active)
+    {
+        isDeactivated = !active;
+        UpdateDoorState();
+        lastDeactivationState = isDeactivated;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
-{
-    if (collision.CompareTag("Player"))
     {
-        isPlayerOnDoor = true;
-        player = collision.gameObject;
-        playerDeath = player.GetComponent<PlayerDeath>();
-        if (playerDeath == null)
+        if (!isDeactivated && collision.CompareTag("Player"))
         {
-            Debug.LogError("PlayerDeath no encontrado en el jugador.");
-        }
-        // Verificar que el Rigidbody2D esté presente
-        if (player.GetComponent<Rigidbody2D>() == null)
-        {
-            Debug.LogError("Rigidbody2D no encontrado en el jugador.");
-        }
-        Debug.Log("Jugador encima de la puerta. Debe estar quieto y presionar 'C' para teletransportarse.");
+            isPlayerOnDoor = true;
+            player = collision.gameObject;
+            playerDeath = player.GetComponent<PlayerDeath>();
+            if (playerDeath == null)
+            {
+                Debug.LogError("PlayerDeath no encontrado en el jugador.");
+            }
+            if (player.GetComponent<Rigidbody2D>() == null)
+            {
+                Debug.LogError("Rigidbody2D no encontrado en el jugador.");
+            }
+            Debug.Log("Jugador encima de la puerta. Debe estar quieto y presionar 'C'.");
 
-        if (indicatorObject != null)
-        {
-            indicatorObject.SetActive(true);
+            if (indicatorObject != null)
+            {
+                indicatorObject.SetActive(true);
+            }
         }
     }
-}
 
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -140,13 +220,13 @@ public class DoorScenario : MonoBehaviour
     {
         if (player == null || playerDeath == null)
         {
-            Debug.LogError("No se encontró al jugador o el componente PlayerDeath para teletransportar.");
+            Debug.LogError("No se encontró al jugador o el componente PlayerDeath.");
             yield break;
         }
 
         if (cameraController == null)
         {
-            Debug.LogError("No se encontró el script CameraController para teletransportar la cámara.");
+            Debug.LogError("No se encontró el script CameraController.");
             yield break;
         }
 
@@ -158,7 +238,7 @@ public class DoorScenario : MonoBehaviour
 
         if (fadePanel == null)
         {
-            Debug.LogError("Fade Panel no asignado. No se puede realizar el efecto de fade.");
+            Debug.LogError("Fade Panel no asignado.");
             yield break;
         }
 
@@ -183,7 +263,6 @@ public class DoorScenario : MonoBehaviour
 
             cameraController.TeleportCamera(new Vector2(destinationPosition.x, destinationPosition.y));
 
-            // Activar y desactivar las zonas
             if (zoneToDeactivate != null)
             {
                 zoneToDeactivate.SetActive(false);

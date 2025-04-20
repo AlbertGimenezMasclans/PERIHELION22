@@ -18,6 +18,7 @@ TagManager:
   - Limit
   - GravityField
   - BoxSide
+  - BreakableWall
   layers:
   - Default
   - TransparentFX

@@ -63,6 +63,11 @@ public class Projectile : MonoBehaviour
                 collision.gameObject.SendMessage("TakeDamage", damageToEnemy, SendMessageOptions.DontRequireReceiver);
             }
         }
+        // Destruir pared rompible si colisiona con ella
+        else if (collision.gameObject.CompareTag("BreakableWall"))
+        {
+            Destroy(collision.gameObject);
+        }
 
         // No devolver al pool si colisiona con "Crate"
         if (!collision.gameObject.CompareTag("Crate"))
