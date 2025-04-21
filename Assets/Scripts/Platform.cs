@@ -2,13 +2,25 @@ using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
+    [Header("Waypoints")]
+    [Tooltip("Primer punto de la trayectoria.")]
     [SerializeField] private Vector2 pointA;          // Punto A en el inspector
+    [Tooltip("Segundo punto de la trayectoria.")]
     [SerializeField] private Vector2 pointB;          // Punto B en el inspector
+
+    [Header("Movement Settings")]
+    [Tooltip("Velocidad base de movimiento (unidades por segundo).")]
     [SerializeField] private float speed = 2f;        // Velocidad base de movimiento
+    [Tooltip("Tiempo de pausa en cada punto (segundos).")]
     [SerializeField] private float pauseTime = 1.10f; // Tiempo de pausa en segundos
+    [Tooltip("Si está marcado, la plataforma comienza en Point A; si no, en Point B.")]
     [SerializeField] private bool startAtPointA = true; // ¿Comienza en punto A?
+    [Tooltip("Si está marcado, la plataforma espera a que el jugador la toque para empezar a moverse.")]
     [SerializeField] private bool waitForPlayer = false; // Checkbox para esperar al jugador
+    [Tooltip("Si está marcado, la plataforma espera a ser activada por un botón.")]
     [SerializeField] private bool waitForButton = false; // Checkbox para esperar al botón
+    [Tooltip("Si está marcado, la plataforma se detiene permanentemente al llegar a Point B.")]
+    [SerializeField] private bool stopAtPointB = false;  // Checkbox para detenerse en Point B
 
     private Vector2 startPosition;                   // Posición de inicio del movimiento actual
     private Vector2 targetPosition;                  // Posición objetivo actual
@@ -23,8 +35,9 @@ public class Platform : MonoBehaviour
     private float startDelayTimer;                   // Temporizador para el retraso inicial
     private bool waitingToStart;                     // Indica si está en el retraso inicial
     private bool isActivated;                        // Indica si la plataforma está activada por un botón
+    private bool hasStoppedPermanently;              // Indica si la plataforma se ha detenido permanentemente
 
-    public bool IsMoving => !isPaused;              // Propiedad pública para saber si se está moviendo
+    public bool IsMoving => !isPaused && !hasStoppedPermanently; // Propiedad pública para saber si se está moviendo
 
     void Start()
     {
@@ -44,10 +57,17 @@ public class Platform : MonoBehaviour
         startDelayTimer = 0f;
         waitingToStart = false;
         isActivated = false; // Inicialmente no activada por botón
+        hasStoppedPermanently = false; // Inicialmente no detenida permanentemente
     }
 
     void Update()
     {
+        // Si está detenido permanentemente, no hacer nada
+        if (hasStoppedPermanently)
+        {
+            return;
+        }
+
         // Si espera un botón y no está activada, o espera al jugador y no ha comenzado, no moverse
         if ((waitForButton && !isActivated) || (waitForPlayer && !hasStartedMoving))
         {
@@ -100,6 +120,14 @@ public class Platform : MonoBehaviour
 
         if (fraction >= 1f)
         {
+            // Verificar si debe detenerse permanentemente en Point B
+            if (stopAtPointB && movingToB)
+            {
+                hasStoppedPermanently = true;
+                isPaused = true;
+                return;
+            }
+
             isPaused = true;
             pauseTimer = pauseTime;
         }
@@ -112,10 +140,18 @@ public class Platform : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        // Dibujar puntos A y B
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(pointA, 0.1f);
         Gizmos.color = Color.blue;
         Gizmos.DrawSphere(pointB, 0.1f);
+
+        // Resaltar Point B si stopAtPointB está activado
+        if (stopAtPointB)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawSphere(pointB, 0.15f);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
