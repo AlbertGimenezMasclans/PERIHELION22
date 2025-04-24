@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using System.Collections;
 using TMPro;
 
@@ -30,7 +31,7 @@ public class PerihelionMenu : MonoBehaviour
     [SerializeField] private GameObject[] loadGameIndicators;
     [SerializeField] private GameObject[] optionsIndicators;
     [SerializeField] private GameObject[] exitIndicators;
-    [SerializeField] private TMP_Text loadGameText; // Referencia al texto de Load Game
+    [SerializeField] private TMP_Text loadGameText;
 
     [Header("Sub Menu Indicators")]
     [SerializeField] private GameObject[] musicIndicators;
@@ -42,6 +43,7 @@ public class PerihelionMenu : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip selectionSound;
     [SerializeField] private AudioClip noActionSound;
+    [SerializeField] private AudioMixer audioMixer;
 
     [Header("UI Elements")]
     [SerializeField] private GameObject optionsPanel;
@@ -60,21 +62,50 @@ public class PerihelionMenu : MonoBehaviour
 
     void Start()
     {
+        if (audioMixer == null)
+        {
+            Debug.LogError("AudioMixer no está asignado en PerihelionMenu. Por favor, asigna el Audio Mixer en el Inspector.");
+            return;
+        }
+
+        // Configurar el slider de Música (BGM)
         if (musicSlider != null)
         {
-            musicSlider.value = 1f;
+            musicSlider.value = PlayerPrefs.GetFloat("BGMVolume", 1f);
             UpdateVolumeText(musicSlider, musicVolumeText);
-            musicSlider.onValueChanged.AddListener((value) => UpdateVolumeText(musicSlider, musicVolumeText));
+            float volumen = musicSlider.value > 0 ? 20 * Mathf.Log10(musicSlider.value) + 6f : -80f; // Mapeo logarítmico
+            audioMixer.SetFloat("BGMVOL", volumen);
+            Debug.Log($"Volumen inicial BGM: {volumen} dB");
+            musicSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateVolumeText(musicSlider, musicVolumeText);
+                float volumenSlider = value > 0 ? 20 * Mathf.Log10(value) + 6f : -80f; // Mapeo logarítmico
+                audioMixer.SetFloat("BGMVOL", volumenSlider);
+                PlayerPrefs.SetFloat("BGMVolume", value);
+                Debug.Log($"Volumen BGM cambiado a: {volumenSlider} dB");
+            });
         }
+
+        // Configurar el slider de Efectos de Sonido (SFX)
         if (sfxSlider != null)
         {
-            sfxSlider.value = 1f;
+            sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
             UpdateVolumeText(sfxSlider, sfxVolumeText);
-            sfxSlider.onValueChanged.AddListener((value) => UpdateVolumeText(sfxSlider, sfxVolumeText));
+            float volumen = sfxSlider.value > 0 ? 20 * Mathf.Log10(sfxSlider.value) + 6f : -80f; // Mapeo logarítmico
+            audioMixer.SetFloat("SFXVOL", volumen);
+            Debug.Log($"Volumen inicial SFX: {volumen} dB");
+            sfxSlider.onValueChanged.AddListener((value) =>
+            {
+                UpdateVolumeText(sfxSlider, sfxVolumeText);
+                float volumenSlider = value > 0 ? 20 * Mathf.Log10(value) + 6f : -80f; // Mapeo logarítmico
+                audioMixer.SetFloat("SFXVOL", volumenSlider);
+                PlayerPrefs.SetFloat("SFXVolume", value);
+                Debug.Log($"Volumen SFX cambiado a: {volumenSlider} dB");
+            });
         }
 
         UpdateMenuVisuals();
-        UpdateLoadGameTextColor(); // Actualizar color al iniciar
+        UpdateLoadGameTextColor();
         if (fadePanel != null)
         {
             fadePanel.GetComponent<Image>().color = new Color(0, 0, 0, 0);
@@ -119,42 +150,86 @@ public class PerihelionMenu : MonoBehaviour
 
     private void MoveUp()
     {
-        switch (currentOption)
+        if (inSubMenu)
         {
-            case MenuOption.StartGame:
-                break;
-            case MenuOption.LoadGame:
-                currentOption = MenuOption.StartGame;
-                break;
-            case MenuOption.Options:
-                currentOption = MenuOption.LoadGame;
-                break;
-            case MenuOption.Exit:
-                currentOption = MenuOption.Options;
-                break;
+            switch (currentSubOption)
+            {
+                case SubMenuOption.Music:
+                    break;
+                case SubMenuOption.SoundEffects:
+                    currentSubOption = SubMenuOption.Music;
+                    break;
+                case SubMenuOption.AutoSave:
+                    currentSubOption = SubMenuOption.SoundEffects;
+                    break;
+                case SubMenuOption.Exit:
+                    currentSubOption = SubMenuOption.AutoSave;
+                    break;
+            }
+            PlaySelectionSound();
+            UpdateSubMenuVisuals();
         }
-        PlaySelectionSound();
-        UpdateMenuVisuals();
+        else
+        {
+            switch (currentOption)
+            {
+                case MenuOption.StartGame:
+                    break;
+                case MenuOption.LoadGame:
+                    currentOption = MenuOption.StartGame;
+                    break;
+                case MenuOption.Options:
+                    currentOption = MenuOption.LoadGame;
+                    break;
+                case MenuOption.Exit:
+                    currentOption = MenuOption.Options;
+                    break;
+            }
+            PlaySelectionSound();
+            UpdateMenuVisuals();
+        }
     }
 
     private void MoveDown()
     {
-        switch (currentOption)
+        if (inSubMenu)
         {
-            case MenuOption.StartGame:
-                currentOption = MenuOption.LoadGame;
-                break;
-            case MenuOption.LoadGame:
-                currentOption = MenuOption.Options;
-                break;
-            case MenuOption.Options:
-                currentOption = MenuOption.Exit;
-                break;
-            case MenuOption.Exit:
-                break;
+            switch (currentSubOption)
+            {
+                case SubMenuOption.Music:
+                    currentSubOption = SubMenuOption.SoundEffects;
+                    break;
+                case SubMenuOption.SoundEffects:
+                    currentSubOption = SubMenuOption.AutoSave;
+                    break;
+                case SubMenuOption.AutoSave:
+                    currentSubOption = SubMenuOption.Exit;
+                    break;
+                case SubMenuOption.Exit:
+                    break;
+            }
+            PlaySelectionSound();
+            UpdateSubMenuVisuals();
         }
-        PlaySelectionSound();
-        UpdateMenuVisuals();
+        else
+        {
+            switch (currentOption)
+            {
+                case MenuOption.StartGame:
+                    currentOption = MenuOption.LoadGame;
+                    break;
+                case MenuOption.LoadGame:
+                    currentOption = MenuOption.Options;
+                    break;
+                case MenuOption.Options:
+                    currentOption = MenuOption.Exit;
+                    break;
+                case MenuOption.Exit:
+                    break;
+            }
+            PlaySelectionSound();
+            UpdateMenuVisuals();
+        }
     }
 
     private void UpdateMenuVisuals()
@@ -179,7 +254,7 @@ public class PerihelionMenu : MonoBehaviour
                 SetIndicatorsActive(exitIndicators, true);
                 break;
         }
-        UpdateLoadGameTextColor(); // Actualizar color al mover entre opciones
+        UpdateLoadGameTextColor();
     }
 
     private void UpdateSubMenuVisuals()
@@ -361,7 +436,7 @@ public class PerihelionMenu : MonoBehaviour
     {
         if (loadGameText != null)
         {
-            loadGameText.color = gameLoaded ? Color.white : Color.gray; // Blanco si gameLoaded, gris si no
+            loadGameText.color = gameLoaded ? Color.white : Color.gray;
         }
     }
 }

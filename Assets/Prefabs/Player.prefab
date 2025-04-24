@@ -189,6 +189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  pushSpeed: 2
   jumpForce: 6.5
   groundLayer:
     serializedVersion: 2
@@ -201,15 +202,18 @@ MonoBehaviour:
   headObject: {fileID: 0}
   bodyObject: {fileID: 0}
   isDismembered: 0
+  boxSideTag: BoxSide
   rb: {fileID: 771476674465650283}
   boxCollider: {fileID: 4288245890481226913}
   isGrounded: 0
   isGravityNormal: 1
   isSelectingMode: 0
+  hasGravityAbility: 0
   jumpSound: {fileID: 8300000, guid: cff8eac4fb5a08f42aab14c8b5e65fa3, type: 3}
   canChangeGravity: 1
   canShoot: 1
   canDismember: 1
+  isInGravityField: 0
   lockedLogo: {fileID: 0}
   coinControllerUI: {fileID: 0}
 --- !u!114 &2500605073630376083
@@ -381,7 +385,7 @@ AudioSource:
   m_GameObject: {fileID: 6275087873913530437}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7447712814878036893, guid: fe95266f1435fd640af1ce5ce8f0b462, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
