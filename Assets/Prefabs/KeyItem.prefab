@@ -84,7 +84,7 @@ SpriteRenderer:
   m_Size: {x: 0.16, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &5669827584585362950
@@ -99,7 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41c0d7bb0a8fb6d438ffb53313c1a5b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueMark: {fileID: 0}
   textBox: {fileID: 0}
   dialogueLines:
   - Has conseguido el <color=yellow>Chrono-Vity</color>!
@@ -115,6 +114,9 @@ MonoBehaviour:
   textField2: {fileID: 0}
   fanfareSong: {fileID: 8300000, guid: 20c0ce2715ce9c04fb2c4437c9681307, type: 3}
   Input_TB: {fileID: 0}
+  prefabToMove: {fileID: 0}
+  newPrefabPosition: {x: 0, y: 0, z: 0}
+  newPrefabPositionInverted: {x: 0, y: 0, z: 0}
 --- !u!61 &6071182378240184559
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -169,7 +171,7 @@ AudioSource:
   m_GameObject: {fileID: 324783869238861195}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7447712814878036893, guid: fe95266f1435fd640af1ce5ce8f0b462, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.6

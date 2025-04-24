@@ -103,14 +103,16 @@ MonoBehaviour:
   textBox: {fileID: 0}
   textField1: {fileID: 0}
   textField2: {fileID: 0}
+  Input_TB: {fileID: 0}
   dialogueLines:
   - Bienvenido, Protagonista!
   - Esta es la zona de prueba.
   headlessDialogueLines: []
+  isOtherCharacterNormal: 
+  isOtherCharacterHeadless: 
   textBoxPortrait: {fileID: 0}
   portraitSprites: []
   headlessPortraitSprites: []
-  Input_TB: {fileID: 0}
   useAlternativePosition: 0
   alternativeTextBoxPosition: {x: 100, y: 100}
   typingSound: {fileID: 0}
@@ -170,7 +172,7 @@ AudioSource:
   m_GameObject: {fileID: 5521566355243332115}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7447712814878036893, guid: fe95266f1435fd640af1ce5ce8f0b462, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.75
