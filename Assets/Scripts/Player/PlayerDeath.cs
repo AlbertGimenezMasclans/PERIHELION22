@@ -256,6 +256,7 @@ public class PlayerDeath : MonoBehaviour
     public IEnumerator RespawnCoroutine()
     {
         isDead = true;
+        float elapsedTime = 0f; // Declarar elapsedTime una sola vez
 
         if (animator != null)
         {
@@ -279,7 +280,8 @@ public class PlayerDeath : MonoBehaviour
 
         yield return new WaitForSeconds(fadeInDelay);
 
-        float elapsedTime = 0f;
+        // Fade-in
+        elapsedTime = 0f;
         while (elapsedTime < fadeInTime)
         {
             elapsedTime += Time.deltaTime;
@@ -303,6 +305,7 @@ public class PlayerDeath : MonoBehaviour
             deathUILostCoins.text = "";
             deathUI.SetActive(true);
 
+            // Fade-in de la UI de muerte
             elapsedTime = 0f;
             while (elapsedTime < deathUIFadeTime)
             {
@@ -327,6 +330,7 @@ public class PlayerDeath : MonoBehaviour
 
             deathUILostCoins.text = "-" + coinsLost;
 
+            // Animación de resta de monedas
             elapsedTime = 0f;
             while (elapsedTime < coinSubtractionDuration)
             {
@@ -354,6 +358,7 @@ public class PlayerDeath : MonoBehaviour
 
             yield return new WaitForSeconds(0.8f);
 
+            // Fade-out de la UI de muerte
             elapsedTime = 0f;
             while (elapsedTime < deathUIFadeTime)
             {
@@ -423,18 +428,7 @@ public class PlayerDeath : MonoBehaviour
             }
         }
 
-        elapsedTime = 0f;
-        while (elapsedTime < fadeOutTime)
-        {
-            elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeOutTime);
-            fadePanel.color = new Color(0, 0, 0, alpha);
-            yield return null;
-        }
-        fadePanel.color = new Color(0, 0, 0, 0f);
-
-        yield return new WaitForSeconds(0.5f);
-
+        // Reposicionar al jugador y preparar la reaparición
         transform.position = initialPosition;
         transform.rotation = initialRotation;
         spriteRenderer.enabled = true;
@@ -453,15 +447,43 @@ public class PlayerDeath : MonoBehaviour
             Debug.Log($"Gravedad restablecida a normal al revivir. gravityScale: {rb.gravityScale}, isGravityNormal: {playerMovement.isGravityNormal}, Rotación del jugador: {transform.rotation.eulerAngles}");
         }
 
+        // Iniciar la animación de reaparición y esperar a que comience
         if (animator != null)
         {
             animator.Play("Protagonist_Appear");
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
             float animationLength = stateInfo.length;
+
+            // Iniciar el fade-out justo después de que comience la animación
+            elapsedTime = 0f;
+            while (elapsedTime < fadeOutTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeOutTime);
+                fadePanel.color = new Color(0, 0, 0, alpha);
+                yield return null;
+            }
+            fadePanel.color = new Color(0, 0, 0, 0f);
+
+            // Esperar a que la animación termine
             yield return new WaitForSeconds(animationLength);
             rb.simulated = true;
             animator.SetBool("IsGrounded", playerMovement.IsGrounded());
             animator.SetFloat("VerticalSpeed", rb.velocity.y);
+        }
+        else
+        {
+            // Si no hay animator, hacer el fade-out inmediatamente
+            elapsedTime = 0f;
+            while (elapsedTime < fadeOutTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeOutTime);
+                fadePanel.color = new Color(0, 0, 0, alpha);
+                yield return null;
+            }
+            fadePanel.color = new Color(0, 0, 0, 0f);
+            rb.simulated = true;
         }
 
         if (cameraController != null)

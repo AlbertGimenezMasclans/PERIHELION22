@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Platform : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class Platform : MonoBehaviour
     [SerializeField] private bool waitForButton = false; // Checkbox para esperar al botón
     [Tooltip("Si está marcado, la plataforma se detiene permanentemente al llegar a Point B.")]
     [SerializeField] private bool stopAtPointB = false;  // Checkbox para detenerse en Point B
+
+    [Header("GameObject Activation")]
+    [Tooltip("Lista de GameObjects que se activarán mientras el jugador esté tocando la plataforma.")]
+    [SerializeField] private List<GameObject> objectsToToggle; // Lista de GameObjects a controlar
 
     private Vector2 startPosition;                   // Posición de inicio del movimiento actual
     private Vector2 targetPosition;                  // Posición objetivo actual
@@ -160,6 +165,15 @@ public class Platform : MonoBehaviour
         {
             playerTransform = collision.transform;
 
+            // Activar los GameObjects mientras el jugador está en la plataforma
+            foreach (GameObject obj in objectsToToggle)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(true);
+                }
+            }
+
             if (waitForPlayer && !hasStartedMoving && !waitingToStart && !waitForButton)
             {
                 waitingToStart = true;
@@ -173,6 +187,15 @@ public class Platform : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             playerTransform = null;
+
+            // Desactivar los GameObjects cuando el jugador sale de la plataforma
+            foreach (GameObject obj in objectsToToggle)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(false);
+                }
+            }
         }
     }
 
