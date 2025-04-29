@@ -28,7 +28,7 @@ public class SimpleDialogueItem : MonoBehaviour
     private SpriteRenderer spriteRenderer;                    // Para desactivar/activar el objeto
     private bool isWaitingForGround;                          // Esperar a que el jugador caiga
 
-    private const int KREDS_TO_ADD = 5000;                    // Cantidad de Kreds a sumar (fija en código)
+    private const int KREDS_TO_ADD = 1500;                    // Cantidad de Kreds a sumar (fija en código)
     private const float Y_OFFSET = 2f;                        // Desplazamiento en Y relativo al jugador
 
     public bool IsDialogueActive => didDialogueStart;
