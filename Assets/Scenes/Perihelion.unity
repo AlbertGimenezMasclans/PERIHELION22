@@ -1044,11 +1044,14 @@ MonoBehaviour:
   dialogueLines:
   - "Apenas quedan libros en esta estanter\xEDa. Parece que nadie ha querido devolverlos."
   headlessDialogueLines: []
+  showDialogueOnlyOnce: 0
+  secondTimeDialogueLines: []
   useAlternativePosition: 1
   alternativeTextBoxPosition: {x: 0, y: -600}
   typingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
   dialogueAdvanceSound: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
   dialogueEndSound: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
+  objectsToToggleOnEnd: []
 --- !u!82 &45078452
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9287,6 +9290,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &151528466 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5521566355243332115, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+  m_PrefabInstance: {fileID: 870666528}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &151582220
 GameObject:
   m_ObjectHideFlags: 0
@@ -27738,6 +27746,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: showDialogueOnlyOnce
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.size
       value: 26
       objectReference: {fileID: 0}
@@ -27877,6 +27889,14 @@ PrefabInstance:
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: headlessDialogueLines.Array.size
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.data[0]
+      value: El ordenador <color=yellow>no</color> se enciende.
       objectReference: {fileID: 0}
     - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: m_LocalScale.x
@@ -30990,6 +31010,263 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 22.874374, y: 11.924973}
   m_EdgeRadius: 0
+--- !u!1001 &481092951
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 557315122}
+    m_Modifications:
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_Size.x
+      value: 0.21084757
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_Size.y
+      value: 0.31001505
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.004988499
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.01897858
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 459166877580452727, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 9.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 9.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 9.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 33.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -12.716
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4554248628103416672, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_FlipX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4554248628103416672, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -659670732, guid: 953e7547783378c49a578ab0386d67fc, type: 3}
+    - target: {fileID: 5521566355243332115, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_Name
+      value: NPC1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521566355243332115, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: textBox
+      value: 
+      objectReference: {fileID: 2002947157}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: Input_TB
+      value: 
+      objectReference: {fileID: 692248173}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: idleSprite
+      value: 
+      objectReference: {fileID: 1918823127, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: textField1
+      value: 
+      objectReference: {fileID: 1596416314}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: blinkSprite
+      value: 
+      objectReference: {fileID: -1472736098, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: typingSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 58cde1960b458a94ca8c69d8f5044be1, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: dialogueMark
+      value: 
+      objectReference: {fileID: 724884276}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: textBoxPortrait
+      value: 
+      objectReference: {fileID: 314552463}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectToDisableOnEnd
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: showDialogueOnlyOnce
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: dialogueLines.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: portraitSprites.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: dialogueLines.Array.data[0]
+      value: "Lee el cartel que hay m\xE1s adelante, por favor."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: dialogueLines.Array.data[1]
+      value: "A qu\xE9 historia me refiero? Hmm... Parece que no recuerdas nada.
+        Lo siento, no puedo ayudarte con eso."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: dialogueLines.Array.data[2]
+      value: "Desactivar\xE9 este l\xE1ser para que puedas seguir adelante. \nAseg\xFArate
+        de leer el cartel que hay m\xE1s adelante, por favor."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: dialogueLines.Array.data[3]
+      value: Espero que tengas un buen viaje.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: dialogueLines.Array.data[4]
+      value: Espero que tengas un buen viaje.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: portraitSprites.Array.data[0]
+      value: 
+      objectReference: {fileID: 1918823127, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: portraitSprites.Array.data[1]
+      value: 
+      objectReference: {fileID: 1918823127, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: portraitSprites.Array.data[2]
+      value: 
+      objectReference: {fileID: 1918823127, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: portraitSprites.Array.data[3]
+      value: 
+      objectReference: {fileID: 1097899062, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: portraitSprites.Array.data[4]
+      value: 
+      objectReference: {fileID: 631653693, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectsToToggleOnEnd.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectsToToggleOnEnd.Array.data[0]
+      value: 
+      objectReference: {fileID: 151528466}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimePortraitSprites.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: isOtherCharacterSecondTime.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.data[0]
+      value: "Lee el cartel que hay m\xE1s adelante, por favor."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimePortraitSprites.Array.data[0]
+      value: 
+      objectReference: {fileID: 1918823127, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: isOtherCharacterSecondTime.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+--- !u!4 &481092952 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2337772732244123404, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+  m_PrefabInstance: {fileID: 481092951}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &481092953 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5521566355243332115, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+  m_PrefabInstance: {fileID: 481092951}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &481465091
 GameObject:
   m_ObjectHideFlags: 0
@@ -34914,6 +35191,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 870666529}
+  - {fileID: 481092952}
   - {fileID: 724884277}
   m_Father: {fileID: 1704077017}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -62033,6 +62311,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC1
       objectReference: {fileID: 0}
+    - target: {fileID: 5521566355243332115, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
       propertyPath: textBox
       value: 
@@ -62065,6 +62347,14 @@ PrefabInstance:
       propertyPath: textBoxPortrait
       value: 
       objectReference: {fileID: 314552463}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectToDisableOnEnd
+      value: 
+      objectReference: {fileID: 868135468}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: showDialogueOnlyOnce
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
       propertyPath: dialogueLines.Array.size
       value: 5
@@ -62116,6 +62406,46 @@ PrefabInstance:
       propertyPath: portraitSprites.Array.data[4]
       value: 
       objectReference: {fileID: 631653693, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectsToToggleOnEnd.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectsToToggleOnEnd.Array.data[0]
+      value: 
+      objectReference: {fileID: 868135468}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectsToToggleOnEnd.Array.data[1]
+      value: 
+      objectReference: {fileID: 481092953}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: objectsToToggleOnEnd.Array.data[2]
+      value: 
+      objectReference: {fileID: 151528466}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimePortraitSprites.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: isOtherCharacterSecondTime.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.data[0]
+      value: "Lee el cartel que hay m\xE1s adelante, por favor."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: secondTimePortraitSprites.Array.data[0]
+      value: 
+      objectReference: {fileID: 1918823127, guid: 3c36350fcdb84fb49a90667f8c049eba, type: 3}
+    - target: {fileID: 6579526728564863465, guid: fedc56387f80e064e989fccee490f7e7, type: 3}
+      propertyPath: isOtherCharacterSecondTime.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -106063,11 +106393,14 @@ MonoBehaviour:
   - "Apenas quedan libros en esta estanter\xEDa. Parece que nadie ha querido devolverlos."
   - Un momento... Estan pegadas? Vaya.
   headlessDialogueLines: []
+  showDialogueOnlyOnce: 0
+  secondTimeDialogueLines: []
   useAlternativePosition: 1
   alternativeTextBoxPosition: {x: 0, y: -600}
   typingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
   dialogueAdvanceSound: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
   dialogueEndSound: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
+  objectsToToggleOnEnd: []
 --- !u!61 &1602919274
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -116265,11 +116598,14 @@ MonoBehaviour:
   - "En la parte de atr\xE1s hay unas iniciales escritas: <color=yellow>AGM</color>."
   - Por mucho que ese tal "AGM" lo sintiera... no parece que vaya a devolverlos pronto.
   headlessDialogueLines: []
+  showDialogueOnlyOnce: 0
+  secondTimeDialogueLines: []
   useAlternativePosition: 0
   alternativeTextBoxPosition: {x: 100, y: 100}
   typingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
   dialogueAdvanceSound: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
   dialogueEndSound: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
+  objectsToToggleOnEnd: []
 --- !u!61 &1798580662
 BoxCollider2D:
   m_ObjectHideFlags: 0

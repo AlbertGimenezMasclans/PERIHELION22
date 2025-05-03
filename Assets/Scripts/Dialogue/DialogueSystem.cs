@@ -19,6 +19,12 @@ public class DialogueSystem : MonoBehaviour
     [SerializeField] private bool[] isOtherCharacterNormal;
     [SerializeField] private bool[] isOtherCharacterHeadless;
 
+    [Header("Second Time Dialogue")]
+    [SerializeField] private bool showDialogueOnlyOnce = false;
+    [SerializeField, TextArea(1, 4)] private string[] secondTimeDialogueLines;
+    [SerializeField] private Sprite[] secondTimePortraitSprites;
+    [SerializeField] private bool[] isOtherCharacterSecondTime;
+
     [Header("Portrait Settings")]
     [SerializeField] private GameObject textBoxPortrait;
     [SerializeField] private Sprite[] portraitSprites;
@@ -34,6 +40,9 @@ public class DialogueSystem : MonoBehaviour
     [Header("Blink Animation")]
     [SerializeField] private Sprite idleSprite;
     [SerializeField] private Sprite blinkSprite;
+
+    [Header("Post-Dialogue Settings")]
+    [SerializeField] private List<GameObject> objectsToToggleOnEnd;
 
     private float typingTime = 0.05f;
     private float commaPauseTime = 0.25f;
@@ -53,6 +62,8 @@ public class DialogueSystem : MonoBehaviour
     private Sprite[] activePortraitSprites;
     private bool[] activeIsOtherCharacter;
     private TMP_Text dialogueText;
+    private bool hasFinishedDialogueOnce = false;
+    private bool hasTalkedToPlayer = false;
 
     public bool IsDialogueActive => didDialogueStart;
     private PlayerMovement playerMovement;
@@ -61,8 +72,7 @@ public class DialogueSystem : MonoBehaviour
 
     void Start()
     {
-        audioSource = gameObject.GetComponent<AudioSource>();
-        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
 
         dialogueAdvanceSound = Resources.Load<AudioClip>("SFX/DialogueNEXT");
         dialogueEndSound = Resources.Load<AudioClip>("SFX/DialogueEND");
@@ -93,15 +103,10 @@ public class DialogueSystem : MonoBehaviour
         originalUpdateModes = new List<AnimatorUpdateMode>();
 
         if (isOtherCharacterNormal == null || isOtherCharacterNormal.Length != dialogueLines.Length)
-        {
-            Debug.LogWarning($"isOtherCharacterNormal length does not match dialogueLines length. Adjusting...");
             isOtherCharacterNormal = new bool[dialogueLines.Length];
-        }
+
         if (headlessDialogueLines != null && (isOtherCharacterHeadless == null || isOtherCharacterHeadless.Length != headlessDialogueLines.Length))
-        {
-            Debug.LogWarning($"isOtherCharacterHeadless length does not match headlessDialogueLines length. Adjusting...");
             isOtherCharacterHeadless = new bool[headlessDialogueLines.Length];
-        }
     }
 
     void Update()
@@ -146,7 +151,6 @@ public class DialogueSystem : MonoBehaviour
         }
         else if (playerObject != null)
         {
-            // Si es la cabeza, buscar el PlayerMovement asociado
             PlayerMovement pm = FindPlayerMovementForHead(playerObject);
             if (pm != null)
             {
@@ -155,9 +159,11 @@ public class DialogueSystem : MonoBehaviour
             }
             else if (playerObject.GetComponent<Dismember>() != null)
             {
-                isDismembered = true; // La cabeza siempre implica desmembramiento
+                isDismembered = true;
             }
         }
+
+        bool useSecondDialogue = showDialogueOnlyOnce && hasTalkedToPlayer;
 
         if (isDismembered && headlessDialogueLines != null && headlessDialogueLines.Length > 0)
         {
@@ -169,20 +175,15 @@ public class DialogueSystem : MonoBehaviour
             isOtherCharacterNormal.CopyTo(activeIsOtherCharacter, 0);
             isOtherCharacterHeadless.CopyTo(activeIsOtherCharacter, dialogueLines.Length);
 
-            if (headlessPortraitSprites != null && headlessPortraitSprites.Length > 0)
-            {
-                activePortraitSprites = new Sprite[portraitSprites.Length + headlessPortraitSprites.Length];
-                portraitSprites.CopyTo(activePortraitSprites, 0);
-                headlessPortraitSprites.CopyTo(activePortraitSprites, portraitSprites.Length);
-            }
-            else
-            {
-                activePortraitSprites = new Sprite[dialogueLines.Length + headlessDialogueLines.Length];
-                for (int i = 0; i < activePortraitSprites.Length; i++)
-                {
-                    activePortraitSprites[i] = portraitSprites[Mathf.Min(i, portraitSprites.Length - 1)];
-                }
-            }
+            activePortraitSprites = new Sprite[portraitSprites.Length + headlessPortraitSprites.Length];
+            portraitSprites.CopyTo(activePortraitSprites, 0);
+            headlessPortraitSprites.CopyTo(activePortraitSprites, portraitSprites.Length);
+        }
+        else if (useSecondDialogue && secondTimeDialogueLines != null && secondTimeDialogueLines.Length > 0)
+        {
+            activeDialogueLines = secondTimeDialogueLines;
+            activeIsOtherCharacter = isOtherCharacterSecondTime ?? new bool[secondTimeDialogueLines.Length];
+            activePortraitSprites = secondTimePortraitSprites ?? new Sprite[secondTimeDialogueLines.Length];
         }
         else
         {
@@ -239,6 +240,21 @@ public class DialogueSystem : MonoBehaviour
 
             if (Input_TB != null)
                 Input_TB.gameObject.SetActive(false);
+
+            hasTalkedToPlayer = true;
+
+            if (!hasFinishedDialogueOnce)
+            {
+                hasFinishedDialogueOnce = true;
+                if (objectsToToggleOnEnd != null)
+                {
+                    foreach (GameObject obj in objectsToToggleOnEnd)
+                    {
+                        if (obj != null)
+                            obj.SetActive(!obj.activeSelf);
+                    }
+                }
+            }
         }
     }
 
@@ -251,9 +267,7 @@ public class DialogueSystem : MonoBehaviour
 
         bool applyDelay = activeIsOtherCharacter[lineIndex];
         if (applyDelay)
-        {
             yield return new WaitForSecondsRealtime(otherCharacterDelay);
-        }
 
         dialogueText.gameObject.SetActive(true);
         if (textBoxPortrait != null) textBoxPortrait.SetActive(true);
@@ -283,7 +297,7 @@ public class DialogueSystem : MonoBehaviour
 
             if (currentChar == ',')
                 yield return new WaitForSecondsRealtime(commaPauseTime);
-            else if (currentChar == '.' || currentChar == '?' || currentChar == '!' || currentChar == ':' || currentChar == '¿' || currentChar == '¡')
+            else if (".?!:¿¡".Contains(currentChar.ToString()))
                 yield return new WaitForSecondsRealtime(periodPauseTime);
             else
                 yield return new WaitForSecondsRealtime(typingTime);
@@ -327,12 +341,11 @@ public class DialogueSystem : MonoBehaviour
 
     private void UpdatePortrait()
     {
-        if (textBoxPortrait != null)
+        if (textBoxPortrait != null && portraitImage != null && activePortraitSprites != null)
         {
-            if (portraitImage != null && activePortraitSprites != null && lineIndex < activePortraitSprites.Length)
-                portraitImage.sprite = activePortraitSprites[lineIndex];
-            else if (portraitImage != null)
-                portraitImage.sprite = null;
+            portraitImage.sprite = lineIndex < activePortraitSprites.Length
+                ? activePortraitSprites[lineIndex]
+                : null;
         }
     }
 
@@ -391,14 +404,9 @@ public class DialogueSystem : MonoBehaviour
             bool isPlayerGravityNormal = playerMovement.IsGravityNormal();
             Vector3 currentScale = transform.localScale;
 
-            if (isPlayerGravityNormal)
-                transform.localScale = new Vector3(
-                    playerFacingDirection > 0 ? Mathf.Abs(currentScale.x) : -Mathf.Abs(currentScale.x),
-                    currentScale.y, currentScale.z);
-            else
-                transform.localScale = new Vector3(
-                    playerFacingDirection > 0 ? -Mathf.Abs(currentScale.x) : Mathf.Abs(currentScale.x),
-                    currentScale.y, currentScale.z);
+            transform.localScale = new Vector3(
+                playerFacingDirection > 0 ? Mathf.Abs(currentScale.x) : -Mathf.Abs(currentScale.x),
+                currentScale.y, currentScale.z);
         }
         else if (playerObject != null)
         {
@@ -438,9 +446,7 @@ public class DialogueSystem : MonoBehaviour
         foreach (PlayerMovement pm in players)
         {
             if (pm.isDismembered && pm.headObject == head)
-            {
                 return pm;
-            }
         }
         return null;
     }

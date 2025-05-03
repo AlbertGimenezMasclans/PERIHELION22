@@ -17,6 +17,10 @@ public class Interact : MonoBehaviour
     [SerializeField, TextArea(1, 4)] private string[] dialogueLines;
     [SerializeField, TextArea(1, 4)] private string[] headlessDialogueLines;
 
+    [Header("Second Time Dialogue")]
+    [SerializeField] private bool showDialogueOnlyOnce = false;
+    [SerializeField, TextArea(1, 4)] private string[] secondTimeDialogueLines;
+
     [Header("Position Settings")]
     [SerializeField] private bool useAlternativePosition = false;
     [SerializeField] private Vector2 alternativeTextBoxPosition = new Vector2(100, 100);
@@ -25,6 +29,9 @@ public class Interact : MonoBehaviour
     [SerializeField] private AudioClip typingSound; // Sonido al escribir el texto
     [SerializeField] private AudioClip dialogueAdvanceSound; // Sonido al avanzar al siguiente mensaje
     [SerializeField] private AudioClip dialogueEndSound; // Sonido al finalizar el diálogo
+
+    [Header("Post-Dialogue Settings")]
+    [SerializeField] private List<GameObject> objectsToToggleOnEnd;
 
     private float typingTime = 0.05f;
     private float commaPauseTime = 0.25f; // Pausa después de una coma
@@ -36,6 +43,8 @@ public class Interact : MonoBehaviour
     private AudioSource audioSource;
     private string[] activeDialogueLines;
     private TMP_Text dialogueText;
+    private bool hasFinishedDialogueOnce = false;
+    private bool hasTalkedToPlayer = false;
 
     private PlayerMovement playerMovement;
     private GameObject playerObject;
@@ -110,6 +119,8 @@ public class Interact : MonoBehaviour
             playerMovement.enabled = false; // Desactiva movimiento del cuerpo
         }
 
+        bool useSecondDialogue = showDialogueOnlyOnce && hasTalkedToPlayer;
+
         if (playerObject.CompareTag("PlayerHead"))
         {
             if (headlessDialogueLines.Length > 0)
@@ -120,6 +131,10 @@ public class Interact : MonoBehaviour
             {
                 activeDialogueLines = dialogueLines; // Fallback a los diálogos normales
             }
+        }
+        else if (useSecondDialogue && secondTimeDialogueLines != null && secondTimeDialogueLines.Length > 0)
+        {
+            activeDialogueLines = secondTimeDialogueLines;
         }
         else
         {
@@ -163,7 +178,7 @@ public class Interact : MonoBehaviour
             if (playerMovement != null)
             {
                 playerMovement.SetDialogueActive(null);
-                playerMovement.enabled = true; // Reactiva el movimiento del jugador
+                playerMovement.enabled = true; // Reanuda el movimiento del jugador
             }
 
             if (playerHead != null && headRigidbody != null)
@@ -176,6 +191,21 @@ public class Interact : MonoBehaviour
 
             if (Input_TB != null)
                 Input_TB.gameObject.SetActive(false);
+
+            hasTalkedToPlayer = true;
+
+            if (!hasFinishedDialogueOnce)
+            {
+                hasFinishedDialogueOnce = true;
+                if (objectsToToggleOnEnd != null)
+                {
+                    foreach (GameObject obj in objectsToToggleOnEnd)
+                    {
+                        if (obj != null)
+                            obj.SetActive(!obj.activeSelf);
+                    }
+                }
+            }
         }
     }
 
