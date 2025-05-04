@@ -130,7 +130,7 @@ public class DialogueSystem : MonoBehaviour
         }
     }
 
-    private void StartDialogue()
+    public void StartDialogue()
     {
         if (textBox == null || dialogueText == null || dialogueLines == null || dialogueLines.Length == 0) return;
 

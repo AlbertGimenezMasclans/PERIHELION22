@@ -1,0 +1,146 @@
+using UnityEngine;
+
+public class NPCDialogueTrigger : MonoBehaviour
+{
+    [Header("NPC Reference")]
+    [SerializeField] private GameObject npcWithDialogue; // Referencia al GameObject del NPC con DialogueSystem
+
+    private DialogueSystem dialogueSystem; // Referencia al componente DialogueSystem del NPC
+    private bool hasTriggered = false; // Para evitar reactivaciones
+    private GameObject playerObject; // Para almacenar el jugador que colisionó
+    private PlayerMovement playerMovement; // Para configurar el movimiento
+
+    void Start()
+    {
+        // Obtener el componente DialogueSystem del NPC
+        if (npcWithDialogue != null)
+        {
+            dialogueSystem = npcWithDialogue.GetComponent<DialogueSystem>();
+            if (dialogueSystem == null)
+            {
+                Debug.LogError("El GameObject asignado como NPC no tiene un componente DialogueSystem.");
+            }
+        }
+        else
+        {
+            Debug.LogError("No se ha asignado un NPC en el Inspector.");
+        }
+
+        // Asegurarse de que el GameObject tiene un Rigidbody2D para colisiones físicas
+        if (GetComponent<Rigidbody2D>() == null)
+        {
+            Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
+            rb.isKinematic = true; // No afectado por física, solo para colisiones
+            rb.useFullKinematicContacts = true; // Detectar colisiones incluso si es cinemático
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Verificar si colisiona con el jugador y no se ha activado antes
+        if ((collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("PlayerHead")) && !hasTriggered)
+        {
+            hasTriggered = true; // Evita reactivaciones
+            playerObject = collision.gameObject;
+            playerMovement = playerObject.GetComponent<PlayerMovement>();
+
+            if (dialogueSystem != null && !dialogueSystem.IsDialogueActive)
+            {
+                // Configurar DialogueSystem para que reconozca al jugador
+                SetDialogueSystemFields();
+                // Iniciar el diálogo automáticamente
+                dialogueSystem.StartDialogue();
+                // Destruir el dialogueMark del NPC
+                DestroyDialogueMark();
+                // Forzar animación de Idle del jugador
+                ForcePlayerIdleAnimation();
+            }
+        }
+    }
+
+    void Update()
+    {
+        // Cuando el diálogo termine, desactivar el BoxCollider2D del NPC y destruir este GameObject
+        if (hasTriggered && dialogueSystem != null && !dialogueSystem.IsDialogueActive)
+        {
+            // Desactivar el BoxCollider2D del NPC
+            BoxCollider2D npcCollider = npcWithDialogue.GetComponent<BoxCollider2D>();
+            if (npcCollider != null)
+            {
+                npcCollider.enabled = false;
+            }
+            else
+            {
+                Debug.LogWarning("El NPC no tiene un BoxCollider2D para desactivar.");
+            }
+
+            // Establecer isPlayerRange a false para prevenir interacciones
+            System.Reflection.FieldInfo isPlayerRangeField = typeof(DialogueSystem).GetField("isPlayerRange", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (isPlayerRangeField != null)
+                isPlayerRangeField.SetValue(dialogueSystem, false);
+
+            // Destruir este GameObject
+            Destroy(gameObject);
+        }
+    }
+
+    private void SetDialogueSystemFields()
+    {
+        // Usar reflexión para acceder a los campos privados de DialogueSystem
+        System.Reflection.FieldInfo isPlayerRangeField = typeof(DialogueSystem).GetField("isPlayerRange", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        System.Reflection.FieldInfo playerObjectField = typeof(DialogueSystem).GetField("playerObject", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        System.Reflection.FieldInfo playerMovementField = typeof(DialogueSystem).GetField("playerMovement", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        if (isPlayerRangeField != null)
+            isPlayerRangeField.SetValue(dialogueSystem, true);
+        else
+            Debug.LogError("No se pudo acceder al campo isPlayerRange en DialogueSystem.");
+
+        if (playerObjectField != null)
+            playerObjectField.SetValue(dialogueSystem, playerObject);
+        else
+            Debug.LogError("No se pudo acceder al campo playerObject en DialogueSystem.");
+
+        if (playerMovementField != null)
+            playerMovementField.SetValue(dialogueSystem, playerMovement);
+        else
+            Debug.LogError("No se pudo acceder al campo playerMovement en DialogueSystem.");
+    }
+
+    private void DestroyDialogueMark()
+    {
+        // Usar reflexión para acceder al campo dialogueMark
+        System.Reflection.FieldInfo dialogueMarkField = typeof(DialogueSystem).GetField("dialogueMark", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (dialogueMarkField != null)
+        {
+            GameObject dialogueMark = (GameObject)dialogueMarkField.GetValue(dialogueSystem);
+            if (dialogueMark != null)
+            {
+                Destroy(dialogueMark); // Destruir el dialogueMark
+                dialogueMarkField.SetValue(dialogueSystem, null); // Establecer a null para evitar reactivaciones
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No se pudo acceder al campo dialogueMark en DialogueSystem.");
+        }
+    }
+
+    private void ForcePlayerIdleAnimation()
+    {
+        if (playerObject != null)
+        {
+            Animator playerAnimator = playerObject.GetComponent<Animator>();
+            if (playerAnimator != null)
+            {
+                // Asumimos que la animación de Idle se activa seteando isMoving a false
+                playerAnimator.SetBool("MoveRight", false);
+                playerAnimator.SetBool("MoveLeft", false);
+            }
+            else
+            {
+                Debug.LogWarning("El jugador no tiene un componente Animator para forzar la animación de Idle.");
+            }
+        }
+    }
+}
