@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NPCDialogueTrigger : MonoBehaviour
 {
@@ -48,6 +49,8 @@ public class NPCDialogueTrigger : MonoBehaviour
             {
                 // Configurar DialogueSystem para que reconozca al jugador
                 SetDialogueSystemFields();
+                // Inicializar el estado del retrato
+                InitializePortraitState();
                 // Iniciar el diálogo automáticamente
                 dialogueSystem.StartDialogue();
                 // Destruir el dialogueMark del NPC
@@ -60,7 +63,7 @@ public class NPCDialogueTrigger : MonoBehaviour
 
     void Update()
     {
-        // Cuando el diálogo termine, desactivar el BoxCollider2D del NPC y destruir este GameObject
+        // Cuando el diálogo termine, realizar las acciones finales
         if (hasTriggered && dialogueSystem != null && !dialogueSystem.IsDialogueActive)
         {
             // Desactivar el BoxCollider2D del NPC
@@ -74,10 +77,8 @@ public class NPCDialogueTrigger : MonoBehaviour
                 Debug.LogWarning("El NPC no tiene un BoxCollider2D para desactivar.");
             }
 
-            // Establecer isPlayerRange a false para prevenir interacciones
-            System.Reflection.FieldInfo isPlayerRangeField = typeof(DialogueSystem).GetField("isPlayerRange", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (isPlayerRangeField != null)
-                isPlayerRangeField.SetValue(dialogueSystem, false);
+            // Establecer isPlayerRange a false y reiniciar el retrato
+            ResetDialogueSystemState();
 
             // Destruir este GameObject
             Destroy(gameObject);
@@ -107,6 +108,62 @@ public class NPCDialogueTrigger : MonoBehaviour
             Debug.LogError("No se pudo acceder al campo playerMovement en DialogueSystem.");
     }
 
+    private void InitializePortraitState()
+    {
+        // Usar reflexión para acceder a portraitImage, idleSprite y blinkSprite
+        System.Reflection.FieldInfo portraitImageField = typeof(DialogueSystem).GetField("portraitImage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        System.Reflection.FieldInfo idleSpriteField = typeof(DialogueSystem).GetField("idleSprite", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        System.Reflection.FieldInfo blinkSpriteField = typeof(DialogueSystem).GetField("blinkSprite", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        if (portraitImageField != null && idleSpriteField != null && blinkSpriteField != null)
+        {
+            Image portraitImage = (Image)portraitImageField.GetValue(dialogueSystem);
+            Sprite idleSprite = (Sprite)idleSpriteField.GetValue(dialogueSystem);
+            Sprite blinkSprite = (Sprite)blinkSpriteField.GetValue(dialogueSystem);
+
+            if (portraitImage != null && idleSprite != null && blinkSprite != null)
+            {
+                // Asegurar que portraitImage comience con idleSprite
+                portraitImage.sprite = idleSprite;
+            }
+            else
+            {
+                Debug.LogWarning("portraitImage, idleSprite o blinkSprite no están configurados en DialogueSystem.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No se pudo acceder a los campos portraitImage, idleSprite o blinkSprite en DialogueSystem.");
+        }
+    }
+
+    private void ResetDialogueSystemState()
+    {
+        // Establecer isPlayerRange a false
+        System.Reflection.FieldInfo isPlayerRangeField = typeof(DialogueSystem).GetField("isPlayerRange", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (isPlayerRangeField != null)
+            isPlayerRangeField.SetValue(dialogueSystem, false);
+
+        // Reiniciar el retrato a idleSprite
+        System.Reflection.FieldInfo portraitImageField = typeof(DialogueSystem).GetField("portraitImage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        System.Reflection.FieldInfo idleSpriteField = typeof(DialogueSystem).GetField("idleSprite", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        if (portraitImageField != null && idleSpriteField != null)
+        {
+            Image portraitImage = (Image)portraitImageField.GetValue(dialogueSystem);
+            Sprite idleSprite = (Sprite)idleSpriteField.GetValue(dialogueSystem);
+
+            if (portraitImage != null && idleSprite != null)
+            {
+                portraitImage.sprite = idleSprite;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No se pudo acceder a los campos portraitImage o idleSprite en DialogueSystem.");
+        }
+    }
+
     private void DestroyDialogueMark()
     {
         // Usar reflexión para acceder al campo dialogueMark
@@ -117,7 +174,7 @@ public class NPCDialogueTrigger : MonoBehaviour
             if (dialogueMark != null)
             {
                 Destroy(dialogueMark); // Destruir el dialogueMark
-                dialogueMarkField.SetValue(dialogueSystem, null); // Establecer a null para evitar reactivaciones
+                dialogueMarkField.SetValue(dialogueSystem, null); // Establecer a null
             }
         }
         else
