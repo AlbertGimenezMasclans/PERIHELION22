@@ -13,8 +13,6 @@ public class CameraController : MonoBehaviour
     public float maxY = float.MaxValue;
     public float lookAheadFactor = 2f;
     public float lookAheadSpeed = 0.1f;
-    // Eliminamos headOffsetY porque ya no se usa
-    // public float headOffsetY = 1f; 
 
     private float initialMinX;
     private float initialMaxX;
@@ -188,5 +186,26 @@ public class CameraController : MonoBehaviour
             }
         }
         return null;
+    }
+
+    // Métodos para acceder a los límites de la cámara
+    public float GetMinX()
+    {
+        return minX;
+    }
+
+    public float GetMaxX()
+    {
+        return maxX;
+    }
+
+    public float GetMinY()
+    {
+        return minY;
+    }
+
+    public float GetMaxY()
+    {
+        return maxY;
     }
 }

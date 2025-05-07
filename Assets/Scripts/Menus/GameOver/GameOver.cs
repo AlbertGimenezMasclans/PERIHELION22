@@ -41,7 +41,7 @@ public class GameOver : MonoBehaviour
         // Verificar si se presiona C después de completar el fade
         if (fadeCompleted && Input.GetKeyDown(KeyCode.C))
         {
-            SceneManager.LoadScene("TestZone");
+            SceneManager.LoadScene("Perihelion");
         }
     }
 }

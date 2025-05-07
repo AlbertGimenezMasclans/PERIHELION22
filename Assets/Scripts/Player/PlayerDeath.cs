@@ -81,7 +81,7 @@ public class PlayerDeath : MonoBehaviour
     private PlayerHealth playerHealth;
     private float originalGravityScale;
     private bool hasCollectedCheckpoint = false;
-    private Checkpoint activeCheckpoint; // Referencia al checkpoint activo
+    private Checkpoint activeCheckpoint;
 
     void Start()
     {
@@ -247,7 +247,7 @@ public class PlayerDeath : MonoBehaviour
 
         if (checkpoint != null)
         {
-            activeCheckpoint = checkpoint; // Almacenar el checkpoint activo
+            activeCheckpoint = checkpoint;
             hasCollectedCheckpoint = true;
             Debug.Log($"Checkpoint activado: {checkpoint.gameObject.name}");
         }
@@ -256,7 +256,7 @@ public class PlayerDeath : MonoBehaviour
     public IEnumerator RespawnCoroutine()
     {
         isDead = true;
-        float elapsedTime = 0f; // Declarar elapsedTime una sola vez
+        float elapsedTime = 0f;
 
         if (animator != null)
         {
@@ -389,8 +389,6 @@ public class PlayerDeath : MonoBehaviour
             kredsManager.uiContainer.anchoredPosition = kredsManager.originalUIPosition;
         }
 
-        mainCamera.transform.position = initialCameraPosition;
-
         // Activar la zona visual del checkpoint activo
         if (activeCheckpoint != null)
         {
@@ -410,6 +408,7 @@ public class PlayerDeath : MonoBehaviour
             Debug.LogWarning("No hay un checkpoint activo. No se activará ninguna zona visual al reaparecer.");
         }
 
+        // Actualizar los límites de la cámara según la zona de reaparición
         if (cameraController != null)
         {
             Vector2 respawnPosition = new Vector2(initialPosition.x, initialPosition.y);
@@ -426,6 +425,19 @@ public class PlayerDeath : MonoBehaviour
                 cameraController.RestoreInitialLimits();
                 Debug.Log("No se encontró una zona en la posición de reaparición. Restaurando límites iniciales de la cámara.");
             }
+
+            // Posicionar la cámara en initialCameraPosition, respetando los límites de la zona
+            Vector3 targetCameraPosition = new Vector3(initialCameraPosition.x, initialCameraPosition.y, mainCamera.transform.position.z);
+            float clampedX = Mathf.Clamp(targetCameraPosition.x, cameraController.GetMinX(), cameraController.GetMaxX());
+            float clampedY = Mathf.Clamp(targetCameraPosition.y, cameraController.GetMinY(), cameraController.GetMaxY());
+            mainCamera.transform.position = new Vector3(clampedX, clampedY, targetCameraPosition.z);
+            Debug.Log($"Cámara posicionada en initialCameraPosition con límites aplicados: {mainCamera.transform.position}");
+        }
+        else
+        {
+            // Si no hay cameraController, simplemente establecer la posición sin límites
+            mainCamera.transform.position = initialCameraPosition;
+            Debug.Log($"Cámara posicionada en initialCameraPosition sin límites (cameraController no disponible): {mainCamera.transform.position}");
         }
 
         // Reposicionar al jugador y preparar la reaparición
