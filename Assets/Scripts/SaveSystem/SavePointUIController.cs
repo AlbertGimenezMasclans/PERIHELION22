@@ -22,6 +22,9 @@ public class SavePointUIController : MonoBehaviour
     [Header("Audio Settings")]
     [SerializeField] private AudioClip typingSound; // Sonido para cada 2 caracteres del texto
     [SerializeField] private AudioClip optionChangeSound; // Sonido al cambiar de opción
+    [SerializeField] private AudioClip yesSound; // Sonido para "Sí"
+    [SerializeField] private AudioClip confirmSound; // Sonido para "Continuar"
+    [SerializeField] private AudioClip cancelSound; // Sonido para "No" y "Salir"
 
     [Header("References")]
     [SerializeField] private CoinControllerUI coinController; // Referencia al controlador de monedas
@@ -103,10 +106,18 @@ public class SavePointUIController : MonoBehaviour
                     // Opciones "Continuar" o "Salir"
                     if (selectedOptionIndex == 0) // Continuar
                     {
+                        if (audioSource != null && confirmSound != null)
+                        {
+                            audioSource.PlayOneShot(confirmSound);
+                        }
                         CloseDialogue();
                     }
                     else if (selectedOptionIndex == 1) // Salir
                     {
+                        if (audioSource != null && cancelSound != null)
+                        {
+                            audioSource.PlayOneShot(cancelSound);
+                        }
                         Time.timeScale = 1f; // Restaurar tiempo antes de cambiar escena
                         SceneManager.LoadScene("MenuPrincipal");
                     }
@@ -116,6 +127,10 @@ public class SavePointUIController : MonoBehaviour
                     // Opciones "Sí" o "No"
                     if (selectedOptionIndex == 0) // Sí
                     {
+                        if (audioSource != null && yesSound != null)
+                        {
+                            audioSource.PlayOneShot(yesSound);
+                        }
                         // Guardar el juego
                         SaveSystem.SaveGame(playerMovement, coinController);
                         // Mostrar "Partida Guardada."
@@ -123,6 +138,10 @@ public class SavePointUIController : MonoBehaviour
                     }
                     else // No
                     {
+                        if (audioSource != null && cancelSound != null)
+                        {
+                            audioSource.PlayOneShot(cancelSound);
+                        }
                         CloseDialogue();
                     }
                 }
