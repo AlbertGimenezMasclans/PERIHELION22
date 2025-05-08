@@ -72731,7 +72731,7 @@ MonoBehaviour:
   unselectedColor: {r: 1, g: 1, b: 1, a: 1}
   optionChangeCooldown: 0.25
   typingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
-  optionChangeSound: {fileID: 8300000, guid: 98bc0b9596c122b4fbbb0092ceab2247, type: 3}
+  optionChangeSound: {fileID: 8300000, guid: a1a2f3a5f12cba94c965ba1e94fcd44d, type: 3}
   yesSound: {fileID: 8300000, guid: a84847038d1ee7743a70d4f0ad833990, type: 3}
   confirmSound: {fileID: 8300000, guid: 98bc0b9596c122b4fbbb0092ceab2247, type: 3}
   cancelSound: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
