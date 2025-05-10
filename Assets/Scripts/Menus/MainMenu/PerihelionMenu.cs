@@ -68,9 +68,6 @@ public class PerihelionMenu : MonoBehaviour
             return;
         }
 
-        // Verificar si hay una partida guardada
-        gameLoaded = SaveSystem.HasSavedGame() || PlayerPrefs.GetInt("GameLoaded", 0) == 1;
-
         // Configurar el slider de Música (BGM)
         if (musicSlider != null)
         {
@@ -318,7 +315,6 @@ public class PerihelionMenu : MonoBehaviour
         if (currentOption == MenuOption.StartGame)
         {
             PlaySelectionSound();
-            SaveSystem.SaveDefaultGame(); // Sobrescribir JSON con datos por defecto
             yield return StartCoroutine(FadeIn(0.80f));
             SceneManager.LoadScene("Perihelion");
         }
