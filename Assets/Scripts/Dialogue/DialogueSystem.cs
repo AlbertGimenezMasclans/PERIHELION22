@@ -64,6 +64,7 @@ public class DialogueSystem : MonoBehaviour
     private TMP_Text dialogueText;
     private bool hasFinishedDialogueOnce = false;
     private bool hasTalkedToPlayer = false;
+    private bool isBlinking = false; // Bandera para rastrear el estado de parpadeo
 
     public bool IsDialogueActive => didDialogueStart;
     private PlayerMovement playerMovement;
@@ -126,6 +127,7 @@ public class DialogueSystem : MonoBehaviour
                 StopAllCoroutines();
                 dialogueText.maxVisibleCharacters = GetVisibleCharacterCount(activeDialogueLines[lineIndex]);
                 if (Input_TB != null) Input_TB.gameObject.SetActive(true);
+                StartCoroutine(BlinkRoutine()); // Reinicia la corrutina para asegurar el parpadeo
             }
         }
     }
@@ -189,7 +191,7 @@ public class DialogueSystem : MonoBehaviour
         {
             activeDialogueLines = dialogueLines;
             activeIsOtherCharacter = isOtherCharacterNormal;
-            activePortraitSprites = portraitSprites;
+            activePortraitSprites = portraitSprites; // Corrección: asigna portraitSprites
         }
 
         RectTransform textBoxRect = textBox.GetComponent<RectTransform>();
@@ -297,7 +299,7 @@ public class DialogueSystem : MonoBehaviour
 
             if (currentChar == ',')
                 yield return new WaitForSecondsRealtime(commaPauseTime);
-            else if (".?!:¿¡".Contains(currentChar.ToString()))
+            else if (".?!:".Contains(currentChar.ToString()))
                 yield return new WaitForSecondsRealtime(periodPauseTime);
             else
                 yield return new WaitForSecondsRealtime(typingTime);
@@ -343,9 +345,13 @@ public class DialogueSystem : MonoBehaviour
     {
         if (textBoxPortrait != null && portraitImage != null && activePortraitSprites != null)
         {
-            portraitImage.sprite = lineIndex < activePortraitSprites.Length
-                ? activePortraitSprites[lineIndex]
-                : null;
+            // Solo actualiza el sprite si no está parpadeando
+            if (!isBlinking)
+            {
+                Sprite newSprite = lineIndex < activePortraitSprites.Length ? activePortraitSprites[lineIndex] : null;
+                portraitImage.sprite = newSprite;
+                // Debug.Log($"Actualizando retrato en línea {lineIndex}, nuevo sprite: {(newSprite != null ? newSprite.name : "null")}");
+            }
         }
     }
 
@@ -362,12 +368,19 @@ public class DialogueSystem : MonoBehaviour
             float waitTime = Random.Range(2f, 5f);
             yield return new WaitForSecondsRealtime(waitTime);
 
-            if (portraitImage != null && portraitImage.sprite == idleSprite)
+            // Solo parpadea si:
+            // 1. El diálogo está activo
+            // 2. El retrato está configurado
+            // 3. El sprite del diálogo actual es idleSprite
+            if (portraitImage != null && didDialogueStart && lineIndex < activePortraitSprites.Length && activePortraitSprites[lineIndex] == idleSprite)
             {
+                // Debug.Log($"Iniciando parpadeo en línea {lineIndex}, sprite actual: {portraitImage.sprite.name}");
+                isBlinking = true;
                 portraitImage.sprite = blinkSprite;
                 yield return new WaitForSecondsRealtime(0.26f);
-                if (didDialogueStart && lineIndex < activePortraitSprites.Length && activePortraitSprites[lineIndex] == idleSprite)
-                    portraitImage.sprite = idleSprite;
+                portraitImage.sprite = idleSprite;
+                // Debug.Log($"Parpadeo terminado, restaurando sprite: {portraitImage.sprite.name}");
+                isBlinking = false;
             }
         }
     }
