@@ -9,12 +9,12 @@ public class CoinControllerUI : MonoBehaviour
     {
         if (coinUIPanel == null)
         {
-            Debug.LogError("CoinUIPanel no est· asignado en CoinControllerUI.");
+            Debug.LogError("CoinUIPanel no est√° asignado en CoinControllerUI.");
             return;
         }
         if (playerMovement == null)
         {
-            Debug.LogError("PlayerMovement no est· asignado en CoinControllerUI.");
+            Debug.LogError("PlayerMovement no est√° asignado en CoinControllerUI.");
             return;
         }
 
@@ -40,16 +40,16 @@ public class CoinControllerUI : MonoBehaviour
         }
         else
         {
-            // No desactivamos aquÌ manualmente, dejamos que OnItemCollision lo maneje al inicio
+            // No desactivamos aqu√≠ manualmente, dejamos que OnItemCollision lo maneje al inicio
         }
     }
 
     public void OnItemCollision()
     {
-        coinUIPanel.SetActive(false); // Desactivar al colisionar con un Ìtem
+        coinUIPanel.SetActive(false); // Desactivar al colisionar con un √≠tem
     }
 
-    // Nuevo mÈtodo para controlar el estado del coinUIPanel desde fuera
+    // Nuevo m√©todo para controlar el estado del coinUIPanel desde fuera
     public void SetCoinUIPanelActive(bool active)
     {
         coinUIPanel.SetActive(active);
