@@ -28,6 +28,7 @@ public class SavePointUIController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CoinControllerUI coinController; // Referencia al controlador de monedas
+    [SerializeField] private Animator savePointAnimator; // Referencia al Animator del SavePoint
 
     private bool isPlayerNearby = false; // Indica si el jugador está dentro del trigger
     private bool isDialogueActive = false; // Indica si el diálogo está activo
@@ -66,6 +67,25 @@ public class SavePointUIController : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+
+        // Asegurarse de que el Animator esté configurado
+        if (savePointAnimator == null)
+        {
+            savePointAnimator = GetComponent<Animator>();
+            if (savePointAnimator == null)
+            {
+                Debug.LogError("Animator component not found on SavePoint. Please assign it in the Inspector.");
+            }
+        }
+
+        // Configurar el Animator para usar tiempo real (no afectado por Time.timeScale)
+        if (savePointAnimator != null)
+        {
+            savePointAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
+
+        // Establecer la animación por defecto
+        TriggerAnimation("DefaultTrigger");
     }
 
     void Update()
@@ -79,14 +99,7 @@ public class SavePointUIController : MonoBehaviour
         {
             if (!isDialogueActive)
             {
-                // Iniciar el diálogo
-                isDialogueActive = true;
-                isPostSaveState = false;
-                if (saveDialogue != null)
-                    saveDialogue.SetActive(true);
-                if (interactionMarker != null)
-                    interactionMarker.SetActive(false);
-                // Bloquear movimiento del jugador
+                // Bloquear movimiento del jugador inmediatamente
                 if (playerMovement != null)
                 {
                     playerMovement.enabled = false; // Deshabilitar componente
@@ -96,7 +109,9 @@ public class SavePointUIController : MonoBehaviour
                 {
                     Debug.LogWarning("PlayerMovement component not found. Cannot block player movement.");
                 }
-                StartCoroutine(ShowText(initialDialogueText, saveOptions));
+
+                // Iniciar la animación "SavePoint-Entrance"
+                StartCoroutine(StartSavePointInteraction());
             }
             else if (!isTyping)
             {
@@ -110,7 +125,7 @@ public class SavePointUIController : MonoBehaviour
                         {
                             audioSource.PlayOneShot(confirmSound);
                         }
-                        CloseDialogue();
+                        StartCoroutine(EndSavePointInteraction());
                     }
                     else if (selectedOptionIndex == 1) // Salir
                     {
@@ -118,8 +133,8 @@ public class SavePointUIController : MonoBehaviour
                         {
                             audioSource.PlayOneShot(cancelSound);
                         }
-                        Time.timeScale = 1f; // Restaurar tiempo antes de cambiar escena
-                        SceneManager.LoadScene("MenuPrincipal");
+                        // Ejecutar "SavePoint-Leave" antes de salir
+                        StartCoroutine(ExitToMenu());
                     }
                 }
                 else
@@ -133,7 +148,7 @@ public class SavePointUIController : MonoBehaviour
                         }
                         // Guardar el juego
                         SaveSystem.SaveGame(playerMovement, coinController);
-                        // Mostrar "Partida Guardada."
+                        // Mostrar "Partida Guardada." y manejar animaciones
                         StartCoroutine(ShowSavedMessage());
                     }
                     else // No
@@ -142,7 +157,7 @@ public class SavePointUIController : MonoBehaviour
                         {
                             audioSource.PlayOneShot(cancelSound);
                         }
-                        CloseDialogue();
+                        StartCoroutine(EndSavePointInteraction());
                     }
                 }
             }
@@ -196,8 +211,27 @@ public class SavePointUIController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNearby = false;
-            CloseDialogue();
+            StartCoroutine(EndSavePointInteraction());
         }
+    }
+
+    private IEnumerator StartSavePointInteraction()
+    {
+        // Ejecutar animación "SavePoint-Entrance"
+        TriggerAnimation("EntranceTrigger");
+
+        // Esperar a que termine "SavePoint-Entrance" y la espera de 0.75s (manejado por el Animator)
+        float entranceDuration = GetAnimationLength("SavePoint-Entrance") + 0.75f; // La espera de 0.75s está en el Animator, pero sumamos aquí para el tiempo total
+        yield return new WaitForSecondsRealtime(entranceDuration);
+
+        // Iniciar el diálogo (el Animator ya debería haber pasado a "SavePoint-Spin")
+        isDialogueActive = true;
+        isPostSaveState = false;
+        if (saveDialogue != null)
+            saveDialogue.SetActive(true);
+        if (interactionMarker != null)
+            interactionMarker.SetActive(false);
+        StartCoroutine(ShowText(initialDialogueText, saveOptions));
     }
 
     private IEnumerator ShowText(string text, GameObject[] optionsToShow)
@@ -255,7 +289,7 @@ public class SavePointUIController : MonoBehaviour
             }
         }
 
-        // Mostrar "Partida Guardada."
+        // Mostrar "Partida Guardada." mientras se mantiene "SavePoint-Spin" (sin activar LeaveTrigger aquí)
         isTyping = true;
         saveText.text = "Partida Guardada.";
         saveText.maxVisibleCharacters = 0;
@@ -288,7 +322,7 @@ public class SavePointUIController : MonoBehaviour
         isTyping = false;
         yield return new WaitForSecondsRealtime(0.55f);
 
-        // Mostrar "¿Quieres continuar o salir?" con nuevas opciones
+        // Mostrar "¿Quieres continuar o salir?" con nuevas opciones, manteniendo "SavePoint-Spin"
         isPostSaveState = true;
         StartCoroutine(ShowText("¿Quieres continuar o salir?", continueExitOptions));
     }
@@ -342,6 +376,67 @@ public class SavePointUIController : MonoBehaviour
         {
             audioSource.PlayOneShot(optionChangeSound);
         }
+    }
+
+    private void TriggerAnimation(string triggerName)
+    {
+        if (savePointAnimator != null)
+        {
+            savePointAnimator.SetTrigger(triggerName);
+        }
+        else
+        {
+            Debug.LogWarning("Animator not assigned in SavePointUIController. Cannot trigger animation: " + triggerName);
+        }
+    }
+
+    private float GetAnimationLength(string animationName)
+    {
+        if (savePointAnimator != null)
+        {
+            foreach (AnimationClip clip in savePointAnimator.runtimeAnimatorController.animationClips)
+            {
+                if (clip.name == animationName)
+                {
+                    return clip.length;
+                }
+            }
+        }
+        Debug.LogWarning("Animation " + animationName + " not found. Returning default length of 1 second.");
+        return 1f;
+    }
+
+    private IEnumerator EndSavePointInteraction()
+    {
+        // Ejecutar "SavePoint-Leave"
+        TriggerAnimation("LeaveTrigger");
+
+        // Esperar a que termine "SavePoint-Leave"
+        float leaveDuration = GetAnimationLength("SavePoint-Leave");
+        yield return new WaitForSecondsRealtime(leaveDuration);
+
+        // Volver a la animación por defecto "SavePoint-Save"
+        TriggerAnimation("DefaultTrigger");
+
+        // Cerrar el diálogo
+        CloseDialogue();
+    }
+
+    private IEnumerator ExitToMenu()
+    {
+        // Ejecutar "SavePoint-Leave"
+        TriggerAnimation("LeaveTrigger");
+
+        // Esperar a que termine "SavePoint-Leave"
+        float leaveDuration = GetAnimationLength("SavePoint-Leave");
+        yield return new WaitForSecondsRealtime(leaveDuration);
+
+        // Volver a la animación por defecto "SavePoint-Save"
+        TriggerAnimation("DefaultTrigger");
+
+        // Cambiar escena
+        Time.timeScale = 1f; // Restaurar tiempo antes de cambiar escena
+        SceneManager.LoadScene("MenuPrincipal");
     }
 
     private void CloseDialogue()
