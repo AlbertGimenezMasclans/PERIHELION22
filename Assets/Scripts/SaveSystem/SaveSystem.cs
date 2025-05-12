@@ -37,7 +37,7 @@ public class SaveSystem : MonoBehaviour
     {
         GameData data = new GameData
         {
-            playerPosition = new Vector2(0f, 0f), // Posición por defecto
+            playerPosition = new Vector2(0f, 0f), // Posición por defecto restaurada a (0, 0)
             coinCount = 0,
             canChangeGravity = false,
             canShoot = false,
