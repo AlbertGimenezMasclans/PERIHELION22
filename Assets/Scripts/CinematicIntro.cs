@@ -19,6 +19,11 @@ public class IntroCinematic : MonoBehaviour
     [SerializeField] private AudioClip sonidoEscritura;
     private AudioSource audioSource;
 
+    [Header("Activación del Canvas")]
+    [SerializeField] private GameObject canvasCinematica;
+
+    private bool yaActivado = false;
+
     private void Start()
     {
         audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
@@ -27,7 +32,23 @@ public class IntroCinematic : MonoBehaviour
         pantallaNegra.color = new Color(0, 0, 0, 1f); // Negra completa
         textoHacker.color = new Color(textoHacker.color.r, textoHacker.color.g, textoHacker.color.b, 0f); // Invisible
 
-        StartCoroutine(ReproducirCinematica());
+        if (canvasCinematica != null)
+            canvasCinematica.SetActive(false); // Desactivado al inicio
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (yaActivado) return;
+
+        if (other.CompareTag("Player"))
+        {
+            yaActivado = true;
+
+            if (canvasCinematica != null)
+                canvasCinematica.SetActive(true); // Activar UI
+
+            StartCoroutine(ReproducirCinematica());
+        }
     }
 
     private IEnumerator ReproducirCinematica()
@@ -84,7 +105,7 @@ public class IntroCinematic : MonoBehaviour
 
             if (c == ',')
                 yield return new WaitForSecondsRealtime(pausaComa);
-            else if (c == '.' || c == ':' )
+            else if (c == '.' || c == ':')
                 yield return new WaitForSecondsRealtime(pausaPunto);
             else
                 yield return new WaitForSecondsRealtime(velocidadEscritura);

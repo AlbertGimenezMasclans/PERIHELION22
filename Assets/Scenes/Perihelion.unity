@@ -4798,7 +4798,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &74401466
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17414,6 +17414,7 @@ GameObject:
   m_Component:
   - component: {fileID: 248642077}
   - component: {fileID: 248642078}
+  - component: {fileID: 248642080}
   - component: {fileID: 248642079}
   m_Layer: 0
   m_Name: CinematicIntro
@@ -17431,7 +17432,7 @@ Transform:
   m_GameObject: {fileID: 248642076}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -7.38, y: 34.43, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17451,12 +17452,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pantallaNegra: {fileID: 1584188861}
   textoHacker: {fileID: 242487842}
-  textoCinematica: "> Iniciando sistema.\n\n> Conexi\xF3n establecida.\n\n> Estado:
-    Estable.\n> Nombre en CLAVE: ???.\n> Nombre: Protagonista."
+  textoCinematica: "> Iniciando sistema.\n\n> Conexi\xF3n establecida.\n\n> Nombre:
+    Protagonista.\n> Nombre en CLAVE: ???.\n> Estado: Estable.\n\n> Sistemas Sensoriales:
+    Activos.\n> Sistema de Reconocimiento: Funcional. Estable.\n\n> Despertando .
+    . ."
   velocidadEscritura: 0.05
   pausaComa: 0.25
   pausaPunto: 0.48
   sonidoEscritura: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
+  canvasCinematica: {fileID: 74401465}
 --- !u!82 &248642079
 AudioSource:
   m_ObjectHideFlags: 0
@@ -17553,6 +17557,51 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!61 &248642080
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248642076}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.23954391, y: -0.115335464}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 14.928991, y: 9.783249}
+  m_EdgeRadius: 0
 --- !u!1 &249799238
 GameObject:
   m_ObjectHideFlags: 0
