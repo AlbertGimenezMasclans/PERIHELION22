@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 372c098f9939d2e418e9fa596bdfd9b8
+guid: 2b5df92b2697f2c4bb4ab4c7beb770f1
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: R0-P3_Portraits_0
+      name: Portrait-Kilito_0
       rect:
         serializedVersion: 2
         x: 4
         y: 25
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +111,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1366f88bf38c2334ba9895fdb4ab68ee
-      internalID: 1135605110
+      spriteID: d3c6d2a977045e745be74d93001e8b64
+      internalID: 570979527
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R0-P3_Portraits_1
+      name: Portrait-Kilito_1
       rect:
         serializedVersion: 2
         x: 27
         y: 25
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 89d4c02df46b5bd43b4e83daf5c3d42f
-      internalID: -325113337
+      spriteID: 47d7fb3f4d204b047b60e1f738ca04cd
+      internalID: -1948471784
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R0-P3_Portraits_2
+      name: Portrait-Kilito_2
       rect:
         serializedVersion: 2
         x: 50
         y: 25
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 12c57ee7f4084604d8f5606613de41b3
-      internalID: 1916765370
+      spriteID: 4fd5d1c6d862e9948a16bb4c4afcafb7
+      internalID: -34821891
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R0-P3_Portraits_3
+      name: Portrait-Kilito_3
       rect:
         serializedVersion: 2
         x: 73
         y: 25
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +174,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0866c8b27293b1e4999be93879cbc5db
-      internalID: -106136211
+      spriteID: c09dcca68c9f8ea4abc982d4eefbe415
+      internalID: -2057862648
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R0-P3_Portraits_4
+      name: Portrait-Kilito_4
       rect:
         serializedVersion: 2
         x: 4
         y: 3
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +195,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7b3a34b857dfaea4b95d170887ba190d
-      internalID: 278786529
+      spriteID: 20a94e70cce150c4992a12e249fd25c1
+      internalID: 1409882511
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R0-P3_Portraits_5
+      name: Portrait-Kilito_5
       rect:
         serializedVersion: 2
         x: 27
         y: 3
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -216,20 +216,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c258fa946625f3439fe1467b58911ce
-      internalID: 968056636
+      spriteID: 04cfeff8c28787e4bb29deeb4007fce0
+      internalID: 4015263
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R0-P3_Portraits_6
+      name: Portrait-Kilito_6
       rect:
         serializedVersion: 2
         x: 50
         y: 3
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -237,20 +237,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 56211aef946e3a3409c629f83c0adc86
-      internalID: -546793541
+      spriteID: c6d44d8d1b11339419116bbfa92f7563
+      internalID: 410823554
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: R0-P3_Portraits_7
+      name: Portrait-Kilito_7
       rect:
         serializedVersion: 2
         x: 73
         y: 3
         width: 20
-        height: 19
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,8 +258,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd388eef5bcc8914bae4a234c07bcba9
-      internalID: -100868326
+      spriteID: 5a9503624dfc8084f896172a074ed120
+      internalID: -2081805610
       vertices: []
       indices: 
       edges: []
@@ -275,14 +275,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      R0-P3_Portraits_0: 1135605110
-      R0-P3_Portraits_1: -325113337
-      R0-P3_Portraits_2: 1916765370
-      R0-P3_Portraits_3: -106136211
-      R0-P3_Portraits_4: 278786529
-      R0-P3_Portraits_5: 968056636
-      R0-P3_Portraits_6: -546793541
-      R0-P3_Portraits_7: -100868326
+      Portrait-Kilito_0: 570979527
+      Portrait-Kilito_1: -1948471784
+      Portrait-Kilito_2: -34821891
+      Portrait-Kilito_3: -2057862648
+      Portrait-Kilito_4: 1409882511
+      Portrait-Kilito_5: 4015263
+      Portrait-Kilito_6: 410823554
+      Portrait-Kilito_7: -2081805610
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
