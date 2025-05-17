@@ -6,6 +6,9 @@ public class NPCDialogueTrigger : MonoBehaviour
     [Header("NPC Reference")]
     [SerializeField] private GameObject npcWithDialogue; // Referencia al GameObject del NPC con DialogueSystem
 
+    [Header("Objects to Activate with Dialogue")]
+    [SerializeField] private GameObject[] objectsToActivate; // Lista de GameObjects que se activarán con el diálogo
+
     private DialogueSystem dialogueSystem; // Referencia al componente DialogueSystem del NPC
     private bool hasTriggered = false; // Para evitar reactivaciones
     private GameObject playerObject; // Para almacenar el jugador que colisionó
@@ -34,6 +37,18 @@ public class NPCDialogueTrigger : MonoBehaviour
             rb.isKinematic = true; // No afectado por física, solo para colisiones
             rb.useFullKinematicContacts = true; // Detectar colisiones incluso si es cinemático
         }
+
+        // Asegurarse de que los objetos a activar estén desactivados al inicio
+        if (objectsToActivate != null)
+        {
+            foreach (var obj in objectsToActivate)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(false);
+                }
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -51,6 +66,8 @@ public class NPCDialogueTrigger : MonoBehaviour
                 SetDialogueSystemFields();
                 // Inicializar el estado del retrato
                 InitializePortraitState();
+                // Activar los objetos junto con el diálogo
+                ActivateObjects();
                 // Iniciar el diálogo automáticamente
                 dialogueSystem.StartDialogue();
                 // Destruir el dialogueMark del NPC
@@ -82,6 +99,25 @@ public class NPCDialogueTrigger : MonoBehaviour
 
             // Destruir este GameObject
             Destroy(gameObject);
+        }
+    }
+
+    private void ActivateObjects()
+    {
+        // Activar todos los GameObjects en la lista
+        if (objectsToActivate != null)
+        {
+            foreach (var obj in objectsToActivate)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(true);
+                }
+                else
+                {
+                    Debug.LogWarning("Un GameObject en la lista objectsToActivate es null.");
+                }
+            }
         }
     }
 
