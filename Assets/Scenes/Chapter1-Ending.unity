@@ -367,11 +367,46 @@ MonoBehaviour:
   introText: {fileID: 87211598}
   inputIcon: {fileID: 2051220715}
   dialogueLines:
-  - La vida, la vida, es un CARROUSEL.
-  - CARRRROOOUUUSEEEEEEEEEEL.
-  introTextLines: "> NOMBRE DEL ARCHIVO: RC-001.\n\n> FECHA: 26 / 05/ 6XXX.\n\n\n>
-    > ACCESO: RESTRINGIDO.\n\n> > AUTOR: AN\xD3NIMO.\n\n\n> INICIANDO - REALITY CHECK
-    001 . . ."
+  - 'Hola, <color=yellow>Protagonista</color>.
+
+'
+  - "Si estas viendo esto, esta claro que ese robot chapucero de pacotilla te quiere
+    ayudar.\n\xBFVerdad que si?"
+  - "No se porque me sorprende, esa chatarra voladora no sirve para nada m\xE1s que
+    hablar."
+  - "Era un prototipo de ayudante de alto rango, es algo que se escapa del conocimiento
+    tan peque\xF1o que entra en tu memoria."
+  - "Pero no has venido aqu\xED para hablar de el. Sino de <color=yellow>ti</color>."
+  - Voy a ser directo,<color=yellow> eres un experimento fallido</color>.
+  - Planeabamos crear un ejercito para invasiones a otros planetas a gran escala.
+  - "Pero fallaste, mis cientificos no lograban hacerte funcionar, me reusaba a que
+    fallar\xE1s, \xBFsabes?"
+  - "As\xED que les hac\xEDa pagar con sus <color=red>miserables vidas</color>."
+  - "Si no pod\xEDan cumplir su trabajo ya no me serv\xEDan, ya no eran utiles ni
+    para mi, ni para los planetas que se fueran a conquistar."
+  - "Es una pena que fallar\xE1s... con tus magnificas habilidades habr\xEDas sido
+    una gran <color=yellow>maquina</color> a clonar."
+  - Peleando junto a los <color=#7BECBF>Kryta</color>, los responsables de la superficie.
+  - "Tranquilo, no vas a salir de ah\xED pronto, de hecho seguramente te destruyan,
+    pero si por alg\xFAn casual lograr\xE1s salir..."
+  - "<color=yellow>Te esperar\xE9</color> y hablaremos, te contar\xE9 todo lo que
+    quieras saber."
+  - "\xBFPorque es eso lo que quieres no, quieres saber la <color=yellow>verdad</color>,
+    los <color=yellow>hechos</color>?"
+  - "A cambio... traeme informaci\xF3n, cuentame todo lo que logres descifrar de
+    los... \"lugare\xF1os\" de ah\xED abajo.\nHaremos un intercambio."
+  - "Ah claro, que no sabes donde estas. Te lo dir\xEDa pero pierde la gracia."
+  - En fin, <color=yellow>Protagonista</color>, te dejo. Tengo planetas a los que
+    governar.
+  - "Piensa un poco m\xE1s en la idea de ser mi secuaz, no me gustar\xEDa desaprovechar
+    tu gran y \"unico\" potencial."
+  - Adios, ya nos veremos.
+  - 'A si, dile a <color=yellow>Prototype</color> que ha hecho un gran trabajo en
+    no contarte nada
+
+    Es una muy, muy, MUY, buena mascota.'
+  introTextLines: "NOMBRE DEL ARCHIVO: RC-001.\n\nFECHA: 26 / 05/ 6XXX.\n\n\nACCESO:
+    RESTRINGIDO.\nAUTOR: AN\xD3NIMO.\n\n\nINICIANDO - REALITY CHECK 001 . . ."
   dialogueTypingSpeed: 0.06
   dialogueTypingSound: {fileID: 8300000, guid: 8a56582162fb22c468e3821631717d95, type: 3}
   introTypingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
@@ -404,7 +439,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 7447712814878036893, guid: fe95266f1435fd640af1ce5ce8f0b462, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.45
   m_Pitch: 1
   Loop: 0
   Mute: 0

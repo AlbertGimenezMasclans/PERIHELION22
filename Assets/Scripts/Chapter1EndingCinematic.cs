@@ -14,7 +14,7 @@ public class Chapter1EndingCinematic : MonoBehaviour
 
     [Header("Diálogo Final")]
     [SerializeField, TextArea(2, 6)] private string[] dialogueLines; // Líneas de diálogo
-    [SerializeField, TextArea(4, 10)] private string introTextLines; // Texto de la introducción
+    [SerializeField, TextArea(3, 10)] private string introTextLines; // Texto de la introducción
     [SerializeField] private float dialogueTypingSpeed = 0.05f; // Velocidad de escritura
 
     [Header("Sonidos")]
@@ -163,21 +163,21 @@ public class Chapter1EndingCinematic : MonoBehaviour
 
             int totalVisible = GetVisibleCharacterCount(line);
             int currentVisible = 0;
+            int nonSpaceCharCount = 0;
 
             while (currentVisible < totalVisible)
             {
                 currentVisible++;
                 targetText.maxVisibleCharacters = currentVisible;
 
-                char c = GetCharAtVisibleIndex(line, currentVisible - 1);
-                if (c != ' ' && currentVisible % 2 == 0 && typingSound != null)
-                {
-                    audioSource.PlayOneShot(typingSound);
-                }
+                char currentChar = GetCharAtVisibleIndex(line, currentVisible - 1);
+                // Debug.Log($"Diálogo - Carácter visible {currentVisible}: '{currentChar}'");
 
-                if (c == ',')
+                PlayTypingSound(currentChar, ref nonSpaceCharCount, typingSound);
+
+                if (currentChar == ',')
                     yield return new WaitForSecondsRealtime(DIALOGUE_COMMA_PAUSE);
-                else if (".:!?".Contains(c.ToString()))
+                else if (".:!?".Contains(currentChar.ToString()))
                     yield return new WaitForSecondsRealtime(DIALOGUE_PERIOD_PAUSE);
                 else
                     yield return new WaitForSecondsRealtime(dialogueTypingSpeed);
@@ -238,24 +238,28 @@ public class Chapter1EndingCinematic : MonoBehaviour
 
         if (isIntro)
         {
-            // Modo introducción: escribe carácter por carácter sin input
-            targetText.text = "";
-            int soundCounter = 0;
+            // Modo introducción: escribe carácter por carácter sin input, ignorando etiquetas
+            targetText.text = text;
+            targetText.maxVisibleCharacters = 0;
+            targetText.ForceMeshUpdate();
 
-            for (int i = 0; i < text.Length; i++)
+            int totalVisible = GetVisibleCharacterCount(text);
+            int currentVisible = 0;
+            int nonSpaceCharCount = 0;
+
+            while (currentVisible < totalVisible)
             {
-                char c = text[i];
-                targetText.text += c;
+                currentVisible++;
+                targetText.maxVisibleCharacters = currentVisible;
 
-                soundCounter++;
-                if (soundCounter % 2 == 0 && typingSound != null)
-                {
-                    audioSource.PlayOneShot(typingSound);
-                }
+                char currentChar = GetCharAtVisibleIndex(text, currentVisible - 1);
+                // Debug.Log($"Introducción - Carácter visible {currentVisible}: '{currentChar}'");
 
-                if (c == ',')
+                PlayTypingSound(currentChar, ref nonSpaceCharCount, typingSound);
+
+                if (currentChar == ',')
                     yield return new WaitForSecondsRealtime(DIALOGUE_COMMA_PAUSE);
-                else if (c == '.' || c == ':')
+                else if (".:!?".Contains(currentChar.ToString()))
                     yield return new WaitForSecondsRealtime(DIALOGUE_PERIOD_PAUSE);
                 else
                     yield return new WaitForSecondsRealtime(dialogueTypingSpeed);
@@ -280,6 +284,18 @@ public class Chapter1EndingCinematic : MonoBehaviour
             textBox.SetActive(false);
         }
         cinematicFinished = true;
+    }
+
+    private void PlayTypingSound(char currentChar, ref int nonSpaceCharCount, AudioClip typingSound)
+    {
+        if (currentChar != ' ')
+        {
+            nonSpaceCharCount++;
+            if (nonSpaceCharCount % 2 == 0 && typingSound != null)
+            {
+                audioSource.PlayOneShot(typingSound);
+            }
+        }
     }
 
     private IEnumerator FadeOutText(TMP_Text text)
