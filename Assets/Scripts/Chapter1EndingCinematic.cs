@@ -7,22 +7,36 @@ using UnityEngine.UI;
 public class Chapter1EndingCinematic : MonoBehaviour
 {
     [Header("UI")]
+    [Tooltip("The container for dialogue text")]
     [SerializeField] private GameObject textBox; // Contenedor del texto de diálogo
+    [Tooltip("TextMeshPro text for dialogues")]
     [SerializeField] private TMP_Text dialogueText; // Texto para diálogos
+    [Tooltip("TextMeshPro text for the introduction")]
     [SerializeField] private TMP_Text introText; // Texto para la introducción
+    [Tooltip("Icon to advance dialogue")]
     [SerializeField] private Image inputIcon; // Icono para avanzar diálogo
 
-    [Header("Diálogo Final")]
+    [Header("Dialogue Settings")]
+    [Tooltip("Lines of dialogue to display")]
     [SerializeField, TextArea(2, 6)] private string[] dialogueLines; // Líneas de diálogo
+    [Tooltip("Introduction text to display")]
     [SerializeField, TextArea(3, 10)] private string introTextLines; // Texto de la introducción
+    [Tooltip("Typing speed for dialogues (seconds per character)")]
     [SerializeField] private float dialogueTypingSpeed = 0.05f; // Velocidad de escritura
 
-    [Header("Sonidos")]
+    [Header("Sounds")]
+    [Tooltip("Sound played during dialogue typing")]
     [SerializeField] private AudioClip dialogueTypingSound; // Sonido para diálogos
+    [Tooltip("Sound played during intro text typing")]
     [SerializeField] private AudioClip introTypingSound; // Sonido para introducción
+    [Tooltip("Sound played when advancing dialogue")]
     [SerializeField] private AudioClip advanceDialogueSound; // Sonido de avance
+    [Tooltip("Sound played when dialogue ends")]
     [SerializeField] private AudioClip endDialogueSound; // Sonido de fin
-    private AudioSource audioSource;
+
+    [Header("Post-Cinematic")]
+    [Tooltip("List of GameObjects to toggle active state (active becomes inactive and vice versa)")]
+    [SerializeField] private List<GameObject> objectsToToggle; // Lista de GameObjects a alternar
 
     // Pausas fijas
     private const float DIALOGUE_COMMA_PAUSE = 0.25f;
@@ -31,6 +45,7 @@ public class Chapter1EndingCinematic : MonoBehaviour
 
     private bool cinematicFinished = false;
     private PlayerMovement playerMovement;
+    private AudioSource audioSource;
 
     private void Start()
     {
@@ -126,6 +141,28 @@ public class Chapter1EndingCinematic : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
+        // Alternar el estado active de los GameObjects en la lista
+        if (objectsToToggle != null && objectsToToggle.Count > 0)
+        {
+            foreach (GameObject obj in objectsToToggle)
+            {
+                if (obj != null)
+                {
+                    bool newState = !obj.activeSelf;
+                    obj.SetActive(newState);
+                    Debug.Log($"GameObject {obj.name} cambiado a active={newState}", obj);
+                }
+                else
+                {
+                    Debug.LogWarning("Un GameObject en objectsToToggle es null.", this);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("objectsToToggle está vacío o no asignado en el Inspector.", this);
+        }
+
         // Restaurar movimiento del jugador
         if (playerMovement != null)
         {
@@ -134,6 +171,7 @@ public class Chapter1EndingCinematic : MonoBehaviour
         }
 
         // Limpiar cinemática
+        cinematicFinished = true;
         Destroy(gameObject);
         Debug.Log("Cinemática finalizada.", this);
     }
@@ -171,8 +209,6 @@ public class Chapter1EndingCinematic : MonoBehaviour
                 targetText.maxVisibleCharacters = currentVisible;
 
                 char currentChar = GetCharAtVisibleIndex(line, currentVisible - 1);
-                // Debug.Log($"Diálogo - Carácter visible {currentVisible}: '{currentChar}'");
-
                 PlayTypingSound(currentChar, ref nonSpaceCharCount, typingSound);
 
                 if (currentChar == ',')
@@ -215,7 +251,6 @@ public class Chapter1EndingCinematic : MonoBehaviour
             Debug.Log("Desactivando TextBox...", textBox);
             textBox.SetActive(false);
         }
-        cinematicFinished = true;
     }
 
     private IEnumerator PlayDialogue(TMP_Text targetText, string text, AudioClip typingSound, bool useTextBox)
@@ -234,56 +269,39 @@ public class Chapter1EndingCinematic : MonoBehaviour
         }
         targetText.gameObject.SetActive(true);
 
-        bool isIntro = !useTextBox; // La introducción no usa textBox
+        targetText.text = text;
+        targetText.maxVisibleCharacters = 0;
+        targetText.ForceMeshUpdate();
 
-        if (isIntro)
+        int totalVisible = GetVisibleCharacterCount(text);
+        int currentVisible = 0;
+        int nonSpaceCharCount = 0;
+
+        while (currentVisible < totalVisible)
         {
-            // Modo introducción: escribe carácter por carácter sin input, ignorando etiquetas
-            targetText.text = text;
-            targetText.maxVisibleCharacters = 0;
-            targetText.ForceMeshUpdate();
+            currentVisible++;
+            targetText.maxVisibleCharacters = currentVisible;
 
-            int totalVisible = GetVisibleCharacterCount(text);
-            int currentVisible = 0;
-            int nonSpaceCharCount = 0;
+            char currentChar = GetCharAtVisibleIndex(text, currentVisible - 1);
+            PlayTypingSound(currentChar, ref nonSpaceCharCount, typingSound);
 
-            while (currentVisible < totalVisible)
-            {
-                currentVisible++;
-                targetText.maxVisibleCharacters = currentVisible;
-
-                char currentChar = GetCharAtVisibleIndex(text, currentVisible - 1);
-                // Debug.Log($"Introducción - Carácter visible {currentVisible}: '{currentChar}'");
-
-                PlayTypingSound(currentChar, ref nonSpaceCharCount, typingSound);
-
-                if (currentChar == ',')
-                    yield return new WaitForSecondsRealtime(DIALOGUE_COMMA_PAUSE);
-                else if (".:!?".Contains(currentChar.ToString()))
-                    yield return new WaitForSecondsRealtime(DIALOGUE_PERIOD_PAUSE);
-                else
-                    yield return new WaitForSecondsRealtime(dialogueTypingSpeed);
-            }
-
-            // Aplicar fade-out al texto de la introducción
-            yield return new WaitForSeconds(0.75f); // Retraso antes del fade-out
-            yield return StartCoroutine(FadeOutText(targetText));
-        }
-        else
-        {
-            // Modo diálogo: este caso no se usa aquí, pero se mantiene por compatibilidad
-            Debug.LogError("PlayDialogue con string no debe usarse para diálogos.", this);
-            yield break;
+            if (currentChar == ',')
+                yield return new WaitForSecondsRealtime(DIALOGUE_COMMA_PAUSE);
+            else if (".:!?".Contains(currentChar.ToString()))
+                yield return new WaitForSecondsRealtime(DIALOGUE_PERIOD_PAUSE);
+            else
+                yield return new WaitForSecondsRealtime(dialogueTypingSpeed);
         }
 
-        Debug.Log("Desactivando TargetText...", targetText);
+        yield return new WaitForSeconds(0.75f);
+        yield return StartCoroutine(FadeOutText(targetText));
+
         targetText.gameObject.SetActive(false);
         if (useTextBox && textBox != null)
         {
             Debug.Log("Desactivando TextBox...", textBox);
             textBox.SetActive(false);
         }
-        cinematicFinished = true;
     }
 
     private void PlayTypingSound(char currentChar, ref int nonSpaceCharCount, AudioClip typingSound)
@@ -300,7 +318,7 @@ public class Chapter1EndingCinematic : MonoBehaviour
 
     private IEnumerator FadeOutText(TMP_Text text)
     {
-        float duration = 1f; // Duración del fade-out, como en el script de referencia
+        float duration = 1f;
         float time = 0f;
         Color initialColor = text.color;
         Color finalColor = new Color(initialColor.r, initialColor.g, initialColor.b, 0f);
