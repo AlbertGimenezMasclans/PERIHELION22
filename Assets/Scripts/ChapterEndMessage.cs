@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ChapterEndMessage : MonoBehaviour
 {
@@ -185,7 +186,11 @@ public class ChapterEndMessage : MonoBehaviour
         typewriterText.gameObject.SetActive(false);
         fadeText.gameObject.SetActive(false);
 
-        // Destruir el objeto para limpiar la escena
+        // Cambiar a la escena "MenuPrincipal" después del fade-out final
+        Debug.Log("Cambiando a la escena MenuPrincipal...");
+        SceneManager.LoadScene("MenuPrincipal");
+
+        // Destruir el objeto para limpiar la escena (opcional, ya que el cambio de escena destruirá el objeto)
         Destroy(gameObject);
     }
 }

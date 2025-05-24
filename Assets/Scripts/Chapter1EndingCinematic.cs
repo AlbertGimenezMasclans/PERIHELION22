@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class Chapter1EndingCinematic : MonoBehaviour
 {
@@ -33,6 +35,16 @@ public class Chapter1EndingCinematic : MonoBehaviour
     [SerializeField] private AudioClip advanceDialogueSound; // Sonido de avance
     [Tooltip("Sound played when dialogue ends")]
     [SerializeField] private AudioClip endDialogueSound; // Sonido de fin
+    [Tooltip("Background music to play during dialogues")]
+    [SerializeField] private AudioClip backgroundMusic; // Música de fondo
+    [Tooltip("Maximum volume for background music (0 to 1)")]
+    [SerializeField, Range(0f, 1f)] private float musicVolume = 1f; // Volumen máximo de la música
+    [Tooltip("Audio Mixer Group for background music (e.g., BGM in MainMixer)")]
+    [SerializeField] private AudioMixerGroup musicMixerGroup; // Grupo de mezcla para la música
+    [Tooltip("Duration of the music fade-in (seconds)")]
+    [SerializeField] private float musicFadeInDuration = 1.55f; // Duración del fade-in
+    [Tooltip("Duration of the music fade-out (seconds)")]
+    [SerializeField] private float musicFadeOutDuration = 1.55f; // Duración del fade-out
 
     [Header("Post-Cinematic")]
     [Tooltip("List of GameObjects to toggle active state (active becomes inactive and vice versa)")]
@@ -45,7 +57,8 @@ public class Chapter1EndingCinematic : MonoBehaviour
 
     private bool cinematicFinished = false;
     private PlayerMovement playerMovement;
-    private AudioSource audioSource;
+    private AudioSource audioSource; // Para efectos de sonido
+    private AudioSource musicAudioSource; // Para la música de fondo
 
     private void Start()
     {
@@ -58,12 +71,31 @@ public class Chapter1EndingCinematic : MonoBehaviour
         if (dialogueLines == null || dialogueLines.Length == 0) 
             Debug.LogWarning("DialogueLines está vacío.", this);
 
-        // Configurar AudioSource
+        // Configurar AudioSource para efectos de sonido
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             Debug.Log("AudioSource no estaba asignado. Se añadió uno automáticamente.", audioSource);
+        }
+        audioSource.volume = 0.35f; // Volumen fijo para efectos de sonido
+
+        // Configurar AudioSource para la música
+        if (backgroundMusic != null)
+        {
+            musicAudioSource = gameObject.AddComponent<AudioSource>();
+            musicAudioSource.loop = true; // Activar loop para la música
+            musicAudioSource.volume = 0f; // Volumen inicial en 0 para el fade-in
+            musicAudioSource.clip = backgroundMusic; // Asignar el clip de música
+            if (musicMixerGroup != null)
+            {
+                musicAudioSource.outputAudioMixerGroup = musicMixerGroup;
+                Debug.Log("MusicAudioSource asignado al grupo de mezcla BGM.", musicAudioSource);
+            }
+            else
+            {
+                Debug.LogWarning("MusicMixerGroup no está asignado en el Inspector. La música usará la salida por defecto.", this);
+            }
         }
 
         // Inicializar UI, forzando el estado inicial
@@ -139,6 +171,12 @@ public class Chapter1EndingCinematic : MonoBehaviour
             Debug.LogWarning("No se pueden mostrar diálogos: DialogueText, TextBox o DialogueLines no están configurados.", this);
         }
 
+        // Esperar el fade-out de la música antes de continuar
+        if (backgroundMusic != null && musicAudioSource != null && musicAudioSource.isPlaying)
+        {
+            yield return StartCoroutine(FadeOutMusic());
+        }
+
         yield return new WaitForSeconds(1f);
 
         // Alternar el estado active de los GameObjects en la lista
@@ -191,6 +229,14 @@ public class Chapter1EndingCinematic : MonoBehaviour
             textBox.SetActive(true);
         }
         targetText.gameObject.SetActive(true);
+
+        // NUEVO: Iniciar música en paralelo sin esperar el fade-in
+        if (backgroundMusic != null && musicAudioSource != null)
+        {
+            musicAudioSource.Play();
+            StartCoroutine(FadeInMusic()); // Iniciar fade-in sin yield
+            Debug.Log("Música de fondo iniciada en paralelo con el diálogo.", this);
+        }
 
         foreach (string line in lines)
         {
@@ -302,6 +348,34 @@ public class Chapter1EndingCinematic : MonoBehaviour
             Debug.Log("Desactivando TextBox...", textBox);
             textBox.SetActive(false);
         }
+    }
+
+    private IEnumerator FadeInMusic()
+    {
+        float time = 0f;
+        while (time < musicFadeInDuration)
+        {
+            time += Time.deltaTime;
+            musicAudioSource.volume = Mathf.Lerp(0f, musicVolume, time / musicFadeInDuration);
+            yield return null;
+        }
+        musicAudioSource.volume = musicVolume;
+    }
+
+    private IEnumerator FadeOutMusic()
+    {
+        float time = 0f;
+        float startVolume = musicAudioSource.volume;
+        while (time < musicFadeOutDuration)
+        {
+            time += Time.deltaTime;
+            musicAudioSource.volume = Mathf.Lerp(startVolume, 0f, time / musicFadeOutDuration);
+            yield return null;
+        }
+        musicAudioSource.volume = 0f;
+        musicAudioSource.Stop();
+        musicAudioSource.clip = null; // Limpiar el clip
+        Debug.Log("Música de fondo detenida con fade-out.", this);
     }
 
     private void PlayTypingSound(char currentChar, ref int nonSpaceCharCount, AudioClip typingSound)

@@ -550,6 +550,11 @@ MonoBehaviour:
   introTypingSound: {fileID: 8300000, guid: 9eab6aafffe280240ac5a85d84d42889, type: 3}
   advanceDialogueSound: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
   endDialogueSound: {fileID: 8300000, guid: 37782a1da832ff84aa8608f5c1d0f5cb, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: 2af49400ffe842f4facf97819684ac19, type: 3}
+  musicVolume: 0.2
+  musicMixerGroup: {fileID: 8084380566040841428, guid: fe95266f1435fd640af1ce5ce8f0b462, type: 2}
+  musicFadeInDuration: 2.5
+  musicFadeOutDuration: 2.75
   objectsToToggle:
   - {fileID: 1087813331}
   - {fileID: 1128313792}
@@ -1089,7 +1094,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1087813332
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1128,7 +1133,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1128313793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,7 +1160,7 @@ MonoBehaviour:
   delayBeforeFade: 1.12
   typeSpeed: 0.08
   typewriterSound: {fileID: 0}
-  fadeTextCompleteSound: {fileID: 0}
+  fadeTextCompleteSound: {fileID: 8300000, guid: da21537937b5381499ed1ecdfad34e52, type: 3}
 --- !u!4 &1128313794
 Transform:
   m_ObjectHideFlags: 0
