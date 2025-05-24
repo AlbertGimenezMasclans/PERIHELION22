@@ -48,6 +48,8 @@ public class PerihelionMenu : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private GameObject optionsPanel;
     [SerializeField] private GameObject fadePanel;
+    [SerializeField] private GameObject controlsGuidePanel; // Panel Guía de los Controles
+    [SerializeField] private GameObject infoPanel; // Panel de Información
     [Space]
     [SerializeField] private Slider musicSlider;
     [SerializeField] private TMP_Text musicVolumeText;
@@ -58,6 +60,7 @@ public class PerihelionMenu : MonoBehaviour
 
     private bool isProcessing = false;
     private bool inSubMenu = false;
+    private bool isPanelOpen = false; // Indica si algún panel (Guía o Información) está abierto
     private float sliderAdjustSpeed = 0.5f;
 
     void Start()
@@ -113,40 +116,71 @@ public class PerihelionMenu : MonoBehaviour
     }
 
     void Update()
-    {
-        if (isProcessing) return;
+{
+    if (isProcessing) return;
 
-        if (inSubMenu)
+    if (isPanelOpen)
+    {
+        // Permitir cerrar los paneles con Escape, C o Enter
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return))
         {
-            if (currentSubOption == SubMenuOption.Music && musicSlider != null)
+            if (controlsGuidePanel != null && controlsGuidePanel.activeSelf)
             {
-                AdjustSlider(musicSlider);
+                DeactivateControlsGuidePanel();
+                isPanelOpen = false;
             }
-            if (currentSubOption == SubMenuOption.SoundEffects && sfxSlider != null)
+            else if (infoPanel != null && infoPanel.activeSelf)
             {
-                AdjustSlider(sfxSlider);
+                DeactivateInfoPanel();
+                isPanelOpen = false;
             }
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C))
-            {
-                CloseOptionsMenu();
-            }
+            UpdateMenuVisuals(); // Actualiza la UI del menú principal al cerrar
         }
-        else
+        return; // Bloquea cualquier otra entrada mientras un panel está abierto
+    }
+
+    if (inSubMenu)
+    {
+        if (currentSubOption == SubMenuOption.Music && musicSlider != null)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                MoveUp();
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                MoveDown();
-            }
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                ProcessMainMenuSelection();
-            }
+            AdjustSlider(musicSlider);
+        }
+        if (currentSubOption == SubMenuOption.SoundEffects && sfxSlider != null)
+        {
+            AdjustSlider(sfxSlider);
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return))
+        {
+            CloseOptionsMenu();
         }
     }
+    else
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            MoveUp();
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            MoveDown();
+        }
+        if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return)) // Añadimos Enter aquí
+        {
+            ProcessMainMenuSelection();
+        }
+        // Activar paneles con teclas específicas
+        if (Input.GetKeyDown(KeyCode.G) && controlsGuidePanel != null && !controlsGuidePanel.activeSelf)
+        {
+            ActivateControlsGuidePanel();
+            isPanelOpen = true;
+        }
+        if (Input.GetKeyDown(KeyCode.I) && infoPanel != null && !infoPanel.activeSelf)
+        {
+            ActivateInfoPanel();
+            isPanelOpen = true;
+        }
+    }
+}
 
     private void MoveUp()
     {
@@ -437,6 +471,66 @@ public class PerihelionMenu : MonoBehaviour
         if (loadGameText != null)
         {
             loadGameText.color = gameLoaded ? Color.white : Color.gray;
+        }
+    }
+
+    // Activa el Panel Guía de los Controles
+    public void ActivateControlsGuidePanel()
+    {
+        if (controlsGuidePanel != null && !isPanelOpen)
+        {
+            controlsGuidePanel.SetActive(true);
+            isPanelOpen = true;
+            PlaySelectionSound();
+        }
+        else if (controlsGuidePanel == null)
+        {
+            Debug.LogWarning("El Panel Guía de los Controles no está asignado en el Inspector.");
+        }
+    }
+
+    // Desactiva el Panel Guía de los Controles
+    public void DeactivateControlsGuidePanel()
+    {
+        if (controlsGuidePanel != null)
+        {
+            controlsGuidePanel.SetActive(false);
+            isPanelOpen = false;
+            PlaySelectionSound();
+        }
+        else
+        {
+            Debug.LogWarning("El Panel Guía de los Controles no está asignado en el Inspector.");
+        }
+    }
+
+    // Activa el Panel de Información
+    public void ActivateInfoPanel()
+    {
+        if (infoPanel != null && !isPanelOpen)
+        {
+            infoPanel.SetActive(true);
+            isPanelOpen = true;
+            PlaySelectionSound();
+        }
+        else if (infoPanel == null)
+        {
+            Debug.LogWarning("El Panel de Información no está asignado en el Inspector.");
+        }
+    }
+
+    // Desactiva el Panel de Información
+    public void DeactivateInfoPanel()
+    {
+        if (infoPanel != null)
+        {
+            infoPanel.SetActive(false);
+            isPanelOpen = false;
+            PlaySelectionSound();
+        }
+        else
+        {
+            Debug.LogWarning("El Panel de Información no está asignado en el Inspector.");
         }
     }
 }
