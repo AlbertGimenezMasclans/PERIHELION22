@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class ActiveButton : MonoBehaviour
 {
     [SerializeField] private GameObject indicator; // GameObject que actúa como indicador
-    [SerializeField] private GameObject objectToDeactivate; // Objeto a desactivar cuando TriggerCount llegue a 3
     [SerializeField] private AudioClip pressSound; // Sonido al presionar el botón
 
     [Header("Sprite Settings")]
@@ -13,15 +11,17 @@ public class ActiveButton : MonoBehaviour
     [SerializeField] private Sprite spriteForTrigger2; // Sprite cuando TriggerCount = 2
     [SerializeField] private Sprite spriteForTrigger3; // Sprite cuando TriggerCount = 3
 
-    private static int TriggerCount = 0; // Contador global de triggers
-    private static List<GameObject> ObjectsToDeactivate = new List<GameObject>(); // Lista de objetos a desactivar
-    private static bool HasDeactivatedObjects = false; // Indica si los objetos ya fueron desactivados
-    private static List<ActiveButton> AllButtons = new List<ActiveButton>(); // Lista de todos los botones
-
     private bool isPlayerNearby; // Indica si el jugador está dentro del trigger
     private bool isUsed; // Indica si el botón ya fue usado
     private AudioSource audioSource; // Componente para reproducir el sonido
     private SpriteRenderer spriteRenderer; // Componente para cambiar el sprite
+    private ButtonController controller; // Referencia al controlador
+
+    // Método para asignar el controlador
+    public void SetController(ButtonController ctrl)
+    {
+        controller = ctrl;
+    }
 
     private void Start()
     {
@@ -42,20 +42,6 @@ public class ActiveButton : MonoBehaviour
             Debug.LogWarning($"Indicator no asignado en el botón {gameObject.name}.");
         }
 
-        // Validar y añadir objeto a desactivar
-        if (objectToDeactivate != null)
-        {
-            if (!ObjectsToDeactivate.Contains(objectToDeactivate))
-            {
-                ObjectsToDeactivate.Add(objectToDeactivate);
-                Debug.Log($"Objeto {objectToDeactivate.name} añadido a la lista de desactivación por el botón {gameObject.name}.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"ObjectToDeactivate no asignado en el botón {gameObject.name}.");
-        }
-
         // Configurar AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null && pressSound != null)
@@ -68,19 +54,10 @@ public class ActiveButton : MonoBehaviour
         isUsed = false;
         isPlayerNearby = false;
 
-        // Añadir este botón a la lista estática
-        AllButtons.Add(this);
-
         // Validar sprites
         if (spriteForTrigger1 == null) Debug.LogWarning($"spriteForTrigger1 no asignado en el botón {gameObject.name}.");
         if (spriteForTrigger2 == null) Debug.LogWarning($"spriteForTrigger2 no asignado en el botón {gameObject.name}.");
         if (spriteForTrigger3 == null) Debug.LogWarning($"spriteForTrigger3 no asignado en el botón {gameObject.name}.");
-    }
-
-    private void OnDestroy()
-    {
-        // Remover este botón de la lista al ser destruido
-        AllButtons.Remove(this);
     }
 
     private void Update()
@@ -137,87 +114,49 @@ public class ActiveButton : MonoBehaviour
             audioSource.PlayOneShot(pressSound);
         }
 
-        // Incrementar el contador global
-        TriggerCount++;
-        Debug.Log($"TriggerCount incrementado a {TriggerCount} por el botón {gameObject.name}.");
-
-        // Actualizar sprites de todos los botones
-        UpdateAllButtonSprites();
-
-        // Verificar si el contador alcanzó 3
-        if (TriggerCount == 3 && !HasDeactivatedObjects)
+        // Notificar al controlador
+        if (controller != null)
         {
-            DeactivateObjects();
-            StartCoroutine(ResetTriggerCountAfterDelay());
+            controller.RegisterButtonPress();
+        }
+        else
+        {
+            Debug.LogWarning($"No se ha asignado un controlador al botón {gameObject.name}.");
         }
     }
 
-    private static void UpdateAllButtonSprites()
+    // Método para actualizar el sprite basado en el conteo del controlador
+    public void UpdateSpriteBasedOnCount(int count)
     {
-        foreach (ActiveButton button in AllButtons)
+        if (spriteRenderer != null)
         {
-            if (button != null && button.spriteRenderer != null)
+            switch (count)
             {
-                switch (TriggerCount)
-                {
-                    case 1:
-                        if (button.spriteForTrigger1 != null)
-                        {
-                            button.spriteRenderer.sprite = button.spriteForTrigger1;
-                            Debug.Log($"Botón {button.gameObject.name} cambió a spriteForTrigger1.");
-                        }
-                        break;
-                    case 2:
-                        if (button.spriteForTrigger2 != null)
-                        {
-                            button.spriteRenderer.sprite = button.spriteForTrigger2;
-                            Debug.Log($"Botón {button.gameObject.name} cambió a spriteForTrigger2.");
-                        }
-                        break;
-                    case 3:
-                        if (button.spriteForTrigger3 != null)
-                        {
-                            button.spriteRenderer.sprite = button.spriteForTrigger3;
-                            Debug.Log($"Botón {button.gameObject.name} cambió a spriteForTrigger3.");
-                        }
-                        break;
-                    default:
-                        // Mantener el sprite base (no cambiar si TriggerCount es 0 o > 3)
-                        break;
-                }
+                case 1:
+                    if (spriteForTrigger1 != null)
+                    {
+                        spriteRenderer.sprite = spriteForTrigger1;
+                        Debug.Log($"Botón {gameObject.name} cambió a spriteForTrigger1.");
+                    }
+                    break;
+                case 2:
+                    if (spriteForTrigger2 != null)
+                    {
+                        spriteRenderer.sprite = spriteForTrigger2;
+                        Debug.Log($"Botón {gameObject.name} cambió a spriteForTrigger2.");
+                    }
+                    break;
+                case 3:
+                    if (spriteForTrigger3 != null)
+                    {
+                        spriteRenderer.sprite = spriteForTrigger3;
+                        Debug.Log($"Botón {gameObject.name} cambió a spriteForTrigger3.");
+                    }
+                    break;
+                default:
+                    // Restaurar sprite base (no cambiar si count es 0 o > 3)
+                    break;
             }
         }
-    }
-
-    private static void DeactivateObjects()
-    {
-        HasDeactivatedObjects = true;
-        foreach (GameObject obj in ObjectsToDeactivate)
-        {
-            if (obj != null)
-            {
-                obj.SetActive(false);
-                Debug.Log($"Objeto {obj.name} desactivado porque TriggerCount alcanzó 3.");
-            }
-        }
-    }
-
-    private IEnumerator ResetTriggerCountAfterDelay()
-    {
-        yield return new WaitForSeconds(0.5f);
-        TriggerCount = 0;
-        HasDeactivatedObjects = false; // Permitir futuras desactivaciones
-        UpdateAllButtonSprites(); // Restaurar sprites base
-        Debug.Log("TriggerCount reiniciado a 0 después de 0.5 segundos.");
-    }
-
-    // Método para reiniciar el contador global y el estado (útil para reiniciar el nivel)
-    public static void ResetTriggerCount()
-    {
-        TriggerCount = 0;
-        HasDeactivatedObjects = false;
-        ObjectsToDeactivate.Clear();
-        AllButtons.Clear();
-        Debug.Log("TriggerCount, lista de objetos y lista de botones reiniciados.");
     }
 }

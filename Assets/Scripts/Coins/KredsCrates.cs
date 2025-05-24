@@ -7,6 +7,7 @@ public class KredsCrates : MonoBehaviour
     [SerializeField] private float spawnForce = 2f;      // Fuerza inicial para dispersar los objetos
     [SerializeField] private float spawnRadius = 0.5f;   // Radio para dispersión inicial de posición
     [SerializeField] [Range(0f, 1f)] private float tokenProbability = 0.25f; // Probabilidad de que sea un Token (25%)
+    [SerializeField] private bool disableKredTokens = false; // Checkbox para deshabilitar Kred Tokens
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -37,8 +38,8 @@ public class KredsCrates : MonoBehaviour
         int itemCount = GetWeightedRandomItemCount();
         for (int i = 0; i < itemCount; i++)
         {
-            // Decidir si es un Token (25%) o un Bit (75%)
-            bool isToken = Random.value < tokenProbability;
+            // Decidir si es un Token o un Bit
+            bool isToken = !disableKredTokens && Random.value < tokenProbability; // Solo permite Tokens si disableKredTokens es false
             GameObject prefabToSpawn = isToken ? kredTokenPrefab : kredBitPrefab;
 
             Vector2 randomOffset = Random.insideUnitCircle * spawnRadius;
