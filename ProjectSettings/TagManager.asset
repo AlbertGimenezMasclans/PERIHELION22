@@ -19,6 +19,7 @@ TagManager:
   - GravityField
   - BoxSide
   - BreakableWall
+  - MoveLimit
   layers:
   - Default
   - TransparentFX
