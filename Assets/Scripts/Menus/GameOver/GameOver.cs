@@ -33,7 +33,8 @@ public class GameOver : MonoBehaviour
     [SerializeField] private float musicFadeInDuration = 1.3f; // Duración del fade-in música
     [SerializeField, Range(0f, 1f)] private float maxMusicVolume = 1f; // Volumen máximo música
 
-    private bool fadeCompleted = false;
+    private bool fadeCompleted = false; // Para el fade-out de blackPanel
+    private bool uiFadeCompleted = false; // Para el fade-in de textos e imagen
     private float fadeTimer = 0f; // Timer for blackPanel fade
 
     void Start()
@@ -109,10 +110,10 @@ public class GameOver : MonoBehaviour
             }
         }
 
-        // Reiniciar escena con tecla C
-        if (fadeCompleted && Input.GetKeyDown(KeyCode.C))
+        // Reiniciar escena con tecla C solo si los textos e imagen son visibles
+        if (fadeCompleted && uiFadeCompleted && Input.GetKeyDown(KeyCode.C))
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Perihelion");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MenuPrincipal");
         }
     }
 
@@ -230,5 +231,8 @@ public class GameOver : MonoBehaviour
             text3.color = text3Final;
         if (gameOverImage != null)
             gameOverImage.color = imageFinal;
+
+        // Marcar el fade-in de UI como completado
+        uiFadeCompleted = true;
     }
 }
