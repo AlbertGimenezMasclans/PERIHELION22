@@ -192856,6 +192856,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 6be0bd76ddbeb044cb375ea7ba0397bc, type: 3}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: showDialogueOnlyOnce
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.size
       value: 24
       objectReference: {fileID: 0}
@@ -192974,13 +192978,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[22]
-      value: "Tienes m\xE1s preguntas que respuestas. Qui\xE9n es AGM? Porque quer\xEDa 
-        deshacerse de Eldrick? Realmente sab\xEDa m\xE1s cosas de las que no dij\xF3?"
+      value: "Tienes m\xE1s preguntas que respuestas. \xBFQui\xE9n es AGM? \xBFPorque
+        quer\xEDa  deshacerse de Eldrick? \xBFRealmente sab\xEDa m\xE1s cosas de
+        las que no dij\xF3?"
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[23]
       value: "Al menos hay algo que tienes claro:\nYa no hay vuelta atr\xE1s. Toca
-        seguir adelant y averiguar qu\xE9 est\xE1 ocurriendo aqu\xED..."
+        seguir adelante y averiguar qu\xE9 est\xE1 ocurriendo aqu\xED..."
       objectReference: {fileID: 0}
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: dialogueLines.Array.data[24]
@@ -193002,6 +193007,14 @@ PrefabInstance:
     - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: headlessDialogueLines.Array.size
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2114765730648731509, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
+      propertyPath: secondTimeDialogueLines.Array.data[0]
+      value: El ordenador no responde.
       objectReference: {fileID: 0}
     - target: {fileID: 4252188328140397011, guid: 26dad3e0b21623f4b8d9fddedac739f3, type: 3}
       propertyPath: m_LocalScale.x
