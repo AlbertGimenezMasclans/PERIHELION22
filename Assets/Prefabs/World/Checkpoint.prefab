@@ -147,6 +147,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healCooldown: 10
   visualZone: {fileID: 0}
+  activationSound: {fileID: 8300000, guid: fca904e6053245d469f58de57b855b9e, type: 3}
+  healSound: {fileID: 8300000, guid: 8d1153329894e4241a982bd21f826a9f, type: 3}
 --- !u!95 &5907901172983863188
 Animator:
   serializedVersion: 5
@@ -180,7 +182,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 7447712814878036893, guid: fe95266f1435fd640af1ce5ce8f0b462, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.45
   m_Pitch: 1
   Loop: 0
   Mute: 0
