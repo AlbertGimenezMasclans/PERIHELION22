@@ -56,6 +56,7 @@ public class PerihelionMenu : MonoBehaviour
     [SerializeField] private Slider sfxSlider;
     [SerializeField] private TMP_Text sfxVolumeText;
     [SerializeField] private Toggle autoSaveToggle;
+
     [SerializeField] private bool gameLoaded = false;
 
     private bool isProcessing = false;
@@ -70,6 +71,9 @@ public class PerihelionMenu : MonoBehaviour
             Debug.LogError("AudioMixer no está asignado en PerihelionMenu. Por favor, asigna el Audio Mixer en el Inspector.");
             return;
         }
+
+        // Sincronizar gameLoaded con PlayerPrefs
+        UpdateGameLoadedState();
 
         // Configurar el slider de Música (BGM)
         if (musicSlider != null)
@@ -116,71 +120,71 @@ public class PerihelionMenu : MonoBehaviour
     }
 
     void Update()
-{
-    if (isProcessing) return;
+    {
+        if (isProcessing) return;
 
-    if (isPanelOpen)
-    {
-        // Permitir cerrar los paneles con Escape, C o Enter
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return))
+        if (isPanelOpen)
         {
-            if (controlsGuidePanel != null && controlsGuidePanel.activeSelf)
+            // Permitir cerrar los paneles con Escape, C o Enter
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return))
             {
-                DeactivateControlsGuidePanel();
-                isPanelOpen = false;
+                if (controlsGuidePanel != null && controlsGuidePanel.activeSelf)
+                {
+                    DeactivateControlsGuidePanel();
+                    isPanelOpen = false;
+                }
+                else if (infoPanel != null && infoPanel.activeSelf)
+                {
+                    DeactivateInfoPanel();
+                    isPanelOpen = false;
+                }
+                UpdateMenuVisuals(); // Actualiza la UI del menú principal al cerrar
             }
-            else if (infoPanel != null && infoPanel.activeSelf)
-            {
-                DeactivateInfoPanel();
-                isPanelOpen = false;
-            }
-            UpdateMenuVisuals(); // Actualiza la UI del menú principal al cerrar
+            return; // Bloquea cualquier otra entrada mientras un panel está abierto
         }
-        return; // Bloquea cualquier otra entrada mientras un panel está abierto
-    }
 
-    if (inSubMenu)
-    {
-        if (currentSubOption == SubMenuOption.Music && musicSlider != null)
+        if (inSubMenu)
         {
-            AdjustSlider(musicSlider);
+            if (currentSubOption == SubMenuOption.Music && musicSlider != null)
+            {
+                AdjustSlider(musicSlider);
+            }
+            if (currentSubOption == SubMenuOption.SoundEffects && sfxSlider != null)
+            {
+                AdjustSlider(sfxSlider);
+            }
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return))
+            {
+                CloseOptionsMenu();
+            }
         }
-        if (currentSubOption == SubMenuOption.SoundEffects && sfxSlider != null)
+        else
         {
-            AdjustSlider(sfxSlider);
-        }
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return))
-        {
-            CloseOptionsMenu();
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                MoveUp();
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                MoveDown();
+            }
+            if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return)) // Añadimos Enter aquí
+            {
+                ProcessMainMenuSelection();
+            }
+            // Activar paneles con teclas específicas
+            if (Input.GetKeyDown(KeyCode.G) && controlsGuidePanel != null && !controlsGuidePanel.activeSelf)
+            {
+                ActivateControlsGuidePanel();
+                isPanelOpen = true;
+            }
+            if (Input.GetKeyDown(KeyCode.I) && infoPanel != null && !infoPanel.activeSelf)
+            {
+                ActivateInfoPanel();
+                isPanelOpen = true;
+            }
         }
     }
-    else
-    {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            MoveUp();
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            MoveDown();
-        }
-        if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Return)) // Añadimos Enter aquí
-        {
-            ProcessMainMenuSelection();
-        }
-        // Activar paneles con teclas específicas
-        if (Input.GetKeyDown(KeyCode.G) && controlsGuidePanel != null && !controlsGuidePanel.activeSelf)
-        {
-            ActivateControlsGuidePanel();
-            isPanelOpen = true;
-        }
-        if (Input.GetKeyDown(KeyCode.I) && infoPanel != null && !infoPanel.activeSelf)
-        {
-            ActivateInfoPanel();
-            isPanelOpen = true;
-        }
-    }
-}
 
     private void MoveUp()
     {
@@ -348,6 +352,8 @@ public class PerihelionMenu : MonoBehaviour
 
         if (currentOption == MenuOption.StartGame)
         {
+            // Sobrescribir datos con valores por defecto al empezar una nueva partida
+            SaveSystem.SaveDefaultGame();
             PlaySelectionSound();
             yield return StartCoroutine(FadeIn(0.80f));
             SceneManager.LoadScene("Perihelion");
@@ -472,6 +478,12 @@ public class PerihelionMenu : MonoBehaviour
         {
             loadGameText.color = gameLoaded ? Color.white : Color.gray;
         }
+    }
+
+    private void UpdateGameLoadedState()
+    {
+        gameLoaded = PlayerPrefs.GetInt("GameLoaded", 0) == 1;
+        UpdateLoadGameTextColor();
     }
 
     // Activa el Panel Guía de los Controles

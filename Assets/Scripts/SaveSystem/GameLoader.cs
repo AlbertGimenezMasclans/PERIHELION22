@@ -24,6 +24,7 @@ public class GameLoader : MonoBehaviour
         {
             // Aplicar posición del jugador
             playerMovement.transform.position = data.playerPosition;
+            Debug.Log($"Cargada posición del jugador: {data.playerPosition}");
 
             // Aplicar monedas
             if (KredsManager.Instance != null)
@@ -31,11 +32,17 @@ public class GameLoader : MonoBehaviour
                 KredsManager.Instance.totalTokens = data.coinCount;
                 KredsManager.Instance.displayedTokens = data.coinCount;
                 KredsManager.Instance.UpdateHUD();
+                Debug.Log($"Cargadas {data.coinCount} monedas.");
 
                 // Forzar la HUD a la posición oculta
                 if (KredsManager.Instance.uiContainer != null)
                 {
                     KredsManager.Instance.uiContainer.anchoredPosition = KredsManager.Instance.hiddenUIPosition;
+                    Debug.Log("HUD movida a posición oculta.");
+                }
+                else
+                {
+                    Debug.LogWarning("uiContainer no asignado en KredsManager.");
                 }
             }
             else
@@ -47,6 +54,7 @@ public class GameLoader : MonoBehaviour
             playerMovement.canChangeGravity = data.canChangeGravity;
             playerMovement.canShoot = data.canShoot;
             playerMovement.canDismember = data.canDismember;
+            Debug.Log($"Habilidades cargadas: Gravity={data.canChangeGravity}, Shoot={data.canShoot}, Dismember={data.canDismember}");
 
             Debug.Log("Datos del juego cargados desde JSON.");
         }

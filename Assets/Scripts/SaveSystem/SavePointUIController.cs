@@ -208,7 +208,7 @@ public class SavePointUIController : MonoBehaviour
     void OnTriggerExit2D(Collider2D other)
     {
         // Comprobar si el objeto que salió del trigger tiene el tag "Player"
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && gameObject.activeInHierarchy)
         {
             isPlayerNearby = false;
             StartCoroutine(EndSavePointInteraction());

@@ -53,17 +53,8 @@ public class SaveSystem : MonoBehaviour
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
 
-        // Solo activar GameLoaded si los datos no son los datos por defecto
-        if (!IsDefaultGameData(data))
-        {
-            PlayerPrefs.SetInt("GameLoaded", 1);
-            Debug.Log("GameLoaded activado: Los datos guardados no son los datos por defecto.");
-        }
-        else
-        {
-            PlayerPrefs.SetInt("GameLoaded", 0);
-            Debug.Log("GameLoaded desactivado: Los datos guardados son los datos por defecto.");
-        }
+        // Activar GameLoaded siempre que se guarde una partida, incluso si es por defecto inicialmente
+        PlayerPrefs.SetInt("GameLoaded", 1);
         PlayerPrefs.Save();
         Debug.Log($"Juego guardado en: {SavePath}");
     }
@@ -75,7 +66,7 @@ public class SaveSystem : MonoBehaviour
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
 
-        // Los datos son los datos por defecto, así que desactivamos GameLoaded
+        // Los datos son los datos por defecto, desactivar GameLoaded
         PlayerPrefs.SetInt("GameLoaded", 0);
         PlayerPrefs.Save();
         Debug.Log($"Juego por defecto guardado en: {SavePath}");
