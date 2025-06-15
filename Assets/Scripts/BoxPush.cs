@@ -135,10 +135,7 @@ public class BoxPush : MonoBehaviour
         if (other.CompareTag("MoveLimit"))
         {
             isInMoveLimit = false;
-            // Opcional: Reiniciar posición si sale del área
-            rb.velocity = Vector2.zero;
-            transform.position = initialPosition;
-            transform.rotation = initialRotation;
+            
         }
     }
 }
